@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "165540019464",
+    "project_id": "finalyearproject-abb52",
+    "storage_bucket": "finalyearproject-abb52.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165540019464:android:6d3aaaf8a9cc93529600bd",
+        "android_client_info": {
+          "package_name": "com.example.fyp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHLE6PZ-sWQ_OYODiAyxGMN3g5B6AWuHk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
