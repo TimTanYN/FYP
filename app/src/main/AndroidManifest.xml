@@ -26,6 +26,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Trip"></activity>
+        <activity android:name=".MapTabs"></activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAKrD9Kp41hhUHoWQiNqU8ns1k2lJhygpU" />

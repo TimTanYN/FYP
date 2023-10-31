@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -156,6 +157,16 @@ class Trip:AppCompatActivity(), OnMapReadyCallback {
 
         // Add marker on the chosen location with the given title
         currentMarker = mMap.addMarker(MarkerOptions().position(latLng).title(title))
+        if(title == "End Location"){
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Destination")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))  // Change HUE_GREEN to any hue value you like
+            )
+
+}
+
 
         // Optionally: retrieve address from latLng
         fetchAddress(latLng)
