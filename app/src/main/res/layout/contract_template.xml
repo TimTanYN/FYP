@@ -1,0 +1,968 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"> <!-- fillViewport helps to stretch the content to fill the viewport -->
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/details"
+            android:layout_width="84dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Detials"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="84dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Address"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/houseAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Address"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/ownerNameText"
+            android:layout_width="202dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Owner Name"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/ownerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Owner Name"
+            android:inputType="text"
+            android:padding="10dp" />
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/rent"
+            android:layout_width="84dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Rent"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/rentalAmountText"
+            android:layout_width="256dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Rental Amount"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/rentalAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Rental Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/rentalPaymentDateText"
+            android:layout_width="251dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Rental Payment Date"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/rentalPaymentDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Rental Payment Date"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/paymentReceiverText"
+            android:layout_width="253dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Payment Receiver"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/paymentReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Rental Payment Receiver Name"
+            android:inputType="text"
+            android:padding="10dp" />
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp"
+            android:layout_margin="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+    <TextView
+        android:id="@+id/Utility"
+        android:layout_width="84dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Utility"
+        android:textSize="20sp" />
+
+    <CheckBox
+        android:id="@+id/gas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Gas/Electricity" />
+
+    <CheckBox
+        android:id="@+id/water"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Water/Garbage" />
+
+    <CheckBox
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Phone" />
+
+    <CheckBox
+        android:id="@+id/other"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Other" />
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:id="@+id/utilityDetails"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Utility Details (Only fill if you tick)"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/gasPaymentPercentageText"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Gas/Electricity Payment Percentage"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/gasPaymentPercentage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Gas/Electricity Payment Percentage"
+            android:inputType="number"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/gasPaymentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Gas/Electricity Payment Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+
+        <TextView
+            android:id="@+id/waterPaymentPercentageText"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Water/Garbage Payment Percentage"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/waterPaymentPercentage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Water/Garbage Payment Percentage"
+            android:inputType="number"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/waterPaymentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Water/Garbage Payment Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/phonePaymentPercentageText"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Phone Payment Percentage"
+        android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/phonePaymentPercentage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Phone Payment Percentage"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/phonePaymentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Phone Payment Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/otherPaymentPercentageText"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Other Payment Percentage"
+        android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/otherPaymentName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Payment Name"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/otherPaymentPercentage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Payment Percentage"
+            android:inputType="number"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/otherPaymentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Payment Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/rules"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Household Rules"
+            android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/cleaning"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Cleaning"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/cleaningYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/cleaningNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/kitchenUse"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Kitchen Use"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/kitchenGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/kitchenUseYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/kitchenUseNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/overnightGuestText"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Overnight Guest"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/overnightGuestGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/overnightGuestYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/overnightGuestNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/kitchenAppliances"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Kitchen Appliances"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/kitchenAppliancesGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/kitchenAppliancesYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/kitchenAppliancesNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/smoking"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Smoking"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/smokingGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/smokingYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/smokingNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/commonArea"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Common Area"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/commonAreaGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/commonAreaYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/commonAreaNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/alcohol"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Alcohol/Drug Use"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/alcoholGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/alcoholYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/alcoholNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/telephone"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Use Of Telephone"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/telephoneGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/telephoneYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/telephoneNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/study"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Studying/Quiet Hours"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/studyGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/studyYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/studyNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/personalItem"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Sharing Personal Hours"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/personalItemGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/personalItemYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/personalItemNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/music"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Music/TV"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/musicGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/musicYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/musicNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/bedroomAssignment"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Bedroom Assignment"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/bedroomAssignmentGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/bedroomAssignmentYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/bedroomAssignmentNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/pets"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Pets"
+        android:textSize="20sp" />
+
+    <RadioGroup
+        android:id="@+id/petsGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/petsYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes" />
+
+        <RadioButton
+            android:id="@+id/petsNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No" />
+
+        <!-- Add as many radio buttons as needed -->
+    </RadioGroup>
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/conflictResolution"
+            android:layout_width="317dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Conflict Resolution"
+            android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/confilct"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Confilct Resolution"
+        android:textSize="20sp" />
+
+    <CheckBox
+        android:id="@+id/houseHold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decision by household consensus" />
+
+    <CheckBox
+        android:id="@+id/thirdParty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Binding mediation by impartial third party" />
+
+    <CheckBox
+        android:id="@+id/majority"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decision by household majority vote" />
+
+    <CheckBox
+        android:id="@+id/pricipalTenant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decision by Principal Tenant" />
+
+    <CheckBox
+        android:id="@+id/owner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decision by Owner" />
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/deposit"
+            android:layout_width="84dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/acme"
+            android:text="Deposit"
+            android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/lastMonthRent"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Last Month Rent"
+        android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/lastMonthRentDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Last Month Rent Date"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/lastMonthRentAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Last Month Amount"
+            android:inputType="number"
+            android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/securityDeposit"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Security Deposit"
+        android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/securityDepositDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Security Deposit Date"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/securityDepositAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Security Deposit Amount"
+            android:inputType="number|numberDecimal"
+            android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/otherDeposit"
+        android:layout_width="317dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/acme"
+        android:layout_marginTop="10dp"
+        android:text="Other Deposit"
+        android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/otherDepositDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Deposit Date"
+            android:inputType="text"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/otherDepositAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Deposit Amount"
+            android:inputType="number"
+            android:padding="10dp" />
+
+        <EditText
+            android:id="@+id/otherDepositDateRange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Other Deposit"
+            android:inputType="text"
+            android:padding="10dp" />
+
+    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</LinearLayout>
+</ScrollView>

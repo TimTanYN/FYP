@@ -13,6 +13,9 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.fyp.adapter.TransitListAdapter
 import com.example.fyp.viewmodel.PublicTransportViewModel
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -51,45 +54,39 @@ class PublicTransport : Fragment() {
     }
 
 
-//    private lateinit var listView: ListView
+
     private lateinit var adapter: ArrayAdapter<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        listView = view.findViewById(R.id.list_view)
-//        adapter = ArrayAdapter(
-//            requireContext(),
-//            android.R.layout.simple_list_item_1,
-//            mutableListOf<String>() // Start with an empty list
-//        )
-//        listView.adapter = adapter
 
-        val vehicleTypeTextView: TextView = view.findViewById(R.id.vehicleTypeTextView)
+        val transitList = mutableListOf<String>()
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+        val adapter = TransitListAdapter(emptyList()) // Start with an empty list
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+
+
         model.getTransitDetails().observe(viewLifecycleOwner, Observer<List<String>> { details ->
             // Log to check if this observer is being called
-            Log.d("TransitDetailLog", "Observer called with details: ${details.get(0)}")
-            details.forEach { detail ->
-                // Assuming the detail string is well formatted as specified
-                val parts = detail.split(", ") // Split by comma and space to get each part
-                val vehicleTypePart = parts.find { it.startsWith("Vehicle Type:") }
-                val vehicleType = vehicleTypePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-                val vehicleNamePart = parts.find { it.startsWith("Vehicle Name:") }
-                val vehicleName = vehicleNamePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-                val linePart = parts.find { it.startsWith("Line:") }
-                val line = linePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-
-                // Now set the extracted vehicle type to the TextView
-                vehicleTypeTextView.text = "Vehicle Type: $vehicleType\nVehicle Name: $vehicleName\nLine: $line"
-            }
-
-//            if (details.isNotEmpty()) {
-//                // Clear the adapter and add all the new details
-//                adapter.clear()
-//                adapter.addAll(details.get(0))
-//                adapter.notifyDataSetChanged()
-//            } else {
-//                // Log if the details list is empty
-//                Log.d("TransitDetailLog", "No transit details to display.")
+            Log.d("TransitDetailLog", "Observer called with details: ${details}")
+//            details.forEach { detail ->
+//                // Assuming the detail string is well formatted as specified
+//                val parts = detail.split(", ") // Split by comma and space to get each part
+//                val vehicleTypePart = parts.find { it.startsWith("Vehicle Type:") }
+//                val vehicleType = vehicleTypePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
+//                val vehicleNamePart = parts.find { it.startsWith("Vehicle Name:") }
+//                val vehicleName = vehicleNamePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
+//                val linePart = parts.find { it.startsWith("Line:") }
+//                val line = linePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
+//
+//                // Now set the extracted vehicle type to the TextView
+//               transitList.add( "Vehicle Type: $vehicleType\nVehicle Name: $vehicleName\nLine: $line")
+//
+//
 //            }
+
+            adapter.transitDetails = details
+            adapter.notifyDataSetChanged()
         })
             // Update UI with transit details here
     }
