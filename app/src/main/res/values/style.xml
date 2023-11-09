@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SignUpScreen.EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@drawable/edit_text_background</item>
+        <!-- Define more styling as per your design -->
+    </style>
+
+    <style name="SignUpScreen.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textColor">@color/white</item>
+        <!-- Define more styling as per your design -->
+    </style>
+
+    <style name="SignUpScreen.TitleText" parent="TextAppearance.AppCompat.Large">
+        <!-- Define your title text styling -->
+    </style>
+
+    <style name="SignUpScreen.TermsText" parent="TextAppearance.AppCompat.Small">
+        <!-- Define your terms text styling -->
+    </style>
+
+    <style name="SignUpScreen.SignInText" parent="TextAppearance.AppCompat.Small">
+        <!-- Define your sign in text styling -->
+    </style>
+
+</resources>

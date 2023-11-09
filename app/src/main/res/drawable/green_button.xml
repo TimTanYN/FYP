@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Default state -->
+    <item android:state_enabled="true">
+        <shape>
+            <solid android:color="#00FF7F" /> <!-- Set the default background color -->
+            <corners android:radius="10dp" /> <!-- Set the corner radius for rounded corners -->
+        </shape>
+    </item>
+    <!-- Pressed/focused state -->
+    <item android:state_enabled="true" android:state_pressed="true">
+        <shape>
+            <solid android:color="#388E3C" /> <!-- Set the background color when pressed -->
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    <!-- Disabled state -->
+    <item android:state_enabled="false">
+        <shape>
+            <solid android:color="#BDBDBD" /> <!-- Set the background color when disabled -->
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</selector>
