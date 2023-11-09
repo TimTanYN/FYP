@@ -184,6 +184,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                     val eta = timeFormat.format(currentTime.time)
 
                                     transitList.add("$vehicleType,$vehicleName,  $shortName, $eta")
+
                                 }
                             }
 
