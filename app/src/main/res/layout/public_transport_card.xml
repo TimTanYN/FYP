@@ -15,12 +15,12 @@
         android:padding="16dp">
 
         <ImageView
-            android:id="@+id/imageProduct"
-            android:layout_width="51dp"
-            android:layout_height="37dp"
-            android:layout_marginStart="8dp"
+            android:id="@+id/transportImage"
+            android:layout_width="48dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginEnd="20dp"
             android:contentDescription="sd"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@+id/transportName"
@@ -42,10 +42,10 @@
 
         <TextView
             android:id="@+id/ETA"
-            android:layout_width="131dp"
-            android:layout_height="18dp"
+            android:layout_width="123dp"
+            android:layout_height="17dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:text="Product Description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transport" />
@@ -54,12 +54,11 @@
             android:id="@+id/transportName"
             android:layout_width="131dp"
             android:layout_height="18dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="31dp"
+            android:layout_marginEnd="16dp"
             android:text="Product Description"
             app:layout_constraintEnd_toStartOf="@+id/ETA"
-            app:layout_constraintStart_toEndOf="@+id/imageProduct"
+            app:layout_constraintStart_toEndOf="@+id/transportImage"
             app:layout_constraintTop_toBottomOf="@+id/transport" />
 
         <TextView
@@ -71,7 +70,7 @@
             android:text="Price"
             android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageProduct" />
+            app:layout_constraintTop_toBottomOf="@+id/transportImage" />
 
         <!-- You can add more views such as buttons or rating stars here -->
 
