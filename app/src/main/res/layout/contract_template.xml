@@ -960,9 +960,16 @@
             android:inputType="text"
             android:padding="10dp" />
 
+
+
     </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <Button
+        android:id="@+id/submitContractTemplate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 
 </LinearLayout>
 </ScrollView>

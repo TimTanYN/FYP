@@ -1,6 +1,5 @@
 package com.example.fyp
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,17 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.ListView
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.TransitListAdapter
+import com.example.fyp.adapter.PublicTransportAdapter
 import com.example.fyp.viewmodel.PublicTransportViewModel
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
+import com.example.fyp.adapter.PublicTransport
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,32 +56,16 @@ class PublicTransport : Fragment() {
 
         val transitList = mutableListOf<String>()
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        val adapter = TransitListAdapter(emptyList()) // Start with an empty list
+        val adapter = PublicTransportAdapter(emptyList()) // Start with an empty list
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-
-        model.getTransitDetails().observe(viewLifecycleOwner, Observer<List<String>> { details ->
+        model.getTransitDetails().observe(viewLifecycleOwner, Observer<List<PublicTransport>> { details ->
             // Log to check if this observer is being called
-            Log.d("TransitDetailLog", "Observer called with details: ${details}")
-//            details.forEach { detail ->
-//                // Assuming the detail string is well formatted as specified
-//                val parts = detail.split(", ") // Split by comma and space to get each part
-//                val vehicleTypePart = parts.find { it.startsWith("Vehicle Type:") }
-//                val vehicleType = vehicleTypePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-//                val vehicleNamePart = parts.find { it.startsWith("Vehicle Name:") }
-//                val vehicleName = vehicleNamePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-//                val linePart = parts.find { it.startsWith("Line:") }
-//                val line = linePart?.substringAfter(": ") ?: "N/A" // Extract the vehicle type
-//
-//                // Now set the extracted vehicle type to the TextView
-//               transitList.add( "Vehicle Type: $vehicleType\nVehicle Name: $vehicleName\nLine: $line")
-//
-//
-//            }
+            Log.d("TransitDetailLog", "Observer called with details: $details")
 
-            adapter.transitDetails = details
-            adapter.notifyDataSetChanged()
+            // Update the adapter with the new data
+            adapter.updateTransports(details)
         })
             // Update UI with transit details here
     }

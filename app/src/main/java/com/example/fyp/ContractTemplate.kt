@@ -1,12 +1,16 @@
 package com.example.fyp
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
+import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ContractTemplate:AppCompatActivity() {
@@ -25,12 +29,24 @@ class ContractTemplate:AppCompatActivity() {
     private lateinit var otherPaymentNameEditText: EditText
     private lateinit var otherPaymentPercentageEditText: EditText
     private lateinit var otherPaymentAmountEditText: EditText
+    private lateinit var lastMonthRentDate: EditText
+    private lateinit var lastMonthRentAmount: EditText
+    private lateinit var securityDepositDate: EditText
+    private lateinit var securityDepositAmount: EditText
+    private lateinit var otherDepositDate: EditText
+    private lateinit var otherDepositAmount: EditText
+    private lateinit var otherDepositDateRange: EditText
 
     // Declaring variables for checkboxes
     private lateinit var gasCheckBox: CheckBox
     private lateinit var waterCheckBox: CheckBox
     private lateinit var phoneCheckBox: CheckBox
     private lateinit var otherCheckBox: CheckBox
+    private lateinit var household: CheckBox
+    private lateinit var thirdParty: CheckBox
+    private lateinit var majority: CheckBox
+    private lateinit var principalTenant: CheckBox
+    private lateinit var owner: CheckBox
 
     private lateinit var cleaningYes: RadioButton
     private lateinit var cleaningNo: RadioButton
@@ -64,6 +80,7 @@ class ContractTemplate:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contract_template)
 
+
         houseAddressEditText = findViewById(R.id.houseAddress)
         ownerNameEditText = findViewById(R.id.ownerName)
         rentalAmountEditText = findViewById(R.id.rentalAmount)
@@ -78,12 +95,24 @@ class ContractTemplate:AppCompatActivity() {
         otherPaymentNameEditText = findViewById(R.id.otherPaymentName)
         otherPaymentPercentageEditText = findViewById(R.id.otherPaymentPercentage)
         otherPaymentAmountEditText = findViewById(R.id.otherPaymentAmount)
+        lastMonthRentDate = findViewById(R.id.lastMonthRentDate)
+        lastMonthRentAmount = findViewById(R.id.lastMonthRentAmount)
+        securityDepositAmount = findViewById(R.id.securityDepositAmount)
+        securityDepositDate = findViewById(R.id.securityDepositDate)
+        otherDepositAmount = findViewById(R.id.otherDepositAmount)
+        otherDepositDate = findViewById(R.id.otherDepositDate)
+        otherDepositDateRange = findViewById(R.id.otherDepositDateRange)
 
         // Initialize variables for checkboxes
         gasCheckBox = findViewById(R.id.gas)
         waterCheckBox = findViewById(R.id.water)
         phoneCheckBox = findViewById(R.id.phone)
         otherCheckBox = findViewById(R.id.other)
+        household = findViewById(R.id.houseHold)
+        thirdParty = findViewById(R.id.thirdParty)
+        majority = findViewById(R.id.majority)
+        principalTenant = findViewById(R.id.pricipalTenant)
+        owner = findViewById(R.id.owner)
 
         cleaningYes = findViewById(R.id.cleaningYes)
         cleaningNo = findViewById(R.id.cleaningNo)
@@ -112,24 +141,38 @@ class ContractTemplate:AppCompatActivity() {
         petsYes = findViewById(R.id.petsYes)
         petsNo = findViewById(R.id.petsNo)
 
-
+        val button = findViewById<Button>(R.id.submitContractTemplate)
+        button.setOnClickListener(){
+            getData()
+        }
 
     }
 
-    fun getData(){
-
+    private fun getData(){
 
         val houseAddress = houseAddressEditText.text.toString()
         val ownerName = ownerNameEditText.text.toString()
         val rentalAmount = rentalAmountEditText.text.toString().toDoubleOrNull()
         val rentalPaymentDate = rentalPaymentDateEditText.text.toString()
         val paymentReceiver = paymentReceiverEditText.text.toString()
+        val lastMonthRentalAmount = lastMonthRentAmount.text.toString().toDoubleOrNull()
+        val lastMonthRentalDate = lastMonthRentDate.text.toString()
+        val securityDepositDate = securityDepositDate.text.toString()
+        val securityDepositAmount = securityDepositAmount.text.toString().toDoubleOrNull()
+        val otherDepositAmount = otherDepositAmount.text.toString().toDoubleOrNull()
+        val otherDepositDate = otherDepositDate.text.toString()
+        val otherDepositDateRange = otherDepositDateRange.text.toString()
 
         // Check if the utility checkboxes are checked
         val isGasChecked = gasCheckBox.isChecked
         val isWaterChecked = waterCheckBox.isChecked
         val isPhoneChecked = phoneCheckBox.isChecked
         val isOtherChecked = otherCheckBox.isChecked
+        val isHouseholdChecked = household.isChecked
+        val isThirdPartyChecked = thirdParty.isChecked
+        val isMajorityChecked = majority.isChecked
+        val isPrincipalTenantChecked = principalTenant.isChecked
+        val isOwnerChecked = owner.isChecked
 
         val isCleaningChecked = cleaningYes.isChecked
         val isKitchenUseChecked = kitchenUseYes.isChecked
@@ -170,6 +213,74 @@ class ContractTemplate:AppCompatActivity() {
         val otherPaymentPercentage = if (isOtherChecked) otherPaymentPercentageEditText.text.toString().toIntOrNull() else null
         val otherPaymentAmount = if (isOtherChecked) otherPaymentAmountEditText.text.toString().toDoubleOrNull() else null
 
+        val gas = if(isGasChecked) "Yes" else "No"
+        val water = if(isWaterChecked) "Yes" else "No"
+        val phone = if(isPhoneChecked) "Yes" else "No"
+        val other = if(isOtherChecked) "Yes" else "No"
+        val household = if(isHouseholdChecked) "Yes" else "No"
+        val thirdparty = if(isThirdPartyChecked) "Yes" else "No"
+        val majority = if(isMajorityChecked) "Yes" else "No"
+        val principalTenant = if(isPrincipalTenantChecked) "Yes" else "No"
+        val owner = if(isOwnerChecked) "Yes" else "No"
 
+        val data: MutableMap<String, Any> = HashMap()
+        data["houseAddress"] = houseAddress
+        data["ownerName"] = ownerName
+        data["rentalAmount"] = rentalAmount.toString()
+        data["rentalPaymentDate"] = rentalPaymentDate
+        data["paymentReceiver"] = paymentReceiver
+        data["lastMonthRentalAmount"] = lastMonthRentalAmount.toString()
+        data["lastMonthRentalDate"] = lastMonthRentalDate
+        data["securityDepositDate"] = securityDepositDate
+        data["securityDepositAmount"] = securityDepositAmount.toString()
+        data["otherDepositAmount"] = otherDepositAmount.toString()
+        data["otherDepositDate"] = otherDepositDate
+        data["otherDepositDateRange"] = otherDepositDateRange
+        data["cleaningValue"] = cleaningValue
+        data["kitchenUseValue"] = kitchenUseValue
+        data["overnightGuestValue"] = overnightGuestValue
+        data["kitchenAppliancesValue"] = kitchenAppliancesValue
+        data["commonAreaValue"] = commonAreaValue
+        data["smokingValue"] = smokingValue
+        data["alcoholValue"] = alcoholValue
+        data["telephoneValue"] = telephoneValue
+        data["studyValue"] = studyValue
+        data["personalItemValue"] = personalItemValue
+        data["musicValue"] = musicValue
+        data["bedroomAssignmentValue"] = bedroomAssignmentValue
+        data["petsValue"] = petsValue
+        data["gas"] = gas
+        data["water"] = water
+        data["phone"] = phone
+        data["other"] = other
+        data["gasPaymentPercentage"] = gasPaymentPercentage.toString()
+        data["gasPaymentAmount"] = gasPaymentAmount.toString()
+        data["waterPaymentPercentage"] = waterPaymentPercentage.toString()
+        data["waterPaymentAmount"] = waterPaymentAmount.toString()
+        data["phonePaymentPercentage"] = phonePaymentPercentage.toString()
+        data["phonePaymentAmount"] = phonePaymentAmount.toString()
+        data["otherPaymentName"] = otherPaymentName
+        data["otherPaymentPercentage"] = otherPaymentPercentage.toString()
+        data["otherPaymentAmount"] = otherPaymentAmount.toString()
+        data["household"] = household
+        data["thirdparty"] = thirdparty
+        data["majority"] = majority
+        data["principalTenant"] = principalTenant
+        data["owner"] = owner
+
+        val db = FirebaseFirestore.getInstance()
+        val contractTemplate = db.collection("Contract Template").document("uniqueUserId")
+
+        contractTemplate.set(data)
+            .addOnSuccessListener {
+                // Handle successful write
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+            }
+            .addOnFailureListener { e ->
+                // Handle any write errors
+                Log.w(TAG, "Error writing document", e)
+            }
     }
+
+
 }

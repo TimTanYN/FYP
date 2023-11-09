@@ -32,6 +32,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import com.example.fyp.adapter.PublicTransport
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -159,7 +160,9 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                             val leg = legs.getJSONObject(i)
                             val steps = leg.getJSONArray("steps")
                             val distance = leg.getJSONObject("distance")
-                            totalDistanceValue += distance.getInt("value") // Add distance value
+                            val duration = leg.getJSONObject("duration")
+                            totalDistanceValue += distance.getInt("value")
+                            totalDurationValue += duration.getInt("value")// Add distance value
                             for (j in 0 until steps.length()) {
                                 val step = steps.getJSONObject(j)
                                 val travelMode = step.getString("travel_mode")
@@ -171,11 +174,19 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                     val vehicleName = vehicle.getString("name")
                                     val shortName = line.optString("short_name")
 
-                                    transitList.add("Vehicle Type: $vehicleType, Vehicle Name: $vehicleName, Line: $shortName")
+
+                                    val currentTime = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kuala_Lumpur"))
+                                    val initialTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(currentTime.time)
+                                    Log.d("InitialTime", "Initial Time: $initialTime")
+                                    currentTime.add(Calendar.SECOND, totalDurationValue)
+                                    val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+
+                                    val eta = timeFormat.format(currentTime.time)
+
+                                    transitList.add("$vehicleType,$vehicleName,  $shortName, $eta")
                                 }
                             }
-                            val duration = leg.getJSONObject("duration")
-                            totalDurationValue += duration.getInt("value")
+
 
                         }
                         Log.d("Debug", "Total Duration in seconds: $totalDurationValue")
@@ -207,8 +218,30 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     }
 
     private fun sendDataToOtherFragment() {
+        val publicTransportList: List<PublicTransport> = transitList.mapNotNull { str ->
+            val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
+            if (parts.size == 4) { // Ensure exactly 4 parts are present
+                try {
+                    // Assuming parts[3] is a time or something that could be formatted differently,
+                    // you may need additional parsing/validation
+                    PublicTransport(
+                        transport = parts[0],
+                        ETA = parts[3],
+                        transportName = parts[2],
+                        estimatedTime = parts[2]
+                    )
+                } catch (e: Exception) {
+                    // Log the exception or handle the error as necessary
+                    null
+                }
+            } else {
+                // Log an error or handle cases where the data does not match the expected format
+                null
+            }
+        }
+        // Use runOnUiThread to modify the LiveData on the main thread
         activity?.runOnUiThread {
-            model.setTransitDetails(transitList)
+            model.setTransitDetails(publicTransportList)
         }
     }
 
