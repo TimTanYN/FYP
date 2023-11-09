@@ -37,9 +37,7 @@ class MapTabs:AppCompatActivity() {
 
         viewPager.isUserInputEnabled = false
 
-
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
