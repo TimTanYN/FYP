@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+tools:context=".Contract">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Centered Product Card -->
+
+    <!-- Left Arrow Button -->
+    <ImageButton
+        android:id="@+id/leftArrowButton"
+        android:layout_width="60dp"
+        android:layout_height="87dp"
+        android:background="@null"
+        android:src="@drawable/left"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintEnd_toStartOf="@id/recyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/leftArrowButton"
+        app:layout_constraintEnd_toStartOf="@id/rightArrowButton" />
+
+    <!-- Right Arrow Button -->
+    <ImageButton
+        android:id="@+id/rightArrowButton"
+        android:layout_width="60dp"
+        android:layout_height="87dp"
+        android:background="@null"
+        android:src="@drawable/right"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/recyclerView"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+
+    <!-- Other views -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
+
+

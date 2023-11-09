@@ -44,12 +44,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Trip" />
+       <activity android:name=".Trip" />
         <activity android:name=".MapTabs" />
+
+=======
+        <activity android:name=".Trip"></activity>
+        <activity android:name=".MapTabs"></activity>
+        <activity android:name=".Contract"></activity>
+        <activity android:name=".ContractTemplate"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAKrD9Kp41hhUHoWQiNqU8ns1k2lJhygpU" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
