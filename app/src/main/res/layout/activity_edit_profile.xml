@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.EditProfileActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:title="Edit Profile"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:contentInsetStartWithNavigation="0dp">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Image for Profile Picture -->
+<!--    <ImageView-->
+<!--        android:id="@+id/profile_image"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="100dp"-->
+<!--        android:layout_below="@+id/toolbar"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginTop="32dp"-->
+<!--        android:src="@drawable/profile" /> &lt;!&ndash; Replace with actual image resource &ndash;&gt;-->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/profile"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="32dp"/>
+
+    <!-- Full Name Label and EditText -->
+    <TextView
+        android:id="@+id/tvFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingStart="4dp"
+        android:layout_below="@id/profile_image"
+        android:text="Full Name"
+        android:textColor="#808080" />
+
+    <!-- Full Name EditText -->
+    <EditText
+        android:id="@+id/edtName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFullName"
+        android:text="John Musstan"
+        android:paddingStart="6dp"
+        android:paddingEnd="16dp"
+        android:drawablePadding="6dp"
+        android:drawableStart="@drawable/baseline_person_24" /> <!-- Replace with actual drawable resource -->
+
+    <!-- Email Label and EditText -->
+    <TextView
+        android:id="@+id/tvEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtName"
+        android:layout_marginTop="16dp"
+        android:paddingStart="4dp"
+        android:text="Email Address"
+        android:textColor="#808080" />
+
+    <!-- Email EditText -->
+    <EditText
+        android:id="@+id/edtEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvEmail"
+        android:inputType="textEmailAddress"
+        android:text="example@gmail.com"
+        android:paddingStart="6dp"
+        android:paddingEnd="16dp"
+        android:drawablePadding="6dp"
+        android:drawableStart="@drawable/baseline_email_24" />
+
+    <!-- Mobile Phone Label and EditText -->
+    <TextView
+        android:id="@+id/tvMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtEmail"
+        android:layout_marginTop="16dp"
+        android:paddingStart="4dp"
+        android:text="Phone Number"
+        android:textColor="#808080" />
+
+
+    <!-- Mobile Number EditText -->
+    <LinearLayout
+        android:id="@+id/edtMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMobile"
+        android:orientation="horizontal"
+        android:weightSum="4">
+
+        <!-- Icon for Phone -->
+        <ImageView
+            android:id="@+id/imgPhoneIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_phone_android_24"
+            android:paddingStart="6dp"/>
+
+        <!-- Spinner for Country Code -->
+        <Spinner
+            android:id="@+id/countryCodeSpinner"
+            android:layout_width="0dp"
+            android:layout_height="41dp"
+            android:layout_weight="1"
+            />
+
+        <!-- EditText for Mobile Number -->
+        <EditText
+            android:id="@+id/mobileNumber"
+            android:layout_width="0dp"
+            android:layout_height="41dp"
+            android:layout_weight="3"
+            android:text="12345678"
+            android:inputType="phone"
+            android:textSize="16sp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp" />
+    </LinearLayout>
+
+    <!-- Update Button -->
+    <Button
+        android:id="@+id/btnUpdate"
+        android:layout_width="314dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtMobile"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/green_button"
+        android:text="Update"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

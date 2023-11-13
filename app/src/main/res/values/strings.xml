@@ -1,5 +1,46 @@
 <resources>
-    <string name="app_name">FYP</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_name">RoomMate</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="find_room">Find Room</string>
+    <string name="book">Book</string>
+    <string name="profile">Profile</string>
+    <string name="chat">Chat</string>
+    <string name="settings">Settings</string>
+
+    <!-- Privacy Policy Contents -->
+    <string name="privacy_policy_title">Effective Date: 25 December 2023</string>
+    <string name="privacy_policy_welcome">Welcome to RoomMate, the app dedicated to connecting individuals looking to rent or sell rooms and accommodations. This Privacy Policy is meant to help you understand how we collect, use, and protect your personal information.</string>
+
+    <!-- Acceptance of Terms Section -->
+    <string name="privacy_policy_acceptance_title">1. Acceptance of Terms</string>
+    <string name="privacy_policy_acceptance_body">By accessing and using RoomMate, you agree to the collection and use of your information in accordance with this policy. Any terms not defined in this Privacy Policy are as outlined in our Terms and Conditions, accessible within the app.</string>
+
+    <!-- Information Collection and Use Section -->
+    <string name="privacy_policy_collection_title">2. Information Collection and Use</string>
+    <string name="privacy_policy_collection_body">To enhance your experience with RoomMate, we may require you to provide certain personally identifiable information. This may include, but is not limited to, your name, phone number, email address, and location details. The information we collect will be used to facilitate the services offered through our app, such as connecting you with potential renters or buyers.</string>
+
+    <!-- Third-Party Services Section -->
+    <string name="privacy_policy_third_party_services_title">Third-Party Services</string>
+    <string name="privacy_policy_third_party_services_body">RoomMate uses third-party services that may collect information used to identify you. A list of these third-party service providers and their privacy policies are available at %1$s.</string>
+
+    <!-- Log Data Section -->
+    <string name="privacy_policy_log_data_title">3. Log Data</string>
+    <string name="privacy_policy_log_data_body">In case of an error in the app, we collect data and information on your device through third-party products. This Log Data may include your device\'s IP address, device name, operating system version, app configuration, time, and date of usage, and other statistics.</string>
+
+    <!-- Cookies Section -->
+    <string name="privacy_policy_cookies_title">4. Cookies</string>
+    <string name="privacy_policy_cookies_body">RoomMate uses "cookies" to enhance your user experience. A cookie is a small file placed on your device. You have the option to either accept or refuse these cookies and know when a cookie is being sent to your device.</string>
+
+    <!-- Data Security Section -->
+    <string name="privacy_policy_data_security_title">5. Data Security</string>
+    <string name="privacy_policy_data_security_body">We value your trust in providing us your Personal Information and strive to use commercially acceptable means of protecting it. However, no method of transmission over the internet or method of electronic storage is 100% secure and reliable, and we cannot guarantee its absolute security.</string>
+
+    <!-- Policy Changes Section -->
+    <string name="privacy_policy_changes_title">6. Changes to This Privacy Policy</string>
+    <string name="privacy_policy_changes_body">We may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes.</string>
+
+    <!-- Contact Section -->
+    <string name="privacy_policy_contact_title">7. Contact Us</string>
+    <string name="privacy_policy_contact_body">If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at %1$s.</string>
+
 </resources>

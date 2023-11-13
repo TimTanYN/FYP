@@ -58,11 +58,27 @@ class AgentSignUpFragment : Fragment() {
     }
 
     private fun setupCountryCodeSpinner(spinner: Spinner) {
-        val countryCodeAdapter = ArrayAdapter(
-            requireContext(), // Use requireContext() to get the context inside a fragment.
-            android.R.layout.simple_spinner_item,
-            listOf("+60 -> Malaysia", "+65 -> Singapora", "+62 -> Indonesia", "+66 -> Thailand") // Sample country codes.
-        )
+        val countryCodesWithNames = listOf("+60 -> Malaysia", "+65 -> Singapore", "+62 -> Indonesia", "+66 -> Thailand") // Dropdown list
+        val countryCodes = listOf("+60", "+65", "+62", "+66") // Spinner view
+
+        val countryCodeAdapter = object : ArrayAdapter<String>(
+            requireContext(), // Context
+            android.R.layout.simple_spinner_item, // Layout for the normal spinner view
+            countryCodes // Data
+        ) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                // Provide the layout for the dropdown view
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = countryCodesWithNames[position]
+                return view
+            }
+        }
+
         countryCodeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = countryCodeAdapter
     }
