@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AccountActivity">
+
+    <!-- ImageView taking the top 50% of the screen -->
+    <ImageView
+        android:id="@+id/profile_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/guide"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/profile" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profileDetails"
+        android:layout_width="307dp"
+        android:layout_height="243dp"
+        android:layout_centerInParent="true"
+        android:layout_above="@+id/guide"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Full Name 36-->
+                <TextView
+                    android:id="@+id/txtFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="John Smith"
+                    android:textColor="@color/black"
+                    android:textAlignment="center"
+                    android:paddingTop="10dp"
+                    android:textSize="29dp"
+                    android:textStyle="bold" />
+
+                <!-- Email 90-->
+                <TextView
+                    android:id="@+id/txtEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif"
+                    android:layout_marginEnd="0.5dp"
+                    android:text="johnsmith@gmail.com"
+                    android:textColor="@color/black"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Country Code -->
+                    <TextView
+                        android:id="@+id/txtCountryCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="sans-serif"
+                        android:text="+225"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <!-- Phone Number -->
+                    <TextView
+                        android:id="@+id/txtPhoneNumber"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:text="698698966"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/editProfile"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="10dp"
+                android:padding="2dp"
+                android:src="@drawable/baseline_mode_edit_outline_24"
+                app:civ_border_color="#0DF6EF"
+                app:civ_border_width="3dp" />
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <View
+        android:id="@+id/guide"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true" />
+
+    <!-- CardView for the bottom 50% of the screen -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/guide"
+        android:layout_above="@id/bottom_navigation"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp">
+        <!-- RelativeLayout for flexible positioning inside CardView -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/btnAddNewCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="32dp"
+                android:background="@drawable/green_button"
+                android:text="ADD NEW CARD"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/light_blue"
+        app:itemIconTint="@drawable/selector_nav_item_color"
+        app:itemTextColor="@drawable/selector_nav_item_color"
+        app:menu="@menu/bottom_nav_menu" />
+</RelativeLayout>
