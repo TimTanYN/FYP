@@ -1,5 +1,6 @@
 package com.example.fyp
 
+import android.content.Context
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -7,8 +8,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import com.example.fyp.viewmodel.PublicTransportViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -81,6 +86,39 @@ class Trip_map : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         model = ViewModelProvider(requireActivity()).get(PublicTransportViewModel::class.java)
+
+        val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
+        searchEditText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchLocation(searchEditText.text.toString(), "Start Location") { latLng ->
+                    startLatLng = latLng // Save start location
+                    // If end location is already set, calculate route
+                    if (endLatLng != null) {
+                        calculateRoute(startLatLng!!, endLatLng!!)
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        }
+
+// Usage with EditText for destination
+        val destination = view.findViewById<EditText>(R.id.destination)
+        destination.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchLocation(destination.text.toString(), "End Location") { latLng ->
+                    endLatLng = latLng // Save end location
+                    // If start location is already set, calculate route
+                    if (startLatLng != null) {
+                        calculateRoute(startLatLng!!, endLatLng!!)
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        }
 
     }
 
@@ -177,13 +215,15 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 
                                     val currentTime = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kuala_Lumpur"))
                                     val initialTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(currentTime.time)
-                                    Log.d("InitialTime", "Initial Time: $initialTime")
                                     currentTime.add(Calendar.SECOND, totalDurationValue)
                                     val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
-
+                                    val hours = totalDurationValue / 3600
+                                    val minutes = (totalDurationValue % 3600) / 60
+                                    val formattedTime = String.format("%02d:%02d", hours, minutes)
+                                    println("Formatted Time: $formattedTime")
                                     val eta = timeFormat.format(currentTime.time)
 
-                                    transitList.add("$vehicleType,$vehicleName,  $shortName, $eta")
+                                    transitList.add("$vehicleType,$shortName,  $hours, $eta, $minutes")
 
                                 }
                             }
@@ -221,15 +261,16 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     private fun sendDataToOtherFragment() {
         val publicTransportList: List<PublicTransport> = transitList.mapNotNull { str ->
             val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
-            if (parts.size == 4) { // Ensure exactly 4 parts are present
+            if (parts.size == 5) { // Ensure exactly 4 parts are present
                 try {
                     // Assuming parts[3] is a time or something that could be formatted differently,
                     // you may need additional parsing/validation
                     PublicTransport(
                         transport = parts[0],
                         ETA = parts[3],
-                        transportName = parts[2],
-                        estimatedTime = parts[2]
+                        transportName = parts[1],
+                        estimatedTime = parts[2],
+                        minute = parts[4]
                     )
                 } catch (e: Exception) {
                     // Log the exception or handle the error as necessary
@@ -289,24 +330,25 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 
 
 
-//    private fun searchLocation(location: String) {
-//        val geocoder = Geocoder(this)
-//        try {
-//            val addressList = geocoder.getFromLocationName(location, 1)
-//            if (addressList != null && addressList.isNotEmpty()) {
-//                val address = addressList[0]
-//                val latLng = LatLng(address.latitude, address.longitude)
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-//                placeMarkerAndRetrieveLocation(latLng)
-//            } else {
-//                Toast.makeText(this, "Location not found!", Toast.LENGTH_SHORT).show()
-//            }
-//        } catch (e: Exception) {
-//            Toast.makeText(this, "Error searching location. Please try again.", Toast.LENGTH_SHORT)
-//                .show()
-//        }
-//    }
-//
+    private fun searchLocation(location: String, title: String, onLocationFound: (LatLng) -> Unit) {
+        val geocoder = Geocoder(requireContext())
+        try {
+            val addressList = geocoder.getFromLocationName(location, 1)
+            if (addressList != null && addressList.isNotEmpty()) {
+                val address = addressList[0]
+                val latLng = LatLng(address.latitude, address.longitude)
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                placeMarkerAndRetrieveLocation(latLng, title)
+                onLocationFound(latLng)
+            } else {
+                Toast.makeText(requireContext(), "Location not found!", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Error searching location. Please try again.", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
 //    fun hideKeyboard(view: View) {
 //        val inputMethodManager =
 //            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
