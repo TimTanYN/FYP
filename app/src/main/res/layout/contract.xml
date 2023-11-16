@@ -19,21 +19,23 @@ tools:context=".Contract">
         android:layout_height="87dp"
         android:background="@null"
         android:src="@drawable/left"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
-        app:layout_constraintEnd_toStartOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/Contract"
+        app:layout_constraintEnd_toStartOf="@id/Contract"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+        app:layout_constraintTop_toTopOf="@id/Contract" />
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/Contract"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/leftArrowButton"
-        app:layout_constraintEnd_toStartOf="@id/rightArrowButton" />
+        app:layout_constraintEnd_toStartOf="@id/rightArrowButton"
+        android:clipToPadding="false"
+        android:paddingHorizontal="16dp" />
 
     <!-- Right Arrow Button -->
     <ImageButton
@@ -42,10 +44,10 @@ tools:context=".Contract">
         android:layout_height="87dp"
         android:background="@null"
         android:src="@drawable/right"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@id/Contract"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/recyclerView"
-        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+        app:layout_constraintStart_toEndOf="@id/Contract"
+        app:layout_constraintTop_toTopOf="@id/Contract" />
 
     <!-- Other views -->
 

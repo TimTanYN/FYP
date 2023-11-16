@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.fyp.PublicTransport
+import com.example.fyp.RestaurantFragment
 import com.example.fyp.Trip_map
 
 class MapTabsAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity){
@@ -17,7 +18,7 @@ class MapTabsAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(
         return when (position) {
             0 -> PublicTransport()
             1 -> Trip_map()
-            2 -> PublicTransport()
+            2 -> RestaurantFragment()
             3 -> PublicTransport()
             else -> throw IllegalArgumentException("Invalid position $position")
         }

@@ -99,13 +99,36 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
             // Add more products as needed
         )
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = findViewById(R.id.Contract)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = ContractAdapter(productList,this)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(rv, dx, dy)
 
+                // Ensure that we have a layoutManager and that the snapHelper has a snapped view
+                val layoutManager = rv.layoutManager as LinearLayoutManager?
+                val snapView = snapHelper.findSnapView(layoutManager)
+                val snapPosition = snapView?.let { layoutManager?.getPosition(it) }
+
+                for (i in 0 until rv.childCount) {
+                    val child = rv.getChildAt(i)
+                    val childPosition = layoutManager?.getPosition(child)
+
+                    // Normalize the scale based on the child's position relative to the snapped view
+                    val isCentered = childPosition == snapPosition
+                    val scale = if (isCentered) 1f else 0.8f // Full size for centered, scaled down for others
+                    val alpha = if (isCentered) 1f else 0.5f // Fully opaque for centered, translucent for others
+
+                    child.scaleX = scale
+                    child.scaleY = scale
+                    child.alpha = alpha
+                }
+            }
+        })
         val leftArrowButton: ImageButton = findViewById(R.id.leftArrowButton)
         val rightArrowButton: ImageButton = findViewById(R.id.rightArrowButton)
 
@@ -135,30 +158,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
             }
         }
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(rv, dx, dy)
 
-                // Ensure that we have a layoutManager and that the snapHelper has a snapped view
-                val layoutManager = rv.layoutManager as LinearLayoutManager?
-                val snapView = snapHelper.findSnapView(layoutManager)
-                val snapPosition = snapView?.let { layoutManager?.getPosition(it) }
-
-                for (i in 0 until rv.childCount) {
-                    val child = rv.getChildAt(i)
-                    val childPosition = layoutManager?.getPosition(child)
-
-                    // Normalize the scale based on the child's position relative to the snapped view
-                    val isCentered = childPosition == snapPosition
-                    val scale = if (isCentered) 1f else 0.8f // Full size for centered, scaled down for others
-                    val alpha = if (isCentered) 1f else 0.5f // Fully opaque for centered, translucent for others
-
-                    child.scaleX = scale
-                    child.scaleY = scale
-                    child.alpha = alpha
-                }
-            }
-        })
     }
 
     override fun onItemClicked(position: Int) {
@@ -327,7 +327,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
     }
 
     fun updateArrowButtons() {
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+        val recyclerView: RecyclerView = findViewById(R.id.Contract)
         val leftArrowButton: ImageButton = findViewById(R.id.leftArrowButton)
         val rightArrowButton: ImageButton = findViewById(R.id.rightArrowButton)
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
