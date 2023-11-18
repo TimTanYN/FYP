@@ -5,10 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fyp.adapter.ContractAdapter
+import com.example.fyp.adapter.ContractCard
+import com.example.fyp.adapter.ContractCardAdapter
 import com.example.fyp.adapter.Product
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.forms.PdfAcroForm
@@ -158,7 +161,19 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
             }
         }
 
-
+        val list = listOf(
+            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.ic_launcher_background),
+            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
+            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
+            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
+            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
+            ContractCard("Product 1", "Description 1", "Price 1",R.drawable.ic_launcher_background)
+            // Add more products as needed
+        )
+        val contractCard = findViewById<RecyclerView>(R.id.contractCard)
+        contractCard.layoutManager = GridLayoutManager(this, 1) // 2 items per row
+        val adapter = ContractCardAdapter(list)
+        contractCard.adapter = adapter
     }
 
     override fun onItemClicked(position: Int) {

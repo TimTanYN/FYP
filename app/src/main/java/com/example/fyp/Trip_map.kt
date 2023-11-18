@@ -189,6 +189,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                             null
                         }
 
+                        val phoneNumber = restaurant.optString("formatted_phone_number", null)
 
 
                         // If there's a photo, construct its URL and fetch it

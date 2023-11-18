@@ -1,5 +1,6 @@
 package com.example.fyp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -27,7 +28,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [RestaurantFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RestaurantFragment : Fragment() {
+class RestaurantFragment : Fragment(), RestaurantAdapter.OnRestaurantClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -59,7 +60,7 @@ class RestaurantFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         restaurantLists = view.findViewById(R.id.restaurant)
-        val adapter = RestaurantAdapter(emptyList()) // Start with an empty list
+        val adapter = RestaurantAdapter(emptyList(),this) // Start with an empty list
         restaurantLists.adapter = adapter
         restaurantLists.layoutManager = LinearLayoutManager(context)
 
@@ -72,6 +73,12 @@ class RestaurantFragment : Fragment() {
             adapter.updateRestaurants(detail)
         })
         // Update UI with transit details here
+    }
+
+    override fun onRestaurantClick(restaurant: Restaurant) {
+        val intent = Intent(requireContext(), Contract::class.java)
+        startActivity(intent)
+        activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
     }
 
     companion object {

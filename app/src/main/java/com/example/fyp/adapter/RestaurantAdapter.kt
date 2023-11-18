@@ -19,7 +19,7 @@ data class Restaurant(
     val photoUrl: String?
 )
 
-class RestaurantAdapter(private var restaurantList: List<Restaurant>) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
+class RestaurantAdapter(private var restaurantList: List<Restaurant>,private val clickListener: OnRestaurantClickListener) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val nameTextView: TextView = view.findViewById(R.id.restaurant_name)
@@ -41,6 +41,10 @@ class RestaurantAdapter(private var restaurantList: List<Restaurant>) : Recycler
         holder.ratingTextView.text = restaurant.rating?.toString() ?: "N/A"
         holder.openNowTextView.text = if (restaurant.openNow == true) "Open" else "Closed"
         Glide.with(holder.imageView.context).load(restaurant.photoUrl).into(holder.imageView)
+
+        holder.itemView.setOnClickListener {
+            clickListener.onRestaurantClick(restaurant)
+        }
     }
 
     override fun getItemCount() = restaurantList.size
@@ -48,5 +52,11 @@ class RestaurantAdapter(private var restaurantList: List<Restaurant>) : Recycler
     fun updateRestaurants(newRestaurants: List<Restaurant>) {
         restaurantList = newRestaurants
         notifyDataSetChanged()
+    }
+
+
+
+    interface OnRestaurantClickListener {
+        fun onRestaurantClick(restaurant: Restaurant)
     }
 }

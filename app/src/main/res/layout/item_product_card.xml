@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/imageProduct"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="70dp"
             android:contentDescription="sd"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_launcher_background" />
