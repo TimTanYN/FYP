@@ -69,6 +69,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     private var endLatLng: LatLng? = null
     private lateinit var model: PublicTransportViewModel
     private lateinit var models: RestaurantViewModel
+    val reviews = mutableListOf<Review>()
 
 
     override fun onCreateView(
@@ -190,20 +191,27 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                         }
 
                         val phoneNumber = restaurant.optString("formatted_phone_number", null)
+                        val priceLevel = restaurant.optString("price_level", "Not available")
+                        val reviewsJson = restaurant.optJSONArray("reviews")
 
+                        if (reviewsJson != null) {
+                            for (j in 0 until reviewsJson.length()) {
+                                val reviewJson = reviewsJson.getJSONObject(j)
+                                val authorName = reviewJson.getString("author_name")
+                                val reviewRating = reviewJson.getDouble("rating")
+                                val text = reviewJson.getString("text")
+                                reviews.add(Review(authorName, reviewRating, text))
+                            }
+                        }
 
                         // If there's a photo, construct its URL and fetch it
                         photoReference?.let {
                              photoUrl = "https://maps.googleapis.com/maps/api/place/photo" +
                                     "?maxwidth=400" +
                                     "&photoreference=$it" +
-                                    "&key=AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4" // Replace with your API key
-
-
-
-
+                                    "&key=AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4"
                         }
-                        val restaurants = Restaurant(name,address,rating,openNow,photoUrl)
+                        val restaurants = Restaurant(name,address,rating,openNow,photoUrl, reviews)
                         val fetchedRestaurants = mutableListOf<Restaurant>()
                         restaurantsList.add(restaurants)
 
@@ -370,7 +378,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 
         val RestaurantList: List<Restaurant> = restaurantList.mapNotNull { str ->
             val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
-            if (parts.size == 5) { // Ensure exactly 4 parts are present
+            if (parts.size == 6) { // Ensure exactly 4 parts are present
                 try {
 
                     // Assuming parts[3] is a time or something that could be formatted differently,
@@ -380,7 +388,8 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                         address = parts[1],
                         rating = parts[2].toDouble(),
                         photoUrl = parts[4],
-                        openNow = parts[3].toBoolean()
+                        openNow = parts[3].toBoolean(),
+                        reviews = reviews
                     )
                 } catch (e: Exception) {
                     // Log the exception or handle the error as necessary
@@ -467,5 +476,11 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 //    }
 
 }
+
+data class Review(
+    val authorName: String,
+    val rating: Double,
+    val text: String
+)
 
 

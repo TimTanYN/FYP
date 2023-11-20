@@ -55,10 +55,9 @@
         </activity>
         <activity android:name=".Trip" />
         <activity android:name=".MapTabs" />
-        <activity android:name=".Trip" />
-        <activity android:name=".MapTabs" />
         <activity android:name=".Contract" />
         <activity android:name=".ContractTemplate" />
+        <activity android:name=".RestaurantDetails" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

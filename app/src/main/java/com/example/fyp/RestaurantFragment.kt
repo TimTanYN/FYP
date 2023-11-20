@@ -76,7 +76,11 @@ class RestaurantFragment : Fragment(), RestaurantAdapter.OnRestaurantClickListen
     }
 
     override fun onRestaurantClick(restaurant: Restaurant) {
-        val intent = Intent(requireContext(), Contract::class.java)
+        val intent = Intent(requireContext(), RestaurantDetails::class.java).apply {
+            putExtra("RESTAURANT_DETAILS", restaurant)
+            // Add other data as needed
+        }
+//        val intent = Intent(requireContext(), Contract::class.java)
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
     }
