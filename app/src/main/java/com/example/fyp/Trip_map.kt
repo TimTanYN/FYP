@@ -36,6 +36,7 @@ import java.util.Locale
 import java.util.TimeZone
 import com.example.fyp.adapter.PublicTransport
 import com.example.fyp.adapter.Restaurant
+import java.io.Serializable
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -144,12 +145,10 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     }
     val restaurantList = mutableListOf<String>()
 
-    fun findRestaurantsNearby(latitude: Double, longitude: Double, onComplete: (List<Restaurant>) -> Unit) {
+    fun findRestaurantsNearby(latitude: Double, longitude: Double, apiKey: String, onComplete: (List<Restaurant>) -> Unit) {
         val placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
                 "?location=$latitude,$longitude" +
-                "&radius=500" +  // Search within 500 meters of the waypoint
-                "&type=restaurant" +
-                "&key=AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4"
+                "&radius=500&type=restaurant&key=$apiKey"
 
         val client = OkHttpClient()
         val request = Request.Builder().url(placesUrl).build()
@@ -160,66 +159,68 @@ class Trip_map : Fragment(), OnMapReadyCallback {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                val responseData = response.body?.string()
-                var photoUrl = ""
-                if (responseData != null) {
+                response.body?.string()?.let { responseData ->
                     val jsonObject = JSONObject(responseData)
                     val results = jsonObject.getJSONArray("results")
                     val restaurantsList = mutableListOf<Restaurant>()
 
-                    // Iterate over results and extract restaurant details
                     for (i in 0 until results.length()) {
-                        val restaurant = results.getJSONObject(i)
-                        val name = restaurant.getString("name")
-                        val address = restaurant.getString("vicinity")
-                        val rating = if (restaurant.has("rating")) {
-                            restaurant.getDouble("rating")
-                        } else {
-                            null // Or a default value
-                        }
+                        val restaurantJson = results.getJSONObject(i)
+                        val placeId = restaurantJson.getString("place_id")
 
-                        val openNow = if (restaurant.has("opening_hours")) {
-                            restaurant.getJSONObject("opening_hours").getBoolean("open_now")
-                        } else {
-                            null // Or a default value
-                        }
-
-                        val photoReference = if (restaurant.has("photos")) {
-                            restaurant.getJSONArray("photos").getJSONObject(0).getString("photo_reference")
-                        } else {
-                            null
-                        }
-
-                        val phoneNumber = restaurant.optString("formatted_phone_number", null)
-                        val priceLevel = restaurant.optString("price_level", "Not available")
-                        val reviewsJson = restaurant.optJSONArray("reviews")
-
-                        if (reviewsJson != null) {
-                            for (j in 0 until reviewsJson.length()) {
-                                val reviewJson = reviewsJson.getJSONObject(j)
-                                val authorName = reviewJson.getString("author_name")
-                                val reviewRating = reviewJson.getDouble("rating")
-                                val text = reviewJson.getString("text")
-                                reviews.add(Review(authorName, reviewRating, text))
+                        fetchRestaurantDetails(placeId, apiKey) { restaurant ->
+                            restaurantsList.add(restaurant)
+                            if (restaurantsList.size == results.length()) {
+                                onComplete(restaurantsList)
                             }
                         }
+                    }
+                }
+            }
+        })
+    }
 
-                        // If there's a photo, construct its URL and fetch it
-                        photoReference?.let {
-                             photoUrl = "https://maps.googleapis.com/maps/api/place/photo" +
-                                    "?maxwidth=400" +
-                                    "&photoreference=$it" +
-                                    "&key=AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4"
+    fun fetchRestaurantDetails(placeId: String, apiKey: String, onDetailsComplete: (Restaurant) -> Unit) {
+        val detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,vicinity,rating,opening_hours,photos,reviews&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(detailsUrl).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle error
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { responseData ->
+                    val jsonObject = JSONObject(responseData)
+                    val result = jsonObject.getJSONObject("result")
+
+                    val name = result.getString("name")
+                    val address = result.getString("vicinity")
+                    val rating = result.optDouble("rating", -1.0)
+                    val openNow = result.optJSONObject("opening_hours")?.optBoolean("open_now")
+
+                    val photoReference = result.optJSONArray("photos")?.getJSONObject(0)?.optString("photo_reference")
+                    val photoUrl = photoReference?.let {
+                        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$it&key=$apiKey"
+                    } ?: ""
+
+                    val reviews = mutableListOf<Review>()
+                    val reviewsJson = result.optJSONArray("reviews")
+                    if (reviewsJson != null) {
+                        for (i in 0 until reviewsJson.length()) {
+                            val reviewJson = reviewsJson.getJSONObject(i)
+                            val authorName = reviewJson.getString("author_name")
+                            val reviewRating = reviewJson.getDouble("rating")
+                            val text = reviewJson.getString("text")
+                            reviews.add(Review(authorName, reviewRating, text))
                         }
-                        val restaurants = Restaurant(name,address,rating,openNow,photoUrl, reviews)
-                        val fetchedRestaurants = mutableListOf<Restaurant>()
-                        restaurantsList.add(restaurants)
-
                     }
 
-                    onComplete(restaurantsList)
+                    val restaurant = Restaurant(name, address, rating, openNow, photoUrl, reviews)
+                    onDetailsComplete(restaurant)
                 }
-                println("restaurantList")
             }
         })
     }
@@ -321,7 +322,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 //                                            }
 //                                        }
 //                                    }
-                                    findRestaurantsNearby(waypointStart.latitude, waypointStart.longitude) { fetchedRestaurants ->
+                                    findRestaurantsNearby(waypointStart.latitude, waypointStart.longitude,"AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4") { fetchedRestaurants ->
                                         // This code block will be executed after restaurants are fetched
                                         activity?.runOnUiThread {
                                             // Update ViewModel here
@@ -372,7 +373,6 @@ class Trip_map : Fragment(), OnMapReadyCallback {
         }
         // Use runOnUiThread to modify the LiveData on the main thread
         activity?.runOnUiThread {
-            println("sent1")
             model.setTransitDetails(publicTransportList)
         }
 
@@ -402,7 +402,6 @@ class Trip_map : Fragment(), OnMapReadyCallback {
         }
         // Use runOnUiThread to modify the LiveData on the main thread
         activity?.runOnUiThread {
-            println("sent")
             models.setRestaurants(RestaurantList)
         }
     }
@@ -481,6 +480,6 @@ data class Review(
     val authorName: String,
     val rating: Double,
     val text: String
-)
+):Serializable
 
 

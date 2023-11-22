@@ -13,14 +13,16 @@ import com.example.fyp.R
 import com.example.fyp.Review
 import java.io.Serializable
 
+
+
 data class Restaurant(
     val name: String,
     val address: String,
-    val rating: Double?,
+    val rating: Double,
     val openNow: Boolean?,
-    val photoUrl: String?,
+    val photoUrl: String,
     val reviews: List<Review>
-): Serializable
+) : Serializable
 
 class RestaurantAdapter(private var restaurantList: List<Restaurant>,private val clickListener: OnRestaurantClickListener) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {
 

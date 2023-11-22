@@ -141,11 +141,17 @@
         <LinearLayout
             android:id="@+id/commentsSection"
             android:layout_width="match_parent"
-            android:layout_height="355dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical">
 
-            <!-- Dynamically add user comments here -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/restaurantComment"
+                android:layout_width="match_parent"
+                android:layout_height="336dp"
+
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp" />
         </LinearLayout>
 
     </LinearLayout>
