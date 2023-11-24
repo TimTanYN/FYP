@@ -31,74 +31,112 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/fullName"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fullNameInputLayout"
                 android:layout_width="0dp"
-                android:layout_height="41dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="Please enter your name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signUpTitle"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
                 android:textColorHint="#B9B8B8"
-                android:inputType="textPersonName"
-                android:paddingStart="6dp"
-                android:paddingEnd="16dp"
-                android:textSize="16sp"
-                android:drawableLeft="@drawable/baseline_person_24"
-                android:drawablePadding="6dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUpTitle" />
-
-            <EditText
-                android:id="@+id/email"
-                android:layout_width="0dp"
-                android:layout_height="41dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/edit_text_background"
-                android:hint="Please enter your email address"
-                android:textColorHint="#B9B8B8"
-                android:inputType="textEmailAddress"
-                android:paddingStart="6dp"
-                android:paddingEnd="16dp"
-                android:textSize="16sp"
-                android:drawableLeft="@drawable/baseline_email_24"
-                android:drawablePadding="6dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fullName" />
-
-            <LinearLayout
-                android:id="@+id/phoneContainer"
-                android:layout_width="0dp"
-                android:layout_height="41dp"
-                android:background="@drawable/edit_text_background"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/email">
-
-                <Spinner
-                    android:id="@+id/countryCodeSpinner"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textAlignment="textEnd"
-
-                    />
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                android:background="@null">
 
                 <EditText
-                    android:id="@+id/mobileNumber"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:hint="Mobile Number"
-                    android:paddingStart="16dp"
+                    android:id="@+id/fullName"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/edit_text_background"
                     android:textColorHint="#B9B8B8"
+                    android:inputType="textPersonName"
+                    android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:textSize="16sp"
-                    android:inputType="phone" />
-            </LinearLayout>
+                    android:drawableLeft="@drawable/baseline_person_24"
+                    android:drawablePadding="6dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Email TextInputLayout -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/emailInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                android:textColorHint="#B9B8B8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fullNameInputLayout"
+                android:background="@null">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/edit_text_background"
+                    android:textColorHint="#B9B8B8"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="16sp"
+                    android:drawableLeft="@drawable/baseline_email_24"
+                    android:drawablePadding="6dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mobileNumberInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp"
+                android:textColorHint="#B9B8B8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/emailInputLayout"
+                android:background="@null">
+
+                <LinearLayout
+                    android:id="@+id/phoneContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="41dp"
+                    android:background="@drawable/edit_text_background"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <Spinner
+                        android:id="@+id/countryCodeSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="textEnd"/>
+
+                    <EditText
+                        android:id="@+id/mobileNumber"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:paddingStart="16dp"
+                        android:textColorHint="#B9B8B8"
+                        android:paddingEnd="16dp"
+                        android:textSize="16sp"
+                        android:inputType="phone"  />
+                </LinearLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordInputLayout"
@@ -115,7 +153,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:background="@null"
-                app:layout_constraintTop_toBottomOf="@+id/phoneContainer">
+                app:layout_constraintTop_toBottomOf="@+id/mobileNumberInputLayout">
 
                 <EditText
                     android:id="@+id/password"

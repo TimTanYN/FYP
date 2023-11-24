@@ -9,30 +9,41 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fyp.R
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 
 class SignInActivity : AppCompatActivity() {
+    private lateinit var emailEditText: EditText
+    private lateinit var passwordEditText: EditText
+    private lateinit var emailInputLayout: TextInputLayout
     private lateinit var passwordEditTextInputLayout: TextInputLayout
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        val email: EditText = findViewById(R.id.email)
         val signInAccountButton: Button = findViewById(R.id.signInAccountButton)
-        val passwordEditText: EditText = findViewById(R.id.password)
+        emailEditText = findViewById(R.id.email)
+        passwordEditText = findViewById(R.id.password)
         val signUp: TextView = findViewById(R.id.signUpText)
         val forgetPass: TextView = findViewById(R.id.forgetPass)
-
+        emailInputLayout = findViewById(R.id.emailInputLayout)
         passwordEditTextInputLayout = findViewById(R.id.passwordInputLayout)
 
+        setupEmailField(emailEditText)
         setupPasswordField(passwordEditText)
 
         signInAccountButton.setOnClickListener {
             hideKeyboard(it) // Hide the keyboard when the sign-in button is clicked
-            // Insert your account creation logic here.
+            if (validateInputs()) {
+                // Initialize Firebase Auth
+                auth = FirebaseAuth.getInstance()
+                signInUser()
+            }
         }
 
         signUp.setOnClickListener {
@@ -43,6 +54,76 @@ class SignInActivity : AppCompatActivity() {
         forgetPass.setOnClickListener {
             val intent = Intent(this, ForgetPassActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun signInUser() {
+        val email = emailEditText.text.toString().trim()
+        val password = passwordEditText.text.toString().trim()
+
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+//                    val user = auth.currentUser
+                    showToast("Sign In Success")
+                } else {
+                    // If sign in fails, display a message to the user.
+                    showToast("Sign In Failure")
+                }
+            }
+    }
+    private fun validateInputs(): Boolean {
+        var isValid = true
+
+        // Email Validation
+        val email = emailEditText.text.toString().trim()
+        if (email.isEmpty()) {
+            emailInputLayout.error = "Email cannot be empty"
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailInputLayout.error = "Invalid email format"
+            isValid = false
+        } else if (email.length > 90) {
+            emailInputLayout.error = "Email should not exceed 90 characters"
+            isValid = false
+        } else {
+            emailInputLayout.isErrorEnabled = false
+        }
+
+        // Password Validation
+        val password = passwordEditText.text.toString().trim()
+        if (password.isEmpty()) {
+            passwordEditTextInputLayout.error = "Password cannot be empty"
+            isValid = false
+        } else if (password.length > 30) {
+            passwordEditTextInputLayout.error = "Password should not exceed 30 characters"
+            isValid = false
+        } else {
+            val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=.,!*?])(?=\\S+$).{10,}$"
+            if (!password.matches(passwordPattern.toRegex())) {
+                passwordEditTextInputLayout.error = "Password must be more than 10 characters and include uppercase, lowercase, numbers, and symbols"
+                isValid = false
+            } else {
+                passwordEditTextInputLayout.isErrorEnabled = false
+            }
+        }
+
+        return isValid
+    }
+
+    private fun setupEmailField(emailEditText: EditText) {
+        // Set initial hint
+        emailInputLayout.hint = "Please enter your email address"
+
+        emailEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                emailInputLayout.hint = ""
+            } else {
+                if (emailEditText.text.toString().isEmpty()) {
+                    emailInputLayout.hint = "Please enter your email address"
+                }
+            }
         }
     }
 
@@ -75,5 +156,9 @@ class SignInActivity : AppCompatActivity() {
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
