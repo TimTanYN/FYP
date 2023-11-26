@@ -24,11 +24,13 @@ class RestaurantDetails : AppCompatActivity() {
         val restaurantAddress = findViewById<TextView>(R.id.restaurantAddress)
         val priceRange = findViewById<TextView>(R.id.restaurantPriceRange)
         val rating = findViewById<TextView>(R.id.rating)
+        val restaurantOpenNow = findViewById<TextView>(R.id.restaurantOpenNow)
         if (restaurant != null) {
             Glide.with(restaurantImage.context).load(restaurant.photoUrl).into(restaurantImage)
             restaurantAddress.text = restaurant.address
             priceRange.text = restaurant.priceRange.toString()
             rating.text = restaurant.rating.toString()
+            restaurantOpenNow.text = restaurant.openNow.toString()
         }
 
         var list: MutableList<Review> = mutableListOf()

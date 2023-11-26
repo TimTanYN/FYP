@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-         val intent = Intent(this, MapTabs::class.java)
+         val intent = Intent(this, Feedback::class.java)
 
 
         startActivity(intent)
