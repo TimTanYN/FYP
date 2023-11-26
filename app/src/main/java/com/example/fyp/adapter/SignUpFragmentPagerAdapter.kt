@@ -9,16 +9,11 @@ import com.example.fyp.fragment.UserSignUpFragment
 
 class SignUpFragmentPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    override fun getItem(position: Int): Fragment {
-        return when (position) {
-            0 -> UserSignUpFragment()
-            1 -> AgentSignUpFragment()
-            2 -> OwnerSignUpFragment()
-            else -> UserSignUpFragment()
-        }
-    }
+    private val fragments = listOf(UserSignUpFragment(), AgentSignUpFragment(), OwnerSignUpFragment())
 
-    override fun getCount(): Int = 3
+    override fun getItem(position: Int): Fragment = fragments[position]
+
+    override fun getCount(): Int = fragments.size
 
     override fun getPageTitle(position: Int): CharSequence {
         return when (position) {

@@ -21,15 +21,17 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Image for Profile Picture -->
-<!--    <ImageView-->
-<!--        android:id="@+id/profile_image"-->
-<!--        android:layout_width="100dp"-->
-<!--        android:layout_height="100dp"-->
-<!--        android:layout_below="@+id/toolbar"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginTop="32dp"-->
-<!--        android:src="@drawable/profile" /> &lt;!&ndash; Replace with actual image resource &ndash;&gt;-->
+    <!-- ScrollView for the rest of the content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
@@ -37,39 +39,15 @@
         android:layout_height="100dp"
         android:src="@drawable/profile"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/toolbar"
         android:layout_marginTop="32dp"/>
-
-    <!-- Full Name Label and EditText -->
-    <TextView
-        android:id="@+id/tvFullName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:paddingStart="4dp"
-        android:layout_below="@id/profile_image"
-        android:text="Full Name"
-        android:textColor="#808080" />
-
-    <!-- Full Name EditText -->
-    <EditText
-        android:id="@+id/edtName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tvFullName"
-        android:text="John Musstan"
-        android:paddingStart="6dp"
-        android:paddingEnd="16dp"
-        android:drawablePadding="6dp"
-        android:drawableStart="@drawable/baseline_person_24" /> <!-- Replace with actual drawable resource -->
 
     <!-- Email Label and EditText -->
     <TextView
         android:id="@+id/tvEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtName"
-        android:layout_marginTop="16dp"
+        android:layout_below="@id/profile_image"
+        android:layout_marginTop="24dp"
         android:paddingStart="4dp"
         android:text="Email Address"
         android:textColor="#808080" />
@@ -87,25 +65,58 @@
         android:drawablePadding="6dp"
         android:drawableStart="@drawable/baseline_email_24" />
 
+    <!-- Full Name Label and EditText -->
+    <TextView
+        android:id="@+id/tvFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingStart="4dp"
+        android:layout_below="@id/edtEmail"
+        android:text="Full Name"
+        android:textColor="#808080" />
+
+
+    <!-- TextInputLayout for Full Name -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fullNameInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-8dp"
+        android:layout_below="@id/tvFullName">
+
+        <!-- TextInputEditText for Full Name -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="John Musstan"
+            android:paddingStart="6dp"
+            android:paddingEnd="16dp"
+            android:drawablePadding="6dp"
+            android:drawableStart="@drawable/baseline_person_24" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
     <!-- Mobile Phone Label and EditText -->
     <TextView
         android:id="@+id/tvMobile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtEmail"
+        android:layout_below="@id/fullNameInputLayout"
         android:layout_marginTop="16dp"
         android:paddingStart="4dp"
         android:text="Phone Number"
         android:textColor="#808080" />
 
 
-    <!-- Mobile Number EditText -->
+    <!-- Mobile Number Section -->
     <LinearLayout
         android:id="@+id/edtMobile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvMobile"
         android:orientation="horizontal"
+        android:layout_below="@id/tvMobile"
         android:weightSum="4">
 
         <!-- Icon for Phone -->
@@ -121,20 +132,161 @@
             android:id="@+id/countryCodeSpinner"
             android:layout_width="0dp"
             android:layout_height="41dp"
-            android:layout_weight="1"
-            />
+            android:layout_weight="1"/>
 
-        <!-- EditText for Mobile Number -->
-        <EditText
-            android:id="@+id/mobileNumber"
+        <!-- TextInputLayout for Mobile Number -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/mobileNumberInputLayout"
             android:layout_width="0dp"
-            android:layout_height="41dp"
-            android:layout_weight="3"
-            android:text="12345678"
-            android:inputType="phone"
-            android:textSize="16sp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp" />
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+
+            <!-- TextInputEditText for Mobile Number -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/mobileNumber"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:hint="12345678"
+                android:inputType="phone"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <!-- State and City in a combined vertical layout -->
+    <LinearLayout
+        android:id="@+id/combinedStateRegionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/edtMobile"
+        android:layout_marginTop="16dp">
+
+        <!-- Row for TextViews -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvState"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="4dp"
+                android:text="State"
+                android:textColor="#808080" />
+
+            <TextView
+                android:id="@+id/tvCity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:paddingStart="4dp"
+                android:text="City"
+                android:textColor="#808080" />
+        </LinearLayout>
+
+        <!-- Row for Spinners -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- State -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/stateInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_weight="1">
+
+                <Spinner
+                    android:id="@+id/stateSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- City -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cityInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="-8dp"
+                android:layout_marginStart="8dp">
+
+                <Spinner
+                    android:id="@+id/citySpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!-- Region in a vertical layout -->
+    <LinearLayout
+        android:id="@+id/regionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/combinedStateRegionLayout"
+        android:layout_marginTop="16dp">
+
+        <!-- Row for TextViews -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvRegion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingStart="4dp"
+                android:text="Region"
+                android:textColor="#808080" />
+
+            <TextView
+                android:id="@+id/tvBlank"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <!-- Row for EditTexts -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Region -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/regionInputLayout"
+                android:layout_width="0dp"
+                android:layout_marginTop="-8dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/regionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvBlank2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Update Button -->
@@ -142,11 +294,13 @@
         android:id="@+id/btnUpdate"
         android:layout_width="314dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtMobile"
+        android:layout_below="@id/regionLayout"
         android:layout_marginTop="25dp"
         android:background="@drawable/green_button"
         android:text="Update"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white" />
 
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

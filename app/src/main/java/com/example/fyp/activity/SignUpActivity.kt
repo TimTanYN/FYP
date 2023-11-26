@@ -1,44 +1,58 @@
 package com.example.fyp.activity
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.fyp.R
 import com.example.fyp.adapter.SignUpFragmentPagerAdapter
+import com.example.fyp.fragment.UserSignUpFragment
 import com.google.android.material.tabs.TabLayout
 
 class SignUpActivity : AppCompatActivity() {
 
     private var selectedRole: String = "User"
+    private lateinit var viewPager: ViewPager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        // Set up the ViewPager and TabLayout
-        val viewPager: ViewPager = findViewById(R.id.viewPager)
+        viewPager = findViewById(R.id.viewPager)
         val tabLayout: TabLayout = findViewById(R.id.tabLayout)
 
         viewPager.adapter = SignUpFragmentPagerAdapter(supportFragmentManager)
-        tabLayout.setupWithViewPager(viewPager)
+        viewPager.offscreenPageLimit = 3 // Keep all tabs in memory
 
-        // Set the default tab to the User Sign Up Fragment
-        viewPager.currentItem = 0
+        tabLayout.setupWithViewPager(viewPager)
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                selectedRole = tab.text.toString() // This will update the selectedRole with "User", "Agent", or "Owner"
-                viewPager.currentItem = tab.position // This will switch the fragment when a tab is selected
+                hideKeyboard()
+                viewPager.currentItem = tab.position
+                resetFragmentView(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                // Implement behavior for when a tab is unselected if necessary
+                // Optional: Implement behavior for when a tab is unselected
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                // Handle tab reselect if necessary
+                // Optional: Handle tab reselect
             }
         })
+    }
 
+    private fun hideKeyboard() {
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = currentFocus ?: View(this)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun resetFragmentView(position: Int) {
+        val fragment = (viewPager.adapter as? SignUpFragmentPagerAdapter)?.getItem(position)
+        fragment?.view?.requestLayout()
     }
 }
