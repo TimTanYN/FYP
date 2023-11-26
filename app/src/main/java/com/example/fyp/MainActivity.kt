@@ -11,8 +11,10 @@ import com.example.fyp.activity.SignUpActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
-        val intent = Intent(this, EditProfileActivity::class.java)
+         val intent = Intent(this, MapTabs::class.java)
+
 
         startActivity(intent)
     }

@@ -1,6 +1,5 @@
 package com.example.fyp
 
-import android.content.Context
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import com.example.fyp.viewmodel.PublicTransportViewModel
+import com.example.fyp.viewmodel.RestaurantViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,6 +35,8 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 import com.example.fyp.adapter.PublicTransport
+import com.example.fyp.adapter.Restaurant
+import java.io.Serializable
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,6 +69,8 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     private var startLatLng: LatLng? = null
     private var endLatLng: LatLng? = null
     private lateinit var model: PublicTransportViewModel
+    private lateinit var models: RestaurantViewModel
+    val reviews = mutableListOf<Review>()
 
 
     override fun onCreateView(
@@ -86,6 +87,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         model = ViewModelProvider(requireActivity()).get(PublicTransportViewModel::class.java)
+        models = ViewModelProvider(requireActivity()).get(RestaurantViewModel::class.java)
 
         val searchEditText = view.findViewById<EditText>(R.id.searchEditText)
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
@@ -141,9 +143,87 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                 }
             }
     }
+    val restaurantList = mutableListOf<String>()
 
+    fun findRestaurantsNearby(latitude: Double, longitude: Double, apiKey: String, onComplete: (List<Restaurant>) -> Unit) {
+        val placesUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json" +
+                "?location=$latitude,$longitude" +
+                "&radius=500&type=restaurant&key=$apiKey"
 
+        val client = OkHttpClient()
+        val request = Request.Builder().url(placesUrl).build()
 
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle error
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { responseData ->
+                    val jsonObject = JSONObject(responseData)
+                    val results = jsonObject.getJSONArray("results")
+                    val restaurantsList = mutableListOf<Restaurant>()
+
+                    for (i in 0 until results.length()) {
+                        val restaurantJson = results.getJSONObject(i)
+                        val placeId = restaurantJson.getString("place_id")
+
+                        fetchRestaurantDetails(placeId, apiKey) { restaurant ->
+                            restaurantsList.add(restaurant)
+                            if (restaurantsList.size == results.length()) {
+                                onComplete(restaurantsList)
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    fun fetchRestaurantDetails(placeId: String, apiKey: String, onDetailsComplete: (Restaurant) -> Unit) {
+        val detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,vicinity,rating,opening_hours,photos,reviews&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(detailsUrl).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle error
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { responseData ->
+                    val jsonObject = JSONObject(responseData)
+                    val result = jsonObject.getJSONObject("result")
+
+                    val name = result.getString("name")
+                    val address = result.getString("vicinity")
+                    val rating = result.optDouble("rating", -1.0)
+                    val openNow = result.optJSONObject("opening_hours")?.optBoolean("open_now")
+
+                    val photoReference = result.optJSONArray("photos")?.getJSONObject(0)?.optString("photo_reference")
+                    val photoUrl = photoReference?.let {
+                        "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$it&key=$apiKey"
+                    } ?: ""
+
+                    val reviews = mutableListOf<Review>()
+                    val reviewsJson = result.optJSONArray("reviews")
+                    if (reviewsJson != null) {
+                        for (i in 0 until reviewsJson.length()) {
+                            val reviewJson = reviewsJson.getJSONObject(i)
+                            val authorName = reviewJson.getString("author_name")
+                            val reviewRating = reviewJson.getDouble("rating")
+                            val text = reviewJson.getString("text")
+                            reviews.add(Review(authorName, reviewRating, text))
+                        }
+                    }
+
+                    val restaurant = Restaurant(name, address, rating, openNow, photoUrl, reviews)
+                    onDetailsComplete(restaurant)
+                }
+            }
+        })
+    }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -171,7 +251,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 
     private fun calculateRoute(start: LatLng, end: LatLng) {
         val mode = "transit"  // or "transit"
-        val apiKey = "AIzaSyAKrD9Kp41hhUHoWQiNqU8ns1k2lJhygpU"
+        val apiKey = "AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4"
         val url = "https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&mode=$mode&key=$apiKey"
 
         val client = OkHttpClient()
@@ -203,6 +283,14 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                             totalDurationValue += duration.getInt("value")// Add distance value
                             for (j in 0 until steps.length()) {
                                 val step = steps.getJSONObject(j)
+                                val startLocation = step.getJSONObject("start_location")
+                                val endLocation = step.getJSONObject("end_location")
+                                val waypointStart = LatLng(startLocation.getDouble("lat"), startLocation.getDouble("lng"))
+                                val waypointEnd = LatLng(endLocation.getDouble("lat"), endLocation.getDouble("lng"))
+                                val waypoints = mutableListOf<LatLng>()
+                                val allFetchedRestaurants = mutableListOf<Restaurant>()
+                                var waypointsProcessed = 0
+
                                 val travelMode = step.getString("travel_mode")
                                 if (travelMode == "TRANSIT") {
                                     val transitDetails = step.getJSONObject("transit_details")
@@ -222,30 +310,31 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                     val formattedTime = String.format("%02d:%02d", hours, minutes)
                                     println("Formatted Time: $formattedTime")
                                     val eta = timeFormat.format(currentTime.time)
-
+//                                    for (waypoint in waypoints) {
+//                                        findRestaurantsNearby(waypoint.latitude, waypoint.longitude) { fetchedRestaurants ->
+//                                            allFetchedRestaurants.addAll(fetchedRestaurants)
+//                                            waypointsProcessed++
+//                                            println(waypointsProcessed)
+//                                            if (waypointsProcessed == waypoints.size) {
+//                                                // All waypoints have been processed, update ViewModel
+//                                                println("hi")
+//                                                models.setRestaurants(allFetchedRestaurants)
+//                                            }
+//                                        }
+//                                    }
+                                    findRestaurantsNearby(waypointStart.latitude, waypointStart.longitude,"AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4") { fetchedRestaurants ->
+                                        // This code block will be executed after restaurants are fetched
+                                        activity?.runOnUiThread {
+                                            // Update ViewModel here
+                                            models.setRestaurants(fetchedRestaurants)
+                                        }
+                                    }
                                     transitList.add("$vehicleType,$shortName,  $hours, $eta, $minutes")
 
                                 }
                             }
-
-
                         }
-                        Log.d("Debug", "Total Duration in seconds: $totalDurationValue")
-                        Log.d("Debug", "Total Distance in meters: $totalDistanceValue")
 
-
-                        val currentTime = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kuala_Lumpur"))
-                        val initialTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(currentTime.time)
-                        Log.d("InitialTime", "Initial Time: $initialTime")
-                        currentTime.add(Calendar.SECOND, totalDurationValue)
-                        val timeFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
-
-                        val eta = timeFormat.format(currentTime.time)
-                        Log.d("ETA", "ETA: $eta")
-
-                        for (transitDetail in transitList) {
-                            Log.d("TransitDetails", transitDetail)
-                        }
                        sendDataToOtherFragment()
                         val polyline = route.getJSONObject("overview_polyline").getString("points")
                         val decodedPath = PolyUtil.decode(polyline)
@@ -263,6 +352,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
             val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
             if (parts.size == 5) { // Ensure exactly 4 parts are present
                 try {
+
                     // Assuming parts[3] is a time or something that could be formatted differently,
                     // you may need additional parsing/validation
                     PublicTransport(
@@ -284,6 +374,35 @@ class Trip_map : Fragment(), OnMapReadyCallback {
         // Use runOnUiThread to modify the LiveData on the main thread
         activity?.runOnUiThread {
             model.setTransitDetails(publicTransportList)
+        }
+
+        val RestaurantList: List<Restaurant> = restaurantList.mapNotNull { str ->
+            val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
+            if (parts.size == 6) { // Ensure exactly 4 parts are present
+                try {
+
+                    // Assuming parts[3] is a time or something that could be formatted differently,
+                    // you may need additional parsing/validation
+                    Restaurant(
+                        name = parts[0],
+                        address = parts[1],
+                        rating = parts[2].toDouble(),
+                        photoUrl = parts[4],
+                        openNow = parts[3].toBoolean(),
+                        reviews = reviews
+                    )
+                } catch (e: Exception) {
+                    // Log the exception or handle the error as necessary
+                    null
+                }
+            } else {
+                // Log an error or handle cases where the data does not match the expected format
+                null
+            }
+        }
+        // Use runOnUiThread to modify the LiveData on the main thread
+        activity?.runOnUiThread {
+            models.setRestaurants(RestaurantList)
         }
     }
 
@@ -356,3 +475,11 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 //    }
 
 }
+
+data class Review(
+    val authorName: String,
+    val rating: Double,
+    val text: String
+):Serializable
+
+
