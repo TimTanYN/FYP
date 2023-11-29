@@ -25,12 +25,25 @@ class RestaurantDetails : AppCompatActivity() {
         val priceRange = findViewById<TextView>(R.id.restaurantPriceRange)
         val rating = findViewById<TextView>(R.id.rating)
         val restaurantOpenNow = findViewById<TextView>(R.id.restaurantOpenNow)
+
+        when(restaurant?.priceRange){
+            0 ->  priceRange.text = "Free"
+            1 ->  priceRange.text = "Inexpensive"
+            2 ->  priceRange.text = "Moderate"
+            3 ->  priceRange.text = "Expensive"
+            4 ->  priceRange.text = "Very Expensive"
+            else -> priceRange.text = "Unknown"
+        }
+
+        when(restaurant?.openNow){
+            true ->  restaurantOpenNow.text = "Open"
+            false ->  restaurantOpenNow.text = "Close"
+            else -> restaurantOpenNow.text = "Unknown"
+        }
         if (restaurant != null) {
             Glide.with(restaurantImage.context).load(restaurant.photoUrl).into(restaurantImage)
             restaurantAddress.text = restaurant.address
-            priceRange.text = restaurant.priceRange.toString()
             rating.text = restaurant.rating.toString()
-            restaurantOpenNow.text = restaurant.openNow.toString()
         }
 
         var list: MutableList<Review> = mutableListOf()

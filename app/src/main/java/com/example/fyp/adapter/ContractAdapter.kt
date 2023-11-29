@@ -39,7 +39,7 @@ class ContractAdapter(private val productList: List<Product>, private val listen
         val product = productList[position]
         holder.productName.text = product.name
         holder.productDescription.text = product.description
-        holder.productPrice.text = product.price
+
 
 
         holder.itemView.setOnClickListener {
@@ -60,7 +60,7 @@ class ContractAdapter(private val productList: List<Product>, private val listen
 data class Product(
     val name: String,
     val description: String,
-    val price: String
+
     // ... any other properties
 )
 

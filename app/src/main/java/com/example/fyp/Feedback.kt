@@ -1,5 +1,6 @@
 package com.example.fyp
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +21,8 @@ class Feedback:AppCompatActivity() {
     private val REQUEST_CODE_IMAGE_PICK = 1001
     private val REQUEST_CODE_VIDEO_PICK = 2001
     private lateinit var storageRef: StorageReference
-    private var selectedImageUri: Uri? = null
+    var selectedImageUri: Uri? = null
+    var selectedVideoUri: Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,12 +46,18 @@ class Feedback:AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-          // Ensure the fragment's view is not null
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.data
-            val selectedImageView: ImageButton = findViewById(R.id.image)
-            selectedImageView.setImageURI(selectedImageUri)
+
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            when (requestCode) {
+                REQUEST_CODE_IMAGE_PICK -> selectedImageUri = data.data
+                REQUEST_CODE_VIDEO_PICK -> selectedVideoUri = data.data
+            }
+
+            // Check if both image and video are selected, then start upload
+            if (selectedImageUri != null && selectedVideoUri != null) {
+                uploadMediaAndData()
+            }
         }
     }
 
@@ -88,44 +96,44 @@ class Feedback:AppCompatActivity() {
         }
     }
 
-    private fun uploadImageToFirebaseStorage(selectedImageUri: Uri) {
+    fun uploadMediaAndData() {
         // Reference to Firebase Storage
-        storageRef = FirebaseStorage.getInstance().reference.child("upload${UUID.randomUUID()}")
+        val storageRef = FirebaseStorage.getInstance().reference
+        val db = FirebaseFirestore.getInstance()
+        val documentReference = db.collection("yourCollectionName").document("yourDocumentId")
 
-        // Upload the image to Firebase Storage
-        storageRef.putFile(selectedImageUri)
-            .addOnSuccessListener {
-                // Get the download URL of the uploaded image
-                storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
-                    // Use the downloadUri (which is a URI pointing to the uploaded image in Firebase Storage)
-                    Log.d("Upload", "Uploaded image URL: $downloadUri")
+        // Data map for Firestore
+        val data = hashMapOf<String, Any>(
+            // Add other data fields here
+            "serviceValue" to serviceValue.toString(),
+            "performanceValue" to performanceValue.toString(),
+            "appValue" to appValue.toString(),
+            "comment" to comment
+        )
 
-                    // Get a reference to the Firestore database
-                    val db = FirebaseFirestore.getInstance()
+        // Upload Image
+        selectedImageUri?.let {
+            val imageRef = storageRef.child("uploads/${UUID.randomUUID()}")
+            imageRef.putFile(it).addOnSuccessListener {
+                imageRef.downloadUrl.addOnSuccessListener { uri ->
+                    data["imageUrl"] = uri.toString()
 
-                    // Create a reference to the specific collection and document where you want to save the downloadUri
-                    val documentReference = db.collection("yourCollectionName").document("yourDocumentId")
+                    // Upload Video
+                    selectedVideoUri?.let { videoUri ->
+                        val videoRef = storageRef.child("uploads/${UUID.randomUUID()}")
+                        videoRef.putFile(videoUri).addOnSuccessListener {
+                            videoRef.downloadUrl.addOnSuccessListener { videoUri ->
+                                data["videoUrl"] = videoUri.toString()
 
-                    // Use the set() or update() method to save the downloadUri to the specified document
-                    val data = hashMapOf(
-                        "imageUrl" to downloadUri.toString(),
-                        "serviceValue" to serviceValue.toString(),
-                        "performanceValue" to performanceValue.toString(),
-                        "appValue" to appValue.toString(),
-                        "comment" to comment.toString()
-                    )
-                    documentReference.set(data)
-                        .addOnSuccessListener {
-                            Log.d("Firestore", "Document successfully written!")
+                                // Save data to Firestore
+                                documentReference.set(data)
+                                    .addOnSuccessListener { Log.d("Firestore", "Document successfully written!") }
+                                    .addOnFailureListener { e -> Log.w("Firestore", "Error writing document", e) }
+                            }
                         }
-                        .addOnFailureListener { e ->
-                            Log.w("Firestore", "Error writing document", e)
-                        }
+                    }
                 }
             }
-            .addOnFailureListener { exception ->
-                // Handle any errors during the upload
-                Log.e("Upload", "Error uploading image", exception)
-            }
+        }
     }
 }
