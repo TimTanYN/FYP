@@ -23,14 +23,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import de.hdodenhof.circleimageview.CircleImageView
 
-class AccountActivity : AppCompatActivity() {
+class AccountAgentActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var cardsDatabase: DatabaseReference
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account)
+        setContentView(R.layout.activity_account_agent)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_profile
@@ -53,7 +53,7 @@ class AccountActivity : AppCompatActivity() {
         }
 
         edit.setOnClickListener{
-            val intent = Intent(this, EditProfileActivity::class.java)
+            val intent = Intent(this, EditProfileAgentActivity::class.java)
             startActivity(intent)
         }
 
@@ -93,7 +93,7 @@ class AccountActivity : AppCompatActivity() {
                             val profileImageView: ImageView = findViewById(R.id.profile_background)
 
 
-                            Glide.with(this@AccountActivity)
+                            Glide.with(this@AccountAgentActivity)
                                 .load(user.imageLink)
                                 .into(profileImageView)
                             findViewById<TextView>(R.id.txtFullName)?.text = user.fullName

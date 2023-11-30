@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fyp.R
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var emailEditText: EditText
@@ -47,6 +48,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         signUp.setOnClickListener {
+            hideKeyboard(it)
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
@@ -65,14 +67,43 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-//                    val user = auth.currentUser
+
                     showToast("Sign In Success")
+
+                    // Get the current user's ID
+                    val userId = auth.currentUser?.uid
+                    userId?.let {
+                        fetchNewUserAttribute(it)
+                    }
+
                 } else {
                     // If sign in fails, display a message to the user.
                     showToast("Sign In Failure")
                 }
             }
     }
+
+    private fun fetchNewUserAttribute(userId: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+
+        databaseReference.child(userId).get().addOnSuccessListener { dataSnapshot ->
+            if (dataSnapshot.exists()) {
+                val newUser = dataSnapshot.child("newUser").getValue(String::class.java)
+                newUser?.let {
+                    if (newUser == "yes"){
+                        val intent = Intent(this, EditProfileActivity::class.java)
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this, AccountActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+            }
+        }.addOnFailureListener {
+            showToast("Failed to fetch user data")
+        }
+    }
+
     private fun validateInputs(): Boolean {
         var isValid = true
 

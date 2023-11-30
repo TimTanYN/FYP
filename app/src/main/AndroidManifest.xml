@@ -18,6 +18,9 @@
         android:theme="@style/Theme.FYP"
         tools:targetApi="31">
         <activity
+            android:name=".activity.AddCardActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AccommodationDetailsActivity"
             android:exported="false" />
         <activity
