@@ -62,7 +62,6 @@
             android:id="@+id/cardNumInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Please enter your card number"
             android:inputType="number"
             android:textColor="@color/black"
             android:imeOptions="actionNext"
@@ -97,7 +96,6 @@
             android:id="@+id/secureCodeInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="CVV"
             android:inputType="number|numberPassword"
             android:textColor="@color/black"
             android:textColorHint="@color/smalltitle"
@@ -134,7 +132,6 @@
             android:id="@+id/expiryDateInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="MM/YY"
             android:inputType="number"
             android:textColorHint="@color/smalltitle"
             android:imeOptions="actionNext"/>
