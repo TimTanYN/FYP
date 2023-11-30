@@ -89,12 +89,29 @@ class SignInActivity : AppCompatActivity() {
         databaseReference.child(userId).get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
                 val newUser = dataSnapshot.child("newUser").getValue(String::class.java)
+                val userRole = dataSnapshot.child("userRole").getValue(String::class.java)
                 newUser?.let {
-                    if (newUser == "yes"){
+                    if (newUser == "yes" && userRole == "User"){
                         val intent = Intent(this, EditProfileActivity::class.java)
                         startActivity(intent)
                     }else{
                         val intent = Intent(this, AccountActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    if (newUser == "yes" && userRole == "Agent"){
+                        val intent = Intent(this, EditProfileAgentActivity::class.java)
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this, AccountAgentActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    if (newUser == "yes" && userRole == "User"){
+                        val intent = Intent(this, EditProfileOwnerActivity::class.java)
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this, AccountOwnerActivity::class.java)
                         startActivity(intent)
                     }
                 }
