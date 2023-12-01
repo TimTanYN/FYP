@@ -43,6 +43,11 @@ class Feedback:AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_VIDEO_PICK)
         }
 
+        val submit = findViewById<Button>(R.id.submit)
+        submit.setOnClickListener(){
+            uploadMediaAndData()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -100,8 +105,8 @@ class Feedback:AppCompatActivity() {
         // Reference to Firebase Storage
         val storageRef = FirebaseStorage.getInstance().reference
         val db = FirebaseFirestore.getInstance()
-        val documentReference = db.collection("yourCollectionName").document("yourDocumentId")
-
+        val documentReference = db.collection("Feedback").document("userId")
+        storeValue()
         // Data map for Firestore
         val data = hashMapOf<String, Any>(
             // Add other data fields here
