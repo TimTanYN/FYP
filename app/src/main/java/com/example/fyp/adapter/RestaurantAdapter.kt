@@ -21,7 +21,8 @@ data class Restaurant(
     val rating: Double,
     val openNow: Boolean?,
     val photoUrl: String,
-    val reviews: List<Review>
+    val reviews: List<Review>,
+    val priceRange: Int
 ) : Serializable
 
 class RestaurantAdapter(private var restaurantList: List<Restaurant>,private val clickListener: OnRestaurantClickListener) : RecyclerView.Adapter<RestaurantAdapter.ViewHolder>() {

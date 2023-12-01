@@ -7,9 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.fyp.Contract
 import com.example.fyp.R
 
-class ContractCardAdapter (private val productList: List<ContractCard>) : RecyclerView.Adapter<ContractCardAdapter.ProductViewHolder>(){
+class ContractCardAdapter(private val productList: List<ContractCard>, private val clickListener: OnContractClickListener) : RecyclerView.Adapter<ContractCardAdapter.ProductViewHolder>(){
 
     class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productName: TextView = view.findViewById(R.id.contractName)
@@ -23,23 +24,30 @@ class ContractCardAdapter (private val productList: List<ContractCard>) : Recycl
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = productList[position]
-        holder.productName.text = product.name
-        holder.productDescription.text = product.description
-        Glide.with(holder.productImage.context).load(product.imageUrl).into(holder.productImage)
+        val contract = productList[position]
+        holder.productName.text = contract.name
+        holder.productDescription.text = contract.description
+        Glide.with(holder.productImage.context).load(contract.imageUrl).into(holder.productImage)
 
         val layoutParams = holder.itemView.layoutParams
         layoutParams.height = if (position % 2 == 0) 500 else 400 // Example uneven heights
         holder.itemView.layoutParams = layoutParams
         println(productList.size)
+
+        holder.itemView.setOnClickListener {
+            clickListener.onContractClick(contract)
+        }
     }
 
     override fun getItemCount() = productList.size
+
+    interface OnContractClickListener {
+        fun onContractClick(contractCard: ContractCard)
+    }
 }
 
 data class ContractCard(
     val name: String,
     val description: String,
-    val price: String,
     val imageUrl: Int
 )

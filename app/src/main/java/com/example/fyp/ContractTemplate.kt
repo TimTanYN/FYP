@@ -269,7 +269,7 @@ class ContractTemplate:AppCompatActivity() {
         data["owner"] = owner
 
         val db = FirebaseFirestore.getInstance()
-        val contractTemplate = db.collection("Contract Template").document("uniqueUserId")
+        val contractTemplate = db.collection("Contract Template").document("uniqueUserId").collection("con1").document()
 
         contractTemplate.set(data)
             .addOnSuccessListener {

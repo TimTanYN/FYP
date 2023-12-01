@@ -181,7 +181,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     }
 
     fun fetchRestaurantDetails(placeId: String, apiKey: String, onDetailsComplete: (Restaurant) -> Unit) {
-        val detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,vicinity,rating,opening_hours,photos,reviews&key=$apiKey"
+        val detailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&fields=name,vicinity,rating,opening_hours,price_level,photos,reviews&key=$apiKey"
 
         val client = OkHttpClient()
         val request = Request.Builder().url(detailsUrl).build()
@@ -217,8 +217,10 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                             reviews.add(Review(authorName, reviewRating, text))
                         }
                     }
+                    val priceLevel = result.optInt("price_level", -1)
 
-                    val restaurant = Restaurant(name, address, rating, openNow, photoUrl, reviews)
+
+                    val restaurant = Restaurant(name, address, rating, openNow, photoUrl, reviews,priceLevel)
                     onDetailsComplete(restaurant)
                 }
             }
@@ -378,18 +380,16 @@ class Trip_map : Fragment(), OnMapReadyCallback {
 
         val RestaurantList: List<Restaurant> = restaurantList.mapNotNull { str ->
             val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
-            if (parts.size == 6) { // Ensure exactly 4 parts are present
+            if (parts.size == 7) {
                 try {
-
-                    // Assuming parts[3] is a time or something that could be formatted differently,
-                    // you may need additional parsing/validation
                     Restaurant(
                         name = parts[0],
                         address = parts[1],
                         rating = parts[2].toDouble(),
                         photoUrl = parts[4],
                         openNow = parts[3].toBoolean(),
-                        reviews = reviews
+                        reviews = reviews,
+                        priceRange = parts[6].toInt()
                     )
                 } catch (e: Exception) {
                     // Log the exception or handle the error as necessary

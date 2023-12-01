@@ -8,10 +8,10 @@
 
     <TextView
         android:id="@+id/username"
-        android:layout_width="122dp"
-        android:layout_height="23dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:text="username"
         app:layout_constraintStart_toEndOf="@+id/profilePicture"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,14 +28,14 @@
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="387dp"
-        android:layout_height="157dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="12dp"
         android:ellipsize="end"
-        android:maxLines="10"
-        android:scrollHorizontally="false"
+        android:maxLines="3"
+        android:scrollHorizontally="true"
         android:text="TextView"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +48,7 @@
         android:layout_width="73dp"
         android:layout_height="23dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="24dp"
         android:text="TextView"
         app:layout_constraintStart_toEndOf="@+id/username"
         app:layout_constraintTop_toTopOf="parent" />

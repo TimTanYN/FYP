@@ -1,6 +1,7 @@
 package com.example.fyp
 
 
+import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
@@ -24,7 +25,7 @@ import java.io.File
 
 
 
-class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
+class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, ContractCardAdapter.OnContractClickListener{
 
     private lateinit var houseAddress: String
     private lateinit var ownerName: String
@@ -89,16 +90,15 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contract)
-        fetchEntireCollection()
 
 
         val productList = listOf(
-            Product("Product 1", "Description 1", "Price 1"),
-            Product("Product 2", "Description 2", "Price 2"),
-            Product("Product 3", "Description 1", "Price 1"),
-            Product("Product 4", "Description 1", "Price 1"),
-            Product("Product 5", "Description 1", "Price 1"),
-            Product("Product 6", "Description 1", "Price 1"),
+            Product("Product 1", "Description 1"),
+            Product("Product 2", "Description 2"),
+            Product("Product 3", "Description 1"),
+            Product("Product 4", "Description 1"),
+            Product("Product 5", "Description 1"),
+            Product("Product 6", "Description 1"),
             // Add more products as needed
         )
 
@@ -107,7 +107,32 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
         snapHelper.attachToRecyclerView(recyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = ContractAdapter(productList,this)
+
+
+        db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount").get().addOnSuccessListener { document ->
+            val usedContracts = document.data?.get("usedContracts") as? Map<String, Long>
+            val topContracts = usedContracts?.toList()?.sortedByDescending { it.second }?.take(6)
+            val contractDetailsList = mutableListOf<Product>()
+
+            topContracts?.forEach {  (contractId, count) ->
+
+                        contractDetailsList.add(Product(contractId, "Contract"))
+
+                        if (contractDetailsList.size == topContracts.size) {
+                            // Update RecyclerView in the main thread
+                            runOnUiThread {
+                                recyclerView.adapter = ContractAdapter(contractDetailsList,this)
+                            }
+                        }
+                    }
+
+
+
+        }
+
+
+
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(rv, dx, dy)
@@ -161,19 +186,44 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
             }
         }
 
-        val list = listOf(
-            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.ic_launcher_background),
-            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
-            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
-            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
-            ContractCard("Product 1", "Description 1", "Price 1", R.drawable.bus),
-            ContractCard("Product 1", "Description 1", "Price 1",R.drawable.ic_launcher_background)
-            // Add more products as needed
-        )
         val contractCard = findViewById<RecyclerView>(R.id.contractCard)
         contractCard.layoutManager = GridLayoutManager(this, 1) // 2 items per row
-        val adapter = ContractCardAdapter(list)
-        contractCard.adapter = adapter
+
+
+        val db = FirebaseFirestore.getInstance()
+        val yourCollectionReference = db.collection("Contract Template").document("uniqueUserId").collection("con1")
+        yourCollectionReference.get()
+            .addOnSuccessListener { documents ->
+                val items = documents.mapNotNull { document ->
+                    val text = document.getString("name")
+                    val content = "Contract"
+                    val imageResId = R.drawable.ic_launcher_background
+                    if (text != null) {
+                        ContractCard(text,content,imageResId)
+                    } else {
+                        null
+                    }
+                }
+                val adapter = ContractCardAdapter(items,this)
+                contractCard.adapter = adapter
+            }
+            .addOnFailureListener { exception ->
+                Log.w(ContentValues.TAG, "Error fetching documents: ", exception)
+            }
+
+
+    }
+    private val db = FirebaseFirestore.getInstance()
+    override fun onContractClick(contractCard: ContractCard) {
+        val userRef =db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount")
+        val contractId = contractCard.name
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+            val currentCount = snapshot.getLong("usedContracts.$contractId") ?: 0
+            transaction.update(userRef, "usedContracts.$contractId", currentCount + 1)
+        }
+        fetchEntireCollection(contractCard.name)
     }
 
     override fun onItemClicked(position: Int) {
@@ -183,10 +233,9 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
     override fun onButtonClicked(position: Int) {
         main()
     }
-    fun fetchEntireCollection() {
-
+    private fun fetchEntireCollection(name:String) {
         val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("Contract Template").document("uniqueUserId")
+        val docRef = db.collection("Contract Template").document("uniqueUserId").collection(name).document("voPYTWjpqHhw6UbGeA2P")
 
 // Asynchronously retrieve the document
         docRef.get()
@@ -235,10 +284,10 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener{
                     personalItemValue = documentSnapshot.getString("personalItemValue") ?: "Default value if null"
                     musicValue = documentSnapshot.getString("musicValue") ?: "Default Value if null"
                     bedroomAssignmentValue = documentSnapshot.getString("bedroomAssignmentValue") ?: "Default Value if null"
-                    petsValue = documentSnapshot.getString("petsValue") ?: "Default Value if null"
-                    val tips = documentSnapshot.getString("alcoholValue") // Correctly access the field
+                    petsValue = documentSnapshot.getString("petsValue") ?: "Default Value if null" // Correctly access the field
                     // You now have the data from the "tips" field, do something with it
-                    Log.d("Firestore", "Tips: $tips")
+
+                    main()
                 } else {
                     // No such document
                     Log.d("Firestore", "No such document")

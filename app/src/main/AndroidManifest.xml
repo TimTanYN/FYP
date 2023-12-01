@@ -76,6 +76,8 @@
         <activity android:name=".Contract" />
         <activity android:name=".ContractTemplate" />
         <activity android:name=".RestaurantDetails" />
+        <activity android:name=".Feedback" />
+        <activity android:name=".FeedbackMain" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
