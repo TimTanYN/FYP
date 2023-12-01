@@ -11,7 +11,7 @@
     <item
         android:id="@+id/nav_location"
         android:icon="@drawable/baseline_location_on_24"
-        android:title="@string/Location" />
+        android:title="@string/location" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/baseline_person_24"

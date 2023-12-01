@@ -166,7 +166,7 @@
 
     <!-- State and City in a combined vertical layout -->
     <LinearLayout
-        android:id="@+id/combinedStateRegionLayout"
+        android:id="@+id/combinedStateCityLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -245,7 +245,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/combinedStateRegionLayout"
+        android:layout_below="@id/combinedStateCityLayout"
         android:layout_marginTop="16dp">
 
         <!-- Row for TextViews -->

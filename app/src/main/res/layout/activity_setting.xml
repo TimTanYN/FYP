@@ -31,8 +31,7 @@
         android:dividerHeight="10dp"
         android:listSelector="@android:color/transparent"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:scrollbars="none">
+        android:paddingRight="16dp">
     </ListView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

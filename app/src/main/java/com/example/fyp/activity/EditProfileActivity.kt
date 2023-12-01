@@ -38,7 +38,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var mobileNumberEditText: EditText
     private lateinit var stateSpinner: Spinner
     private lateinit var citySpinner: Spinner
-    private lateinit var regionEditText: TextView
+    private lateinit var regionEditText: EditText
     private lateinit var fullNameInputLayout: TextInputLayout
     private lateinit var mobileNumberInputLayout: TextInputLayout
     private lateinit var stateInputLayout: TextInputLayout
