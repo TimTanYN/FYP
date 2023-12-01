@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileOwnerActivity : AppCompatActivity() {
 
     private lateinit var fullNameEditText: EditText
     private lateinit var emailEditText: EditText
@@ -56,7 +56,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.activity_edit_profile_owner)
 
         fullNameEditText = findViewById(R.id.edtName)
         emailEditText = findViewById(R.id.edtEmail)
@@ -124,7 +124,7 @@ class EditProfileActivity : AppCompatActivity() {
             email = emailEditText.text.toString().trim(),
             fullName = fullNameEditText.text.toString().trim(),
             phoneNumber = countryCodeSpinner.selectedItem.toString() + mobileNumberEditText.text.toString().trim(),
-            userRole = "User",
+            userRole = "Owner",
             imageLink = imageUrl,
             state = stateSpinner.selectedItem.toString(),
             city = citySpinner.selectedItem.toString(),
@@ -133,7 +133,7 @@ class EditProfileActivity : AppCompatActivity() {
         userRef.setValue(updatedUser).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 showToast("Profile updated successfully")
-                val intent = Intent(this, AccountActivity::class.java)
+                val intent = Intent(this, AccountOwnerActivity::class.java)
                 startActivity(intent)
 
             } else {
@@ -160,7 +160,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                     city = it.city
                     // Load profile image
-                    Glide.with(this@EditProfileActivity)
+                    Glide.with(this@EditProfileOwnerActivity)
                         .load(it.imageLink)
                         .into(profileImageView)
 

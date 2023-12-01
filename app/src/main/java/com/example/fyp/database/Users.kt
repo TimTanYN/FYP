@@ -6,6 +6,9 @@ data class Users(
     val fullName: String = "",
     val phoneNumber: String = "",
     val userRole: String = "",
-    val imageLink: String = ""
+    val imageLink: String = "",
+    val state: String = "",
+    val city: String = "",
+    val newUser: String = ""
 )
 

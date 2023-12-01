@@ -115,7 +115,7 @@ class AgentSignUpFragment : Fragment() {
             Log.d("PhoneCheck", "Callback received: $isPhoneNumberRegistered")
             if (!isPhoneNumberRegistered) {
                 // Proceed with account creation
-//                createAccount()
+                createAccount()
             } else {
                 // Phone number error
                 Log.d("PhoneCheck", "Setting phone error")
@@ -129,14 +129,18 @@ class AgentSignUpFragment : Fragment() {
         val email = emailEditText.text.toString().trim()
         val password = passwordEditText.text.toString().trim()
         val fullName = fullNameEditText.text.toString().trim()
-        val phoneNumber = mobileNumberEditText.text.toString().trim()
+        val countryCode = (view?.findViewById(R.id.countryCodeSpinner) as? Spinner)?.selectedItem.toString()
+        val phoneNumber = countryCode + mobileNumberEditText.text.toString().trim()
         val userRole = "Agent"
+        val state = "null"
+        val city = "null"
+        val newUser = "yes"
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                    uploadUserData(userId, email, fullName, phoneNumber, userRole)
+                    uploadUserData(userId, email, fullName, phoneNumber, userRole, state, city, newUser)
                 } else {
                     // Handle sign-up failure
                 }
@@ -173,14 +177,13 @@ class AgentSignUpFragment : Fragment() {
     }
 
 
-    private fun uploadUserData(userId: String, email: String, fullName: String, phoneNumber: String, userRole: String) {
+    private fun uploadUserData(userId: String, email: String, fullName: String, phoneNumber: String, userRole: String, state: String, city: String, newUser:String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
         val defaultImage = "https://firebasestorage.googleapis.com/v0/b/finalyearproject-abb52.appspot.com/o/profile.PNG?alt=media&token=ce30c842-c3c2-46da-a51f-6086aa88762a"
-        val user = Users(userId, email, fullName, phoneNumber, userRole, defaultImage)
+        val user = Users(userId, email, fullName, phoneNumber, userRole, defaultImage, state, city, newUser)
         databaseReference.child(userId).setValue(user).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 showToast("Sign Up Success")
-
                 val intent = Intent(activity, SignInActivity::class.java)
                 startActivity(intent)
             } else {
@@ -197,8 +200,8 @@ class AgentSignUpFragment : Fragment() {
         if (fullName.isEmpty()) {
             fullNameInputLayout.error = "Name cannot be empty"
             isValid = false
-        } else if (fullName.any { it.isDigit() }) {
-            fullNameInputLayout.error = "Name should not contain digits"
+        } else if (!fullName.all { it.isLetter() || it.isWhitespace() }) {
+            fullNameInputLayout.error = "Invalid name format"
             isValid = false
         } else if (fullName.length > 36) {
             fullNameInputLayout.error = "Name should not exceed 36 characters"
@@ -228,7 +231,7 @@ class AgentSignUpFragment : Fragment() {
         // Mobile Number Validation
         val phoneNumber = mobileNumberEditText.text.toString().trim()
         if (phoneNumber.isEmpty()) {
-            val error = "Mobile number cannot be empty"
+            val error = "Phone number cannot be empty"
             mobileNumberInputLayout.error = error.padStart(error.length + 5, ' ')
             isValid = false
         } else if(!validatePhoneNumber()){
@@ -275,7 +278,7 @@ class AgentSignUpFragment : Fragment() {
         val phoneNumber = mobileNumberEditText.text.toString().trim()
 
         val pattern = when (countryCode) {
-            "+60" -> "^1[0-9]{7,9}$" // Malaysian mobile number
+            "+60" -> "^1[1279][0-9]{7,8}$" // Malaysian mobile number
             "+65" -> "^[689][0-9]{7}$" // Singaporean mobile number
             "+62" -> "^[0-9]{8,11}$" // Indonesian mobile number
             "+66" -> "^(8|9|6)[0-9]{8}$" // Thai mobile number

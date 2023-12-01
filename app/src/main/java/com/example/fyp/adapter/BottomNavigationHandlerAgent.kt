@@ -10,7 +10,7 @@ import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class BottomNavigationHandler(private val context: Context) {
+class BottomNavigationHandlerAgent(private val context: Context) {
 
     /*  Use in activity code to call the navigation bar buttom
 
@@ -33,8 +33,8 @@ class BottomNavigationHandler(private val context: Context) {
                     navigateToBook()
                     true
                 }
-                R.id.nav_location -> {
-                    navigateToLocation()
+                R.id.nav_chat -> {
+                    navigateToChat()
                     true
                 }
                 R.id.nav_profile -> {
@@ -59,7 +59,7 @@ class BottomNavigationHandler(private val context: Context) {
         // Implement navigation logic
     }
 
-    private fun navigateToLocation() {
+    private fun navigateToChat() {
         // Implement navigation logic
     }
     private fun navigateToProfile() {

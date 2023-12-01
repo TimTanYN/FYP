@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import de.hdodenhof.circleimageview.CircleImageView
 
-class EditProfileActivity : AppCompatActivity() {
+class EditProfileAgentActivity : AppCompatActivity() {
 
     private lateinit var fullNameEditText: EditText
     private lateinit var emailEditText: EditText
@@ -56,7 +56,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit_profile)
+        setContentView(R.layout.activity_edit_profile_agent)
 
         fullNameEditText = findViewById(R.id.edtName)
         emailEditText = findViewById(R.id.edtEmail)
@@ -160,7 +160,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                     city = it.city
                     // Load profile image
-                    Glide.with(this@EditProfileActivity)
+                    Glide.with(this@EditProfileAgentActivity)
                         .load(it.imageLink)
                         .into(profileImageView)
 

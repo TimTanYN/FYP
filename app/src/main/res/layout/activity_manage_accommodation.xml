@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.SettingActivity">
+    tools:context=".activity.ManageAccommodationActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -14,15 +14,14 @@
         android:layout_height="wrap_content"
         android:background="@color/light_blue"
         android:elevation="4dp"
-        app:title="Settings"
+        app:title="Manage Accommodation"
         app:titleTextColor="@color/black"
         app:contentInsetStartWithNavigation="0dp">
 
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Settings List -->
     <ListView
-        android:id="@+id/settings_list"
+        android:id="@+id/accommodationListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation"
@@ -31,8 +30,19 @@
         android:dividerHeight="10dp"
         android:listSelector="@android:color/transparent"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="16dp"
+        android:visibility="gone">
     </ListView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:text="You didn't post any room details                             Feel free to have your first room post now !!"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_below="@id/toolbar"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -42,5 +52,5 @@
         android:background="@color/light_blue"
         app:itemIconTint="@drawable/selector_nav_item_color"
         app:itemTextColor="@drawable/selector_nav_item_color"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu_owner" />
 </RelativeLayout>
