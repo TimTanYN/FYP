@@ -78,6 +78,9 @@
         <activity android:name=".RestaurantDetails" />
         <activity android:name=".Feedback" />
         <activity android:name=".FeedbackMain" />
+        <activity android:name=".FeedbackEnd" />
+        <activity android:name=".FeedbackResponse" />
+        <activity android:name=".PhotoAndVideo" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

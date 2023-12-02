@@ -20,40 +20,34 @@ class FeedbackMain:AppCompatActivity() {
 
         setContentView(R.layout.feedback_main)
 
-        val feedback = listOf(
-            Feedback("Ilo123",2.0,R.drawable.address,"Thank You For Your Response"),
-
-            // Add more products as needed
-        )
         val recyclerView: RecyclerView = findViewById(R.id.feedback)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
 
         val db = FirebaseFirestore.getInstance()
-        val yourDocumentReference = db.collection("Feedback").document("userId")
-        yourDocumentReference.get()
-            .addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    val name = document.getString("name") ?: "Unknown" // Default value if null
-                    val rating = document.getString("appValue")?.toDouble() ?: 0.0 // Default rating if null
-                    val imageResId = R.drawable.address // Change as needed
-                    val response = "Thank you for your response"
+        val collectionReference = db.collection("Feedback").document("userId").collection("feedback")
+        collectionReference.get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val items = querySnapshot.documents.mapNotNull { document ->
+                        val name = document.getString("name") ?: "Unknown"
+                        val rating = document.getString("appValue")?.toDouble() ?: 0.0
+                        val imageResId = R.drawable.address // Assuming you have a default image
+                        val response = "Thank you for your response"
+                        val id = document.id // Getting the document ID
 
-                    // Create a single Feedback object
-                    val feedbackItem = Feedback(name, rating, imageResId, "Admin Response:\n$response")
+                        Feedback(name, rating, imageResId, "Admin Response:\n$response", id)
+                    }
 
-                    // Since it's a single item, create a list containing only this item
-                    val items = listOf(feedbackItem)
-
-                    // Set up the adapter with the single-item list
+                    // Set up the adapter with the list of items
                     val adapter = FeedbackAdapter(items)
                     recyclerView.adapter = adapter
                 } else {
-                    Log.d("Firestore", "No such document")
+                    Log.d("Firestore", "No documents found")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.w("Firestore", "Error fetching document: ", exception)
+                Log.w("Firestore", "Error fetching documents: ", exception)
             }
     }
 }

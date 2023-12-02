@@ -92,15 +92,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         setContentView(R.layout.contract)
 
 
-        val productList = listOf(
-            Product("Product 1", "Description 1"),
-            Product("Product 2", "Description 2"),
-            Product("Product 3", "Description 1"),
-            Product("Product 4", "Description 1"),
-            Product("Product 5", "Description 1"),
-            Product("Product 6", "Description 1"),
-            // Add more products as needed
-        )
+
 
         val recyclerView: RecyclerView = findViewById(R.id.Contract)
         val snapHelper = PagerSnapHelper()
