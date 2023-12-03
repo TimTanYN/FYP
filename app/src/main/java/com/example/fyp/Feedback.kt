@@ -2,6 +2,7 @@ package com.example.fyp
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -27,18 +30,17 @@ class Feedback:AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.feedback)
-        storeValue()
 
         val pickImageButton: ImageButton = findViewById(R.id.image)
         pickImageButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "image/*"
             startActivityForResult(intent, REQUEST_CODE_IMAGE_PICK)
         }
 
         val pickVideoButton: ImageButton = findViewById(R.id.video)
         pickVideoButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
             intent.type = "video/*"
             startActivityForResult(intent, REQUEST_CODE_VIDEO_PICK)
         }
@@ -59,10 +61,7 @@ class Feedback:AppCompatActivity() {
                 REQUEST_CODE_VIDEO_PICK -> selectedVideoUri = data.data
             }
 
-            // Check if both image and video are selected, then start upload
-            if (selectedImageUri != null && selectedVideoUri != null) {
-                uploadMediaAndData()
-            }
+
         }
     }
 
@@ -105,15 +104,16 @@ class Feedback:AppCompatActivity() {
         // Reference to Firebase Storage
         val storageRef = FirebaseStorage.getInstance().reference
         val db = FirebaseFirestore.getInstance()
-        val documentReference = db.collection("Feedback").document("userId")
+        val id = UUID.randomUUID().toString()
+        val documentReference = db.collection("Feedback").document("userId").collection("feedback").document(id)
         storeValue()
         // Data map for Firestore
         val data = hashMapOf<String, Any>(
-            // Add other data fields here
             "serviceValue" to serviceValue.toString(),
             "performanceValue" to performanceValue.toString(),
             "appValue" to appValue.toString(),
-            "comment" to comment
+            "comment" to comment,
+            "id" to id
         )
 
         // Upload Image

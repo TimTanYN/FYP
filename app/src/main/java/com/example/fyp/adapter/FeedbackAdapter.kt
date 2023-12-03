@@ -41,5 +41,6 @@ data class Feedback(
     val name: String,
     val rating: Double,
     val photoUrl: Int,
-    val response:String
+    val response:String,
+    val id : String
 )
