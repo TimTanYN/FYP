@@ -18,6 +18,9 @@
         android:theme="@style/Theme.FYP"
         tools:targetApi="31">
         <activity
+            android:name=".activity.TestActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.EditAccommodationActivity"
             android:exported="false" />
         <activity
@@ -42,13 +45,31 @@
             android:name=".activity.EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.EditProfileAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditProfileOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AccountAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AccountOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PrivacyActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.ForgetPassActivity"

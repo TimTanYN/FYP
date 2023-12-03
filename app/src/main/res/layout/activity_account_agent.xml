@@ -172,5 +172,5 @@
         android:background="@color/light_blue"
         app:itemIconTint="@drawable/selector_nav_item_color"
         app:itemTextColor="@drawable/selector_nav_item_color"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu_agent" />
 </RelativeLayout>

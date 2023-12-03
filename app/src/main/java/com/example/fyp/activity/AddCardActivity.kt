@@ -30,6 +30,7 @@ class AddCardActivity : AppCompatActivity() {
     private lateinit var textInputLayout: TextInputLayout
     private lateinit var textInputLayout2: TextInputLayout
     private lateinit var textInputLayout3: TextInputLayout
+    private lateinit var error : String
     private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +52,10 @@ class AddCardActivity : AppCompatActivity() {
         setupSecureCodeInput()
 
         btnAdd.setOnClickListener{
-
+            hideKeyboard(it)
             if(validateInputs()){
                 saveCardDetailsToFirestore()
             }
-            val intent = Intent(this, AccountActivity::class.java)
-            startActivity(intent)
         }
     }
 
@@ -73,31 +72,52 @@ class AddCardActivity : AppCompatActivity() {
     private fun saveCardDetailsToFirestore() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val cardNumber = cardNumInput.text.toString().trim()
-        val expiryDate = expiryDateInput.text.toString().trim()
-        val secureCode = secureCodeInput.text.toString().trim()
-
-        val card = Cards(userId, cardNumber, expiryDate, secureCode)
 
         firestore.collection("Cards")
-            .add(card)
-            .addOnSuccessListener {
-                showToast("Card saved")
+            .whereEqualTo("cardNumber", cardNumber)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Card with the same number already exists
+                    showToast("Invalid card")
+                } else {
+                    // No card with this number exists, proceed to save
+                    val expiryDate = expiryDateInput.text.toString().trim()
+                    val secureCode = secureCodeInput.text.toString().trim()
+
+                    val card = Cards(userId, cardNumber, expiryDate, secureCode)
+
+                    firestore.collection("Cards")
+                        .add(card)
+                        .addOnSuccessListener {
+                            showToast("Card saved")
+                            val intent = Intent(this, AccountActivity::class.java)
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener { e ->
+                            showToast("Error saving card")
+                        }
+                }
             }
             .addOnFailureListener { e ->
-                showToast("Error saving card")
+                showToast("Error checking for existing card: ${e.message}")
             }
     }
 
     private fun validateInputs(): Boolean {
         var isValid = true
-        expiryDateInput
-        secureCodeInput
+
+        textInputLayout.isErrorEnabled = true
         val cardNumInput = cardNumInput.text.toString().trim()
         if (cardNumInput.isEmpty()) {
             textInputLayout.error = "Card number cannot be empty"
             isValid = false
         } else if (cardNumInput.first() !in listOf('4', '5')) {
             textInputLayout.error = "You can only enter Visa or Debit card"
+            isValid = false
+        }
+        else if (cardNumInput.length != 19) {
+            textInputLayout.error = "Card number must be in the format XXXX-XXXX-XXXX-XXXX"
             isValid = false
         }
         else {
@@ -107,6 +127,9 @@ class AddCardActivity : AppCompatActivity() {
         val expiryDateInput = expiryDateInput.text.toString().trim()
         if (expiryDateInput.isEmpty()) {
             textInputLayout2.error = "Expire date cannot be empty"
+            isValid = false
+        }else if(error == "yes"){
+            textInputLayout2.error = "YY must be more than current year"
             isValid = false
         }
         else {
@@ -139,9 +162,10 @@ class AddCardActivity : AppCompatActivity() {
                     val digits = str.filter { it.isDigit() }
                     val formatted = digits.chunked(4).joinToString("-").take(19)
                     previousString = formatted
+
                     cardNumInput.removeTextChangedListener(this)
                     cardNumInput.setText(formatted)
-                    cardNumInput.setSelection(formatted.length.coerceAtMost(cardNumInput.text.length))
+                    cardNumInput.setSelection(formatted.length) // Set cursor to the end
                     cardNumInput.addTextChangedListener(this)
                 }
             }
@@ -177,9 +201,10 @@ class AddCardActivity : AppCompatActivity() {
                     }
 
                     if (year.isNotEmpty() && year.length == 2 && year.toInt() <= currentYearLastTwoDigits) {
-                        expiryDateInput.error = "YY must be more than current year"
+                        error = "yes"
+//                        textInputLayout2.error = "YY must be more than current year"
                     } else {
-                        expiryDateInput.error = null
+                        error = "no"
                         previousText = formatted
                         expiryDateInput.removeTextChangedListener(this)
                         expiryDateInput.setText(formatted)
@@ -199,9 +224,9 @@ class AddCardActivity : AppCompatActivity() {
     private fun setupInputField(cardNumInput : EditText, expiryDateInput : EditText, secureCodeInput : EditText) {
 
         // Set initial hint
-        cardNumInput.hint = "Please enter your card number"
-        expiryDateInput.hint = "MM/YY"
-        secureCodeInput.hint = "CVV"
+        textInputLayout.hint = "Please enter your card number"
+        textInputLayout2.hint = "MM/YY"
+        textInputLayout3.hint = "CVV"
 
         // Set onFocusChangeListeners for each EditText
         setFocusChangeListener(cardNumInput, textInputLayout, "Please enter your card number")

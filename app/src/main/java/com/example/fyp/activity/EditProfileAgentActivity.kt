@@ -133,7 +133,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
         userRef.setValue(updatedUser).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 showToast("Profile updated successfully")
-                val intent = Intent(this, AccountActivity::class.java)
+                val intent = Intent(this, AccountAgentActivity::class.java)
                 startActivity(intent)
 
             } else {
@@ -417,7 +417,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccountActivity::class.java)
+            val intent = Intent(this, AccountAgentActivity::class.java)
             startActivity(intent)
         }
     }

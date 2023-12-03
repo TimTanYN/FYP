@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.fyp.activity.AccountActivity
+import com.example.fyp.activity.AccountAgentActivity
+import com.example.fyp.activity.AccountOwnerActivity
 import com.example.fyp.activity.AddAccommodationActivity
 import com.example.fyp.activity.AddCardActivity
 import com.example.fyp.activity.DashActivity
@@ -19,8 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
    
 
-         val intent = Intent(this, AddCardActivity::class.java)
-
+        val intent = Intent(this, AccountOwnerActivity::class.java)
 
         startActivity(intent)
     }

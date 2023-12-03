@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
+import com.example.fyp.adapter.BottomNavigationHandlerOwner
 import com.example.fyp.database.Users
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -34,8 +35,9 @@ class AccountOwnerActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_profile
-        val navigationHandler = BottomNavigationHandler(this)
+        val navigationHandler = BottomNavigationHandlerOwner(this)
         navigationHandler.setupBottomNavigation(bottomNavigationView)
+
 
         val edit: CircleImageView = findViewById(R.id.editProfile)
         val add: Button = findViewById(R.id.btnAddNewCard)
@@ -101,12 +103,11 @@ class AccountOwnerActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.txtPhoneNumber)?.text = user.phoneNumber.drop(3)
                             findViewById<TextView>(R.id.txtCountryCode)?.text = user.phoneNumber.take(3)
                         } catch (e: Exception) {
-                            Log.e("AccountActivity", "Error updating UI", e)
-//                            showToast("Error setting user data")
+                            showToast("Error setting owner data")
                         }
                     }
                 } else {
-                    showToast("User data is null")
+                    showToast("Owner data is null")
                 }
             }
 
@@ -134,7 +135,6 @@ class AccountOwnerActivity : AppCompatActivity() {
         emailTextView.text = user.email
         countryCodeTextView.text = countryCode
         phoneNumberTextView.text = phoneNumber
-        showToast(user.fullName)
     }
 
 
