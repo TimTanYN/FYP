@@ -10,8 +10,12 @@
         android:title="@string/book" />
     <item
         android:id="@+id/nav_agent"
-        android:icon="@drawable/baseline_chat_24"
+        android:icon="@drawable/baseline_people_24"
         android:title="@string/find_agent" />
+    <item
+        android:id="@+id/nav_rating"
+        android:icon="@drawable/baseline_rate_review_24"
+        android:title="@string/rating" />
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/baseline_person_24"

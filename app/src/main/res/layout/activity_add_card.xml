@@ -62,10 +62,10 @@
             android:id="@+id/cardNumInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Please enter your card number"
             android:inputType="number"
             android:textColor="@color/black"
             android:imeOptions="actionNext"
+
             android:textColorHint="@color/smalltitle" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -82,6 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout3"
         android:layout_width="125dp"
         android:layout_height="60dp"
         android:layout_marginStart="16dp"
@@ -96,7 +97,6 @@
             android:id="@+id/secureCodeInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="CVV"
             android:inputType="number|numberPassword"
             android:textColor="@color/black"
             android:textColorHint="@color/smalltitle"
@@ -133,7 +133,6 @@
             android:id="@+id/expiryDateInput"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="MM/YY"
             android:inputType="number"
             android:textColorHint="@color/smalltitle"
             android:imeOptions="actionNext"/>

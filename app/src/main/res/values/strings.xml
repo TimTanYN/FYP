@@ -6,8 +6,12 @@
     <string name="profile">Profile</string>
     <string name="location">Location</string>
     <string name="chat">Chat</string>
-    <string name="find_agent">Agent</string>
+    <string name="find_agent">My Agent</string>
     <string name="manage_room">Manage Room</string>
+    <string name="find_job">Find Job</string>
+    <string name="handle_book">Handle Booking</string>
+    <string name="salary">My Salary</string>
+    <string name="rating">My Rating</string>
     <string name="settings">Settings</string>
 
     <!-- Privacy Policy Contents -->

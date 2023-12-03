@@ -53,7 +53,7 @@
                     android:layout_height="41dp"
                     android:background="@drawable/edit_text_background"
                     android:textColorHint="#B9B8B8"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:textSize="16sp"

@@ -6,6 +6,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import com.example.fyp.R
 import com.example.fyp.activity.AccountActivity
+import com.example.fyp.activity.AccountOwnerActivity
+import com.example.fyp.activity.ManageAccommodationActivity
 import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -25,16 +27,20 @@ class BottomNavigationHandlerOwner(private val context: Context) {
     fun setupBottomNavigation(bottomNavigationView: BottomNavigationView) {
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_find_room -> {
-                    navigateToFindRoom()
+                R.id.nav_manage_room -> {
+                    navigateToManageRoom()
                     true
                 }
                 R.id.nav_book -> {
                     navigateToBook()
                     true
                 }
-                R.id.nav_chat -> {
-                    navigateToChat()
+                R.id.nav_agent -> {
+                    navigateToAgent()
+                    true
+                }
+                R.id.nav_rating-> {
+                    navigateToRating()
                     true
                 }
                 R.id.nav_profile -> {
@@ -50,20 +56,26 @@ class BottomNavigationHandlerOwner(private val context: Context) {
         }
     }
 
-    private fun navigateToFindRoom() {
+    private fun navigateToManageRoom() {
         // Implement navigation logic
-        // Example: context.startActivity(Intent(context, FindRoomActivity::class.java))
+        val intent = Intent(context, ManageAccommodationActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
+        context.startActivity(intent)
     }
 
     private fun navigateToBook() {
         // Implement navigation logic
     }
 
-    private fun navigateToChat() {
+    private fun navigateToAgent() {
+        // Implement navigation logic
+    }
+
+    private fun navigateToRating() {
         // Implement navigation logic
     }
     private fun navigateToProfile() {
-        val intent = Intent(context, AccountActivity::class.java)
+        val intent = Intent(context, AccountOwnerActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
         context.startActivity(intent)
     }
