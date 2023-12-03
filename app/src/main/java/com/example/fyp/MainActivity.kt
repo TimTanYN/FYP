@@ -16,11 +16,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+//        setContentView(R.layout.activity_main)
    
-
-         val intent = Intent(this, AddCardActivity::class.java)
-
+  val intent = Intent(this, FeedbackEnd::class.java)
 
         startActivity(intent)
     }

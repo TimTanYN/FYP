@@ -7,4 +7,6 @@
     <color name="light_blue">#75E6DA</color>
     <color name="smalltitle">#94AFB6</color>
     <color name="semi_transparent_black">#BF000000</color>
+   <color name="grey_background">#D3D3D3</color>
+
 </resources>
