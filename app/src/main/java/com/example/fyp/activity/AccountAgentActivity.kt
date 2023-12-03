@@ -39,8 +39,6 @@ class AccountAgentActivity : AppCompatActivity() {
         val navigationHandler = BottomNavigationHandler(this)
         navigationHandler.setupBottomNavigation(bottomNavigationView)
 
-        showToast("This is agent")
-
         val edit: CircleImageView = findViewById(R.id.editProfile)
         add = findViewById(R.id.btnAddNewCard)
 
@@ -77,12 +75,12 @@ class AccountAgentActivity : AppCompatActivity() {
                 if (!documents.isEmpty) {
                     cardListView.visibility = View.VISIBLE
                     noCardTextView.visibility = View.GONE
-//                    add.visibility = View.GONE
+                    add.visibility = View.GONE
                     val cardsList = documents.toObjects(Cards::class.java)
                     val adapter = CardAdapter(this, cardsList)
                     cardListView.adapter = adapter
                 } else {
-//                    add.visibility = View.VISIBLE
+                    add.visibility = View.VISIBLE
                     cardListView.visibility = View.GONE
                     noCardTextView.visibility = View.VISIBLE
                 }

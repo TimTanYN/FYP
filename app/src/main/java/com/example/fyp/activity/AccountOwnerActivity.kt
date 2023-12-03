@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
 import com.example.fyp.adapter.BottomNavigationHandlerOwner
+import com.example.fyp.adapter.CardAdapter
+import com.example.fyp.database.Cards
 import com.example.fyp.database.Users
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -22,12 +24,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AccountOwnerActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
-    private lateinit var cardsDatabase: DatabaseReference
-
+    private lateinit var add: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,13 +42,11 @@ class AccountOwnerActivity : AppCompatActivity() {
 
 
         val edit: CircleImageView = findViewById(R.id.editProfile)
-        val add: Button = findViewById(R.id.btnAddNewCard)
+        add= findViewById(R.id.btnAddNewCard)
 
         // Initialize Firebase Auth and Database Reference
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         database = FirebaseDatabase.getInstance().getReference("Users")
-        cardsDatabase = FirebaseDatabase.getInstance().getReference("Cards")
-
 
         userId?.let {
             getUserData(it)
@@ -66,23 +66,30 @@ class AccountOwnerActivity : AppCompatActivity() {
     }
 
     private fun checkForCards(userId: String) {
-        cardsDatabase.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    // Cards exist for this user
-                    findViewById<ListView>(R.id.cardList).visibility = View.VISIBLE
-                    findViewById<TextView>(R.id.nocardList).visibility = View.GONE
+        val firestore = FirebaseFirestore.getInstance()
+        val cardListView = findViewById<ListView>(R.id.cardList)
+        val noCardTextView = findViewById<TextView>(R.id.nocardList)
+
+        firestore.collection("Cards")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    cardListView.visibility = View.VISIBLE
+                    noCardTextView.visibility = View.GONE
+                    add.visibility = View.GONE
+                    val cardsList = documents.toObjects(Cards::class.java)
+                    val adapter = CardAdapter(this, cardsList)
+                    cardListView.adapter = adapter
                 } else {
-                    // No cards for this user
-                    findViewById<ListView>(R.id.cardList).visibility = View.GONE
-                    findViewById<TextView>(R.id.nocardList).visibility = View.VISIBLE
+                    add.visibility = View.VISIBLE
+                    cardListView.visibility = View.GONE
+                    noCardTextView.visibility = View.VISIBLE
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                showToast("Failed to retrieve card data")
+            .addOnFailureListener {
+                showToast("Failed to retrieve card")
             }
-        })
     }
 
     private fun getUserData(userId: String) {
