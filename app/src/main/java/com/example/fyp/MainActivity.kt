@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.AddAccommodationActivity
+import com.example.fyp.activity.AddCardActivity
 import com.example.fyp.activity.DashActivity
 import com.example.fyp.activity.EditProfileActivity
 import com.example.fyp.activity.ForgetPassActivity
@@ -18,8 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
    
 
-         val intent = Intent(this, FeedbackMain::class.java)
-
+         val intent = Intent(this, AddCardActivity::class.java)
 
 
         startActivity(intent)

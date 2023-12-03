@@ -103,6 +103,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="6dp"
             android:paddingEnd="16dp"
+            android:inputType="textPersonName|textCapWords"
             android:textColor="@color/black"
             android:drawablePadding="6dp"
             android:drawableStart="@drawable/baseline_person_24" />

@@ -6,5 +6,5 @@
     <color name="my_primary">#5E35B1</color>
     <color name="light_blue">#75E6DA</color>
     <color name="smalltitle">#94AFB6</color>
-
+    <color name="semi_transparent_black">#BF000000</color>
 </resources>

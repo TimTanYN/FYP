@@ -22,14 +22,18 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
 import com.google.android.material.textfield.TextInputLayout
-import de.hdodenhof.circleimageview.CircleImageView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 
-class AddAccommodationActivity : AppCompatActivity() {
+class EditAccommodationActivity : AppCompatActivity() {
+
     private lateinit var edtAccName: EditText
     private lateinit var edtAccAddress1: EditText
     private lateinit var edtAccAddress2: EditText
@@ -46,13 +50,14 @@ class AddAccommodationActivity : AppCompatActivity() {
     private lateinit var cityInputLayout: TextInputLayout
     private lateinit var accDescInputLayout: TextInputLayout
     private lateinit var imageErrorInputLayout: TextInputLayout
+    private lateinit var imageContainer: LinearLayout
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_accommodation)
+        setContentView(R.layout.activity_edit_accommodation)
 
         edtAccName = findViewById(R.id.edtAccName)
         edtAccAddress1 = findViewById(R.id.edtAccAddress1)
@@ -70,8 +75,9 @@ class AddAccommodationActivity : AppCompatActivity() {
         cityInputLayout = findViewById(R.id.cityInputLayout)
         accDescInputLayout = findViewById(R.id.accDescInputLayout)
         imageErrorInputLayout = findViewById(R.id.imageErrorInputLayout)
+        imageContainer = findViewById(R.id.imageContainer)
         val btnUpload = findViewById<Button>(R.id.btnUploadImage)
-        val btnAdd = findViewById<Button>(R.id.btnAdd)
+        val btnSave = findViewById<Button>(R.id.btnSave)
 
         setupSettings()
         setupToolbar()
@@ -79,19 +85,22 @@ class AddAccommodationActivity : AppCompatActivity() {
         setupSpinners()
         setupFee()
 
+        loadImagesForAccommodation("your_accomID")
+
         btnUpload.setOnClickListener {
             // Open image picker to select multiple images
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(intent, IMAGE_PICK_CODE)
+            startActivityForResult(intent, EditAccommodationActivity.IMAGE_PICK_CODE)
         }
 
-        btnAdd.setOnClickListener {
+        btnSave.setOnClickListener {
             if (validateInputs()){
 
             }
         }
+
     }
 
     private fun setupSettings(){
@@ -170,6 +179,7 @@ class AddAccommodationActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun setupSpinners() {
         // Include a default selection for the state spinner
         val states = listOf("Please choose the state") + stateCitiesMap.keys.toList()
@@ -208,7 +218,7 @@ class AddAccommodationActivity : AppCompatActivity() {
     // Handle the result of the image picker
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == EditAccommodationActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
             val imageContainer = findViewById<LinearLayout>(R.id.imageContainer)
             val processImage = { uri: Uri ->
                 val imageView = ImageView(this).apply {
@@ -233,21 +243,7 @@ class AddAccommodationActivity : AppCompatActivity() {
         }
     }
 
-    private fun showRemoveImageDialog(imageView: ImageView, container: ViewGroup) {
-        AlertDialog.Builder(this)
-            .setTitle("Remove Image")
-            .setMessage("Do you want to remove this image?")
-            .setPositiveButton("Yes") { dialog, _ ->
-                container.removeView(imageView)
-                dialog.dismiss()
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
-    private fun setupInputField(cardNumInput : EditText, edtAccAddress1 : EditText, edtAccAddress2 : EditText, rentFeeEditText : EditText, edtAccDesc: EditText) {
+    private fun setupInputField(edtAccName : EditText, edtAccAddress1 : EditText, edtAccAddress2 : EditText, rentFeeEditText : EditText, edtAccDesc: EditText) {
 
         // Set initial hint
         accNameInputLayout.hint = "Please enter your accommodation name"
@@ -355,8 +351,8 @@ class AddAccommodationActivity : AppCompatActivity() {
             isValid = false
         }else {
             val rentFeeValue = rentFeeEditText.toDoubleOrNull() ?: 0.0
-            if (rentFeeValue < 250) {
-                rentFeeInputLayout.error = "Rent fee cannot less than 250"
+            if (rentFeeValue > 250) {
+                rentFeeInputLayout.error = "Rent fee cannot exceed 250"
                 isValid = false
             } else {
                 rentFeeInputLayout.isErrorEnabled = false
@@ -454,5 +450,56 @@ class AddAccommodationActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun loadImagesForAccommodation(accomID: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("AccommodationImages")
+        databaseReference.child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val images = snapshot.child("images").getValue(String::class.java)
+                    images?.split(",")?.forEach { filename ->
+                        downloadAndDisplayImage(filename)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle errors
+            }
+        })
+    }
+
+    private fun downloadAndDisplayImage(filename: String) {
+        val storageReference = FirebaseStorage.getInstance().getReference(filename)
+        storageReference.downloadUrl.addOnSuccessListener { uri ->
+            displayImage(uri)
+        }.addOnFailureListener {
+            // Handle errors
+        }
+    }
+
+    private fun displayImage(uri: Uri) {
+        val imageView = ImageView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(400, 400) // Set your desired size
+            scaleType = ImageView.ScaleType.FIT_XY
+            setImageURI(uri)
+            setOnClickListener { showRemoveImageDialog(this, imageContainer) }
+        }
+        imageContainer.addView(imageView)
+    }
+
+    private fun showRemoveImageDialog(imageView: ImageView, container: ViewGroup) {
+        AlertDialog.Builder(this)
+            .setTitle("Remove Image")
+            .setMessage("Do you want to remove this image?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                container.removeView(imageView)
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
