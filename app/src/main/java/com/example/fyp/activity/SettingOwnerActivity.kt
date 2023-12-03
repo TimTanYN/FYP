@@ -39,7 +39,6 @@ class SettingOwnerActivity : AppCompatActivity() {
             SettingsItem("Notifications", hasSwitch = true),
             SettingsItem("Privacy Policy", hasSwitch = false),
             SettingsItem("Terms & Conditions", hasSwitch = false),
-            SettingsItem("About App", hasSwitch = false),
             SettingsItem("Contact Us", hasSwitch = false),
             SettingsItem("About App", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
