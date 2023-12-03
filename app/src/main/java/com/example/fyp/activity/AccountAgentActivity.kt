@@ -36,7 +36,7 @@ class AccountAgentActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_profile
-        val navigationHandler = BottomNavigationHandler(this)
+        val navigationHandler = BottomNavigationHandlerAgent(this)
         navigationHandler.setupBottomNavigation(bottomNavigationView)
 
         val edit: CircleImageView = findViewById(R.id.editProfile)
@@ -58,7 +58,7 @@ class AccountAgentActivity : AppCompatActivity() {
         }
 
         add.setOnClickListener{
-            val intent = Intent(this, AddCardActivity::class.java)
+            val intent = Intent(this, AddCardAgentActivity::class.java)
             startActivity(intent)
         }
     }

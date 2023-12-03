@@ -60,7 +60,7 @@ class AccountOwnerActivity : AppCompatActivity() {
         }
 
         add.setOnClickListener{
-            val intent = Intent(this, AddCardActivity::class.java)
+            val intent = Intent(this, AddCardOwnerActivity::class.java)
             startActivity(intent)
         }
     }

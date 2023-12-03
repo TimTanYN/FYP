@@ -70,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
+            android:textColor="@color/black"
             android:imeOptions="actionNext"/>
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -102,14 +103,14 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/saveCardBtn"
+        android:id="@+id/delCardBtn"
         android:layout_width="245dp"
         android:layout_height="55dp"
         android:layout_below="@id/textInputLayout3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="24dp"
         android:background="@drawable/custom_button_blue"
-        android:text="Save card"
+        android:text="Delete card"
         android:textColor="@color/white" />
 
 </RelativeLayout>

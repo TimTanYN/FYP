@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
    
 
-        val intent = Intent(this, AccountAgentActivity::class.java)
+        val intent = Intent(this, AccountActivity::class.java)
 
         startActivity(intent)
     }

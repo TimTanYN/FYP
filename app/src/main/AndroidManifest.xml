@@ -27,10 +27,22 @@
             android:name=".activity.DeleteCardActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.DeleteCardAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DeleteCardOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddAccommodationActivity"
             android:exported="false" />
         <activity
             android:name=".activity.AddCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AddCardAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AddCardOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationDetailsActivity"
