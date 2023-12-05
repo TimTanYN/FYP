@@ -417,7 +417,7 @@ class EditProfileOwnerActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccountActivity::class.java)
+            val intent = Intent(this, AccountOwnerActivity::class.java)
             startActivity(intent)
         }
     }

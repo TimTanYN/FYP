@@ -13,6 +13,9 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
+import com.example.fyp.adapter.BottomNavigationHandlerAgent
+import com.example.fyp.adapter.CardAdapter
+import com.example.fyp.database.Cards
 import com.example.fyp.database.Users
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -21,30 +24,27 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import de.hdodenhof.circleimageview.CircleImageView
 
 class AccountAgentActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
-    private lateinit var cardsDatabase: DatabaseReference
-
-
+    private lateinit var add: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_agent)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_profile
-        val navigationHandler = BottomNavigationHandler(this)
+        val navigationHandler = BottomNavigationHandlerAgent(this)
         navigationHandler.setupBottomNavigation(bottomNavigationView)
 
         val edit: CircleImageView = findViewById(R.id.editProfile)
-        val add: Button = findViewById(R.id.btnAddNewCard)
+        add = findViewById(R.id.btnAddNewCard)
 
         // Initialize Firebase Auth and Database Reference
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         database = FirebaseDatabase.getInstance().getReference("Users")
-        cardsDatabase = FirebaseDatabase.getInstance().getReference("Cards")
-
 
         userId?.let {
             getUserData(it)
@@ -58,29 +58,36 @@ class AccountAgentActivity : AppCompatActivity() {
         }
 
         add.setOnClickListener{
-            val intent = Intent(this, AddCardActivity::class.java)
+            val intent = Intent(this, AddCardAgentActivity::class.java)
             startActivity(intent)
         }
     }
 
     private fun checkForCards(userId: String) {
-        cardsDatabase.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    // Cards exist for this user
-                    findViewById<ListView>(R.id.cardList).visibility = View.VISIBLE
-                    findViewById<TextView>(R.id.nocardList).visibility = View.GONE
+        val firestore = FirebaseFirestore.getInstance()
+        val cardListView = findViewById<ListView>(R.id.cardList)
+        val noCardTextView = findViewById<TextView>(R.id.nocardList)
+
+        firestore.collection("Cards")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    cardListView.visibility = View.VISIBLE
+                    noCardTextView.visibility = View.GONE
+                    add.visibility = View.GONE
+                    val cardsList = documents.toObjects(Cards::class.java)
+                    val adapter = CardAdapter(this, cardsList)
+                    cardListView.adapter = adapter
                 } else {
-                    // No cards for this user
-                    findViewById<ListView>(R.id.cardList).visibility = View.GONE
-                    findViewById<TextView>(R.id.nocardList).visibility = View.VISIBLE
+                    add.visibility = View.VISIBLE
+                    cardListView.visibility = View.GONE
+                    noCardTextView.visibility = View.VISIBLE
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                showToast("Failed to retrieve card data")
+            .addOnFailureListener {
+                showToast("Failed to retrieve card")
             }
-        })
     }
 
     private fun getUserData(userId: String) {
@@ -101,12 +108,11 @@ class AccountAgentActivity : AppCompatActivity() {
                             findViewById<TextView>(R.id.txtPhoneNumber)?.text = user.phoneNumber.drop(3)
                             findViewById<TextView>(R.id.txtCountryCode)?.text = user.phoneNumber.take(3)
                         } catch (e: Exception) {
-                            Log.e("AccountActivity", "Error updating UI", e)
-//                            showToast("Error setting user data")
+                            showToast("Error setting agent data")
                         }
                     }
                 } else {
-                    showToast("User data is null")
+                    showToast("Agent data is null")
                 }
             }
 
@@ -134,10 +140,7 @@ class AccountAgentActivity : AppCompatActivity() {
         emailTextView.text = user.email
         countryCodeTextView.text = countryCode
         phoneNumberTextView.text = phoneNumber
-        showToast(user.fullName)
     }
-
-
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

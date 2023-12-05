@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
-class AddCardActivity : AppCompatActivity() {
+class AddCardOwnerActivity : AppCompatActivity() {
     private lateinit var cardNumInput: EditText
     private lateinit var expiryDateInput: EditText
     private lateinit var secureCodeInput: EditText
@@ -64,7 +64,7 @@ class AddCardActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccountActivity::class.java)
+            val intent = Intent(this, AccountOwnerActivity::class.java)
             startActivity(intent)
         }
     }
@@ -91,7 +91,7 @@ class AddCardActivity : AppCompatActivity() {
                         .add(card)
                         .addOnSuccessListener {
                             showToast("Card saved")
-                            val intent = Intent(this, AccountActivity::class.java)
+                            val intent = Intent(this, AccountOwnerActivity::class.java)
                             startActivity(intent)
                         }
                         .addOnFailureListener { e ->

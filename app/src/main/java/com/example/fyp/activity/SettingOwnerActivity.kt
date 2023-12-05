@@ -8,23 +8,24 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
+import com.example.fyp.adapter.BottomNavigationHandlerOwner
 import com.example.fyp.adapter.SettingsAdapter
 import com.example.fyp.adapter.SettingsItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 
-class SettingActivity : AppCompatActivity() {
+class SettingOwnerActivity : AppCompatActivity() {
 
     private lateinit var listView: ListView
     private lateinit var adapter: SettingsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
+        setContentView(R.layout.activity_setting_owner)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.selectedItemId = R.id.nav_settings
-        val navigationHandler = BottomNavigationHandler(this)
+        val navigationHandler = BottomNavigationHandlerOwner(this)
         navigationHandler.setupBottomNavigation(bottomNavigationView)
 
         listView = findViewById(R.id.settings_list)

@@ -27,10 +27,22 @@
             android:name=".activity.DeleteCardActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.DeleteCardAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.DeleteCardOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddAccommodationActivity"
             android:exported="false" />
         <activity
             android:name=".activity.AddCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AddCardAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AddCardOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationDetailsActivity"
@@ -42,13 +54,31 @@
             android:name=".activity.EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.EditProfileAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.EditProfileOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AccountAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AccountOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PrivacyActivity"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.SettingOwnerActivity"
             android:exported="false" />
         <activity
             android:name=".activity.ForgetPassActivity"

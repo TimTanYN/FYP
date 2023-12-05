@@ -8,6 +8,7 @@ import com.example.fyp.R
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.AccountAgentActivity
 import com.example.fyp.activity.SettingActivity
+import com.example.fyp.activity.SettingAgentActivity
 import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -70,7 +71,7 @@ class BottomNavigationHandlerAgent(private val context: Context) {
     }
 
     private fun navigateToSettings() {
-        val intent = Intent(context, SettingActivity::class.java)
+        val intent = Intent(context, SettingAgentActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
         context.startActivity(intent)
     }

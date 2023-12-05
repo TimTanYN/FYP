@@ -12,6 +12,7 @@
     <string name="handle_book">Handle Booking</string>
     <string name="salary">My Salary</string>
     <string name="rating">My Rating</string>
+    <string name="contract">Send Contract</string>
     <string name="settings">Settings</string>
 
     <!-- Privacy Policy Contents -->

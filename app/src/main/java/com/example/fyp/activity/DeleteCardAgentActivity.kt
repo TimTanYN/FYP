@@ -12,7 +12,7 @@ import com.example.fyp.R
 import com.example.fyp.database.Cards
 import com.google.firebase.firestore.FirebaseFirestore
 
-class DeleteCardActivity : AppCompatActivity() {
+class DeleteCardAgentActivity : AppCompatActivity() {
 
     private lateinit var cardNumInput: EditText
     private lateinit var expiryDateInput: EditText
@@ -44,7 +44,7 @@ class DeleteCardActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccountActivity::class.java)
+            val intent = Intent(this, AccountAgentActivity::class.java)
             startActivity(intent)
         }
     }
@@ -98,7 +98,7 @@ class DeleteCardActivity : AppCompatActivity() {
                     firestore.collection("Cards").document(document.id).delete()
                 }
                 showToast("Card deleted")
-                val intent = Intent(this, AccountActivity::class.java)
+                val intent = Intent(this, AccountAgentActivity::class.java)
                 startActivity(intent)
             }
             .addOnFailureListener {
