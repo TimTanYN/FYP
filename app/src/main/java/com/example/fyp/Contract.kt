@@ -2,9 +2,14 @@ package com.example.fyp
 
 
 import android.content.ContentValues
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fyp.adapter.ContractAdapter
 import com.example.fyp.adapter.ContractCard
 import com.example.fyp.adapter.ContractCardAdapter
-import com.example.fyp.adapter.Product
+import com.example.fyp.adapter.Contracts
+import com.example.fyp.adapter.FeedbackEnd
+import com.example.fyp.adapter.FeedbackEndAdapter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.forms.PdfAcroForm
 import com.itextpdf.forms.fields.PdfFormField
@@ -101,31 +108,45 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
 
-        db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount").get().addOnSuccessListener { document ->
-            val usedContracts = document.data?.get("usedContracts") as? Map<String, Long>
-            val topContracts = usedContracts?.toList()?.sortedByDescending { it.second }?.take(6)
-            val contractDetailsList = mutableListOf<Product>()
+        db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount").get()
+            .addOnSuccessListener { document ->
+                val usedContracts = document.data?.get("usedContracts") as? Map<String, Long>
+                val topContracts = usedContracts?.toList()?.sortedByDescending { it.second }?.take(6)
+                val contractDetailsList = mutableListOf<Contracts>()
 
-            topContracts?.forEach {  (contractId, count) ->
+                topContracts?.forEach { (contractId, count) ->
+                    val docRef = db.collection("Contract Template").document("uniqueUserId").collection("con1").document(contractId)
 
-                        contractDetailsList.add(Product(contractId, "Contract"))
+                    docRef.get()
+                        .addOnSuccessListener { documentSnapshot ->
+                            if (documentSnapshot.exists()) {
+                                val text = documentSnapshot.getString("name") ?: "Unknown"
+                                val id = document.id
+                                contractDetailsList.add(Contracts(text, "Contract",id))
 
-                        if (contractDetailsList.size == topContracts.size) {
-                            // Update RecyclerView in the main thread
-                            runOnUiThread {
-                                recyclerView.adapter = ContractAdapter(contractDetailsList,this)
+                                if (contractDetailsList.size == topContracts.size) {
+                                    // Update RecyclerView in the main thread
+                                    runOnUiThread {
+                                        recyclerView.adapter = ContractAdapter(contractDetailsList, this)
+                                    }
+                                }
+                            } else {
+                                Log.d("Firestore", "No such document")
                             }
                         }
-                    }
+                        .addOnFailureListener { exception ->
+                            Log.d("Firestore", "get failed with ", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d("Firestore", "Error getting document: ", exception)
+            }
 
 
 
-        }
 
-
-
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(rv, dx, dy)
 
@@ -179,7 +200,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         }
 
         val contractCard = findViewById<RecyclerView>(R.id.contractCard)
-        contractCard.layoutManager = GridLayoutManager(this, 1) // 2 items per row
+        contractCard.layoutManager =LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
 
         val db = FirebaseFirestore.getInstance()
@@ -190,8 +211,9 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                     val text = document.getString("name")
                     val content = "Contract"
                     val imageResId = R.drawable.ic_launcher_background
+                    val id = document.id
                     if (text != null) {
-                        ContractCard(text,content,imageResId)
+                        ContractCard(text,content,imageResId,id)
                     } else {
                         null
                     }
@@ -208,75 +230,108 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
     private val db = FirebaseFirestore.getInstance()
     override fun onContractClick(contractCard: ContractCard) {
         val userRef =db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount")
-        val contractId = contractCard.name
+        val contractId = contractCard.id
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(userRef)
             val currentCount = snapshot.getLong("usedContracts.$contractId") ?: 0
             transaction.update(userRef, "usedContracts.$contractId", currentCount + 1)
         }
-        fetchEntireCollection(contractCard.name)
+        fetchEntireCollection(contractCard.name,contractCard.id)
     }
 
     override fun onItemClicked(position: Int) {
         // Code to handle item click at the position
     }
 
-    override fun onButtonClicked(position: Int) {
-        main()
+    override fun onButtonClicked(position: Int,contracts: Contracts) {
+        fetchEntireCollection(contracts.name,contracts.id)
     }
-    private fun fetchEntireCollection(name:String) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("Contract Template").document("uniqueUserId").collection(name).document("voPYTWjpqHhw6UbGeA2P")
 
-// Asynchronously retrieve the document
+    override fun onEditButtonClick(contractCard: ContractCard, position: Int) {
+
+    }
+
+    override fun onSendButtonClick(contractCard: ContractCard, position: Int) {
+        val docRef = db.collection("Sent Contract").document("uniqueUserId")
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.contract_dialog_box, null)
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setView(dialogView)
+
+        val editText = dialogView.findViewById<EditText>(R.id.editTextInput)
+        val sendButton = dialogView.findViewById<Button>(R.id.buttonSend)
+
+        val alertDialog = dialogBuilder.create()
+
+        sendButton.setOnClickListener {
+            val inputText = editText.text.toString()
+            val contract = hashMapOf(
+                "contract" to contractCard.id,
+                "owner" to "userID"
+            )
+            docRef.set(contract)
+                .addOnSuccessListener {
+                    Log.d("Firestore", "Document successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error writing document", e)
+                }
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+    }
+    private fun fetchEntireCollection(name:String,id:String) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("Contract Template").document("uniqueUserId").collection(name).document(id)
+
         docRef.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
                     // Document was found
-                    houseAddress = documentSnapshot.getString("houseAddress").toString()
-                    ownerName = documentSnapshot.getString("ownerName").toString()
-                    rentalAmount = documentSnapshot.getString("rentalAmount").toString()
-                    rentalPaymentDate =documentSnapshot.getString("rentalPaymentDate").toString()
-                    paymentReceiver = documentSnapshot.getString("paymentReceiver").toString()
-                    gasPaymentPercentage = documentSnapshot.getString("gasPaymentPercentage").toString()
-                    gasPaymentAmount = documentSnapshot.getString("gasPaymentAmount").toString()
-                    waterPaymentPercentage = documentSnapshot.getString("waterPaymentPercentage").toString()
-                    waterPaymentAmount = documentSnapshot.getString("waterPaymentAmount").toString()
-                    phonePaymentAmount = documentSnapshot.getString("phonePaymentAmount").toString()
-                    phonePaymentPercentage = documentSnapshot.getString("phonePaymentPercentage").toString()
-                    otherPaymentName = documentSnapshot.getString("otherPaymentName") ?: "Default Name"
-                    otherPaymentPercentage = documentSnapshot.getString("otherPaymentPercentage") ?: "Default Percentage"
-                    otherPaymentAmount = documentSnapshot.getString("otherPaymentAmount") ?: "Default Amount"
-                    lastMonthRentDate = documentSnapshot.getString("lastMonthRentDate").toString() ?: "Default Date"
-                    lastMonthRentAmount = documentSnapshot.getString("lastMonthRentAmount") ?: "Default Amount"
-                    securityDepositDate = documentSnapshot.getString("securityDepositDate") ?: "Default Date"
-                    securityDepositAmount = documentSnapshot.getString("securityDepositAmount") ?: "Default Amount"
-                    otherDepositDate = documentSnapshot.getString("otherDepositDate") ?: "Default Date"
-                    otherDepositAmount = documentSnapshot.getString("otherDepositAmount") ?: "Default Amount"
-                    otherDepositDateRange = documentSnapshot.getString("otherDepositDateRange") ?: "Default Date Range"
-                    gas = documentSnapshot.getString("gasFieldNameInFirestore") ?: "defaultGas"
-                    water = documentSnapshot.getString("waterFieldNameInFirestore") ?: "defaultWater"
-                    phone = documentSnapshot.getString("phonePaymentPercentage") ?: "defaultPhone"
-                    other = documentSnapshot.getString("other") ?: "default_value"
-                    household = documentSnapshot.getString("household") ?: "default_value"
-                    thirdParty = documentSnapshot.getString("thirdParty") ?: "default_value"
-                    majority = documentSnapshot.getString("majority") ?: "default_value"
-                    principalTenant = documentSnapshot.getString("principalTenant") ?: "default_value"
-                    owner = documentSnapshot.getString("owner") ?: "default_value"
-                    cleaningValue = documentSnapshot.getString("cleaningValue") ?: "default_value"
-                    kitchenUseValue = documentSnapshot.getString("kitchenUseValue") ?: "default_value"
-                    overnightGuestValue = documentSnapshot.getString("overnightGuestValue") ?: "default_value"
-                    kitchenAppliancesValue = documentSnapshot.getString("kitchenAppliancesValue") ?: "default_value"
-                    smokingValue = documentSnapshot.getString("smokingValue") ?: "default_value"
-                    commonAreaValue = documentSnapshot.getString("commonAreaValue") ?: "Default value if null"
-                    alcoholValue = documentSnapshot.getString("alcoholValue") ?: "Default value if null"
-                    telephoneValue = documentSnapshot.getString("telephoneValue") ?: "Default value if null"
-                    studyValue = documentSnapshot.getString("studyValue") ?: "Default value if null"
-                    personalItemValue = documentSnapshot.getString("personalItemValue") ?: "Default value if null"
-                    musicValue = documentSnapshot.getString("musicValue") ?: "Default Value if null"
-                    bedroomAssignmentValue = documentSnapshot.getString("bedroomAssignmentValue") ?: "Default Value if null"
-                    petsValue = documentSnapshot.getString("petsValue") ?: "Default Value if null" // Correctly access the field
+                    houseAddress = documentSnapshot.getString("houseAddress")?: "-"
+                    ownerName = documentSnapshot.getString("ownerName")?: "-"
+                    rentalAmount = documentSnapshot.getString("rentalAmount")?: "-"
+                    rentalPaymentDate =documentSnapshot.getString("rentalPaymentDate")?: "-"
+                    paymentReceiver = documentSnapshot.getString("paymentReceiver")?: "-"
+                    gasPaymentPercentage = documentSnapshot.getString("gasPaymentPercentage")?: "-"
+                    gasPaymentAmount = documentSnapshot.getString("gasPaymentAmount")?: "-"
+                    waterPaymentPercentage = documentSnapshot.getString("waterPaymentPercentage")?: "-"
+                    waterPaymentAmount = documentSnapshot.getString("waterPaymentAmount")?: "-"
+                    phonePaymentAmount = documentSnapshot.getString("phonePaymentAmount")?: "-"
+                    phonePaymentPercentage = documentSnapshot.getString("phonePaymentPercentage")?: "-"
+                    otherPaymentName = documentSnapshot.getString("otherPaymentName") ?: "-"
+                    otherPaymentPercentage = documentSnapshot.getString("otherPaymentPercentage") ?: "-"
+                    otherPaymentAmount = documentSnapshot.getString("otherPaymentAmount") ?: "-"
+                    lastMonthRentDate = documentSnapshot.getString("lastMonthRentDate") ?: "-"
+                    lastMonthRentAmount = documentSnapshot.getString("lastMonthRentAmount") ?: "-"
+                    securityDepositDate = documentSnapshot.getString("securityDepositDate") ?: "-"
+                    securityDepositAmount = documentSnapshot.getString("securityDepositAmount") ?: "-"
+                    otherDepositDate = documentSnapshot.getString("otherDepositDate") ?: "-"
+                    otherDepositAmount = documentSnapshot.getString("otherDepositAmount") ?: "-"
+                    otherDepositDateRange = documentSnapshot.getString("otherDepositDateRange") ?: "-"
+                    gas = documentSnapshot.getString("gas") ?: "Yes"
+                    water = documentSnapshot.getString("water") ?: "Yes"
+                    phone = documentSnapshot.getString("phone") ?: "Yes"
+                    other = documentSnapshot.getString("other") ?: "Yes"
+                    household = documentSnapshot.getString("household") ?: "-"
+                    thirdParty = documentSnapshot.getString("thirdParty") ?: "-"
+                    majority = documentSnapshot.getString("majority") ?: "-"
+                    principalTenant = documentSnapshot.getString("principalTenant") ?: "-"
+                    owner = documentSnapshot.getString("owner") ?: "-"
+                    cleaningValue = documentSnapshot.getString("cleaningValue") ?: "-"
+                    kitchenUseValue = documentSnapshot.getString("kitchenUseValue") ?: "-"
+                    overnightGuestValue = documentSnapshot.getString("overnightGuestValue") ?: "-"
+                    kitchenAppliancesValue = documentSnapshot.getString("kitchenAppliancesValue") ?: "-"
+                    smokingValue = documentSnapshot.getString("smokingValue") ?: "-"
+                    commonAreaValue = documentSnapshot.getString("commonAreaValue") ?: "-"
+                    alcoholValue = documentSnapshot.getString("alcoholValue") ?: "-"
+                    telephoneValue = documentSnapshot.getString("telephoneValue") ?: "-"
+                    studyValue = documentSnapshot.getString("studyValue") ?: "-"
+                    personalItemValue = documentSnapshot.getString("personalItemValue") ?: "-"
+                    musicValue = documentSnapshot.getString("musicValue") ?: "-"
+                    bedroomAssignmentValue = documentSnapshot.getString("bedroomAssignmentValue") ?: "-"
+                    petsValue = documentSnapshot.getString("petsValue") ?: "-" // Correctly access the field
                     // You now have the data from the "tips" field, do something with it
 
                     main()
@@ -291,23 +346,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             }
     }
 
-    fun fillPdfTemplate(inputPdf: String, outputPdf: String, data: Map<String, String>) {
-        PdfReader(inputPdf).use { reader ->
-            PdfWriter(outputPdf).use { writer ->
-                PdfDocument(reader, writer).use { pdfDoc ->
-                    val form = PdfAcroForm.getAcroForm(pdfDoc, true)
 
-                    data.forEach { (fieldName, fieldValue) ->
-                        val formField = form.getField(fieldName)
-                        formField?.setValue(fieldValue)
-                    }
-
-                    form.flattenFields() // Make the form read-only if you don't need to edit after saving.
-                    pdfDoc.close()
-                }
-            }
-        }
-    }
 
     fun main() {
         val context = this // Assuming 'this' is a Context instance.
@@ -339,7 +378,17 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             "SecurityDepositAmount" to securityDepositAmount,
             "OtherDepositAmount" to otherDepositAmount,
             "OtherDepositDate" to otherDepositDate,
-            "OtherDepositRange" to otherDepositDateRange
+            "OtherDepositRange" to otherDepositDateRange,
+            "UtitlityAmount" to gasPaymentAmount,
+            "WaterAmount" to waterPaymentAmount,
+            "PhoneAmount" to phonePaymentAmount,
+            "OtherAmount" to otherPaymentAmount,
+            "UtilityPercentage" to gasPaymentPercentage,
+            "WaterPercentage" to waterPaymentPercentage,
+            "PhonePercentage" to phonePaymentPercentage,
+            "OtherName" to otherPaymentName,
+            "OtherPercentage" to otherPaymentPercentage,
+
 
         )
 
@@ -349,23 +398,68 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                     PdfWriter(outputPdfPath).use { writer ->
                         PdfDocument(reader, writer).use { pdfDoc ->
                             val form = PdfAcroForm.getAcroForm(pdfDoc, true)
-                            val checkboxField = form.getField("utility")
-                            checkboxField.setValue("Yes")
 
-                            if (checkboxField is PdfFormField) {
-                                // This will tell you the possible values of the checkbox
-                                println("Possible values: ${checkboxField.valueAsString}")
-
-                                // Try to set the value of the checkbox to "Yes"
-                                // If "Yes" does not work, you may need to try "On" or check the actual value as printed above
-                                checkboxField.setValue("Yes")
-
-                                // You can also make sure the field is not read-only by doing:
-                                checkboxField.setReadOnly(false)
-                            }
                             // Select a radio button. Replace "radio_field_name" and "option" with actual values.
-                            val radioGroup = form.getField("UtilityNotInclude")
-                            radioGroup?.setValue("Value_znks")
+                            val UtilityNotInclude = form.getField("UtilityNotInclude")
+                            UtilityNotInclude?.setValue("Value_znks")
+                            if(gas == "Yes"){
+                                val utilitys = form.getField("utilitys")
+                                utilitys?.setValue("utility")
+                                val UtilityPrice = form.getField("UtilityPrice")
+                                UtilityPrice?.setValue("UtilityPrice")
+
+                            }
+
+                            if(water == "Yes"){
+                            val Waters = form.getField("Waters")
+                                Waters?.setValue("Water")
+                                val WaterPrices = form.getField("WaterPrices")
+                                WaterPrices?.setValue("WaterPrice")
+                        }
+
+                            if(phone == "Yes"){
+                                val Phones = form.getField("Phones")
+                                Phones?.setValue("Phone")
+                                val PhonePrices = form.getField("PhonePrices")
+                                PhonePrices?.setValue("PhonePrice")
+                            }
+
+                            if(other == "Yes"){
+                                val Others = form.getField("Others")
+                                Others?.setValue("Other")
+                                val OtherPrices = form.getField("OtherPrices")
+                                OtherPrices?.setValue("OtherPrice")
+                            }
+
+                            if(principalTenant == "Yes"){
+                                val PrincipalTenants = form.getField("PrincipalTenants")
+                                PrincipalTenants?.setValue("PrincipalTenant")
+
+                            }
+
+                            if(household == "Yes"){
+                                val Consensuss = form.getField("Consensuss")
+                                Consensuss?.setValue("Consensus")
+
+                            }
+
+                            if(thirdParty == "Yes"){
+                                val ThirdPartys = form.getField("ThirdPartys")
+                                ThirdPartys?.setValue("ThirdParty")
+
+                            }
+
+                            if(majority == "Yes"){
+                                val Majoritys = form .getField("Majoritys")
+                                Majoritys?.setValue("Majority")
+
+                            }
+
+                            if(owner == "Yes"){
+                                val Owners = form.getField("Owners")
+                                Owners?.setValue("Owner")
+
+                            }
 
                             data.forEach { (fieldName, fieldValue) ->
                                 val formField = form.getField(fieldName)

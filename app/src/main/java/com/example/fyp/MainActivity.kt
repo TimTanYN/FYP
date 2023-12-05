@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
 //        setContentView(R.layout.activity_main)
    
-  val intent = Intent(this, FeedbackEnd::class.java)
+  val intent = Intent(this, Contract::class.java)
 
         startActivity(intent)
     }

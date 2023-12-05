@@ -3,6 +3,7 @@ package com.example.fyp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -13,9 +14,11 @@ import com.example.fyp.R
 class ContractCardAdapter(private val productList: List<ContractCard>, private val clickListener: OnContractClickListener) : RecyclerView.Adapter<ContractCardAdapter.ProductViewHolder>(){
 
     class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val productName: TextView = view.findViewById(R.id.contractName)
-        val productDescription: TextView = view.findViewById(R.id.contractDescription)
-        val productImage: ImageView = view.findViewById(R.id.contractImage)
+        val Name: TextView = view.findViewById(R.id.contractName)
+        val Description: TextView = view.findViewById(R.id.contractDescription)
+        val Image: ImageView = view.findViewById(R.id.contractImage)
+        val edit : Button = view.findViewById(R.id.edit)
+        val send : Button = view.findViewById(R.id.send)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -25,17 +28,20 @@ class ContractCardAdapter(private val productList: List<ContractCard>, private v
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val contract = productList[position]
-        holder.productName.text = contract.name
-        holder.productDescription.text = contract.description
-        Glide.with(holder.productImage.context).load(contract.imageUrl).into(holder.productImage)
-
-        val layoutParams = holder.itemView.layoutParams
-        layoutParams.height = if (position % 2 == 0) 500 else 400 // Example uneven heights
-        holder.itemView.layoutParams = layoutParams
-        println(productList.size)
+        holder.Name.text = contract.name
+        holder.Description.text = contract.description
+        Glide.with(holder.Image.context).load(contract.imageUrl).into(holder.Image)
 
         holder.itemView.setOnClickListener {
             clickListener.onContractClick(contract)
+        }
+
+        holder.edit.setOnClickListener {
+            clickListener.onEditButtonClick(contract, position)
+        }
+
+        holder.send.setOnClickListener {
+            clickListener.onSendButtonClick(contract, position)
         }
     }
 
@@ -43,11 +49,14 @@ class ContractCardAdapter(private val productList: List<ContractCard>, private v
 
     interface OnContractClickListener {
         fun onContractClick(contractCard: ContractCard)
+        fun onEditButtonClick(contractCard: ContractCard, position: Int)
+        fun onSendButtonClick(contractCard: ContractCard, position: Int)
     }
 }
 
 data class ContractCard(
     val name: String,
     val description: String,
-    val imageUrl: Int
+    val imageUrl: Int,
+    val id : String
 )

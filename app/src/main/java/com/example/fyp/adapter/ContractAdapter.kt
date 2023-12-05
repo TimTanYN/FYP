@@ -6,28 +6,26 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.Contract
 import com.example.fyp.R
 
 
 
-class ContractAdapter(private val productList: List<Product>, private val listener:OnItemClickedListener ) :
+class ContractAdapter(private val productList: List<Contracts>, private val listener:OnItemClickedListener ) :
     RecyclerView.Adapter<ContractAdapter.ProductViewHolder>() {
 
     class ProductViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val productName: TextView = view.findViewById(R.id.textProductName)
-        val productDescription: TextView = view.findViewById(R.id.textProductDescription)
-        val productPrice: TextView = view.findViewById(R.id.textProductPrice)
+        val productName: TextView = view.findViewById(R.id.Name)
+        val productDescription: TextView = view.findViewById(R.id.Description)
         val generateButton: Button = view.findViewById(R.id.generate) // Your button
     }
     interface OnItemClickedListener {
         fun onItemClicked(position: Int)
-        fun onButtonClicked(position: Int)
+        fun onButtonClicked(position: Int,contracts: Contracts)
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_product_card, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_contract_card, parent, false)
         return ProductViewHolder(view)
     }
 
@@ -36,9 +34,9 @@ class ContractAdapter(private val productList: List<Product>, private val listen
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = productList[position]
-        holder.productName.text = product.name
-        holder.productDescription.text = product.description
+        val Contract = productList[position]
+        holder.productName.text = Contract.name
+        holder.productDescription.text = Contract.description
 
 
 
@@ -47,7 +45,7 @@ class ContractAdapter(private val productList: List<Product>, private val listen
         }
 
         holder.generateButton.setOnClickListener {
-            listener.onButtonClicked(position)
+            listener.onButtonClicked(position,Contract)
         }
     }
     }
@@ -57,10 +55,9 @@ class ContractAdapter(private val productList: List<Product>, private val listen
 
 
 
-data class Product(
+data class Contracts(
     val name: String,
     val description: String,
-
-    // ... any other properties
+    val id : String
 )
 
