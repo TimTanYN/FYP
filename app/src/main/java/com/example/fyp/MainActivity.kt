@@ -19,9 +19,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-   
+    val intent = Intent(this, Contract::class.java)
 
-        val intent = Intent(this, AccountActivity::class.java)
 
         startActivity(intent)
     }

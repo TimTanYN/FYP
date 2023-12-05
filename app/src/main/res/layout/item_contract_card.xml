@@ -22,7 +22,7 @@
             app:srcCompat="@drawable/ic_launcher_background" />
 
         <TextView
-            android:id="@+id/textProductName"
+            android:id="@+id/Name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -31,17 +31,12 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textProductDescription"
+            android:id="@+id/Description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Product Description" />
 
-        <TextView
-            android:id="@+id/textProductPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Price"
-            android:textStyle="italic" />
+
 
         <!-- You can add more views such as buttons or rating stars here -->
         <Button
