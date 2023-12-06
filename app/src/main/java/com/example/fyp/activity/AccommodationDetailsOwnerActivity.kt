@@ -80,12 +80,14 @@ class AccommodationDetailsOwnerActivity : AppCompatActivity() {
         btnAgent.setOnClickListener {
             val intent = Intent(this, AccommodationUserActivity::class.java)
             intent.putExtra("userId", agentId)
+            intent.putExtra("ACCOM_ID", accomID)
             startActivity(intent)
         }
 
         btnTenant.setOnClickListener {
             val intent = Intent(this, AccommodationUserActivity::class.java)
             intent.putExtra("userId", tenantId)
+            intent.putExtra("ACCOM_ID", accomID)
             startActivity(intent)
         }
     }
@@ -142,9 +144,8 @@ class AccommodationDetailsOwnerActivity : AppCompatActivity() {
 
                         edtAccAddress2.setText(it.accomAddress2)
 
-//                        rentFeeEditText.setText(it.rentFee)
-
-                        rentFeeEditText.setText("RM $it.rentFee")
+                        val rentFee = it.rentFee.toDoubleOrNull() ?: 0.0
+                        rentFeeEditText.setText("RM ${String.format("%.2f", rentFee)}")
 
                         regionEditText.setText("Malaysia")
 
@@ -188,7 +189,7 @@ class AccommodationDetailsOwnerActivity : AppCompatActivity() {
                         agentEditText.setText(it.fullName) // Replace with your TextView ID for agent
                     }
                 } else {
-                    agentEditText.setText("No applied by agent")
+
                 }
             }
 

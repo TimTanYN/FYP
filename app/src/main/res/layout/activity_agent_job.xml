@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AgentJobActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:title="My Jobs"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:contentInsetStartWithNavigation="0dp">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- ListView for displaying Privacy Policy contents -->
+    <ListView
+        android:id="@+id/accommodationListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:listSelector="@android:color/transparent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:scrollbars="none"
+        android:visibility="gone">
+    </ListView>
+
+    <TextView
+        android:id="@+id/noAccommodationListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:text="You didn't apply any jobs !                                You may apply your first job from now"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -80,10 +80,22 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
         setupToolbar()
         loadImagesForAccommodation(accomID)
         loadAccommodationData(accomID)
+        checkIfApplied()
 
         btnApply.setOnClickListener {
+//            if (isApplied) {
+//                checkWithdrawalPossibility()
+//            } else {
+//                showApplyConfirmationDialog()
+//            }
             if (isApplied) {
                 checkWithdrawalPossibility()
+                if (hasSixMonthsPassed(workDate)) {
+                    showWithdrawConfirmationDialog()
+                }
+//                else {
+//                    showToast("You can only withdraw after 6 months")
+//                }
             } else {
                 showApplyConfirmationDialog()
             }
@@ -91,6 +103,42 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
         btnContact.setOnClickListener {
             showContactOptions()
         }
+    }
+
+    private fun showWithdrawConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Withdraw Application")
+            .setMessage("Are you sure you want to withdraw your application?")
+            .setPositiveButton("Yes") { _, _ ->
+                withdrawFromJob()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun checkIfApplied() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+
+        workersRef.orderByChild("agentId").equalTo(currentUserId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (child in snapshot.children) {
+                        val worker = child.getValue(Workers::class.java)
+                        if (worker != null && worker.accomID == accomID) {
+                            btnApply.text = "Applied"
+                            isApplied = true
+                            workDate = worker.workDate
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                showToast("Failed to check application status")
+            }
+        })
     }
 
     private fun showApplyConfirmationDialog() {
@@ -155,8 +203,8 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
     private fun checkWithdrawalPossibility() {
         if (hasSixMonthsPassed(workDate)) {
             AlertDialog.Builder(this)
-                .setTitle("Withdraw Job")
-                .setMessage("Do you want to withdraw from this job?")
+                .setTitle("Withdraw Application")
+                .setMessage("Are you sure you want to withdraw your application?")
                 .setPositiveButton("Yes") { _, _ ->
                     withdrawFromJob()
                 }
@@ -200,23 +248,17 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
     private fun sendEmail(email: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:$email")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            showToast("No email app found")
-        }
+        startActivity(intent)
     }
 
     private fun makePhoneCall(phoneNumber: String) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = Uri.parse("tel:$phoneNumber")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            showToast("No dialer app found")
-        }
+        startActivity(intent)
     }
 
     private fun setupToolbar() {
@@ -272,7 +314,8 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
 
                         edtAccAddress2.setText(it.accomAddress2)
 
-                        rentFeeEditText.setText(it.rentFee)
+                        val rentFee = it.rentFee.toDoubleOrNull() ?: 0.0
+                        rentFeeEditText.setText("RM ${String.format("%.2f", rentFee)}")
 
                         regionEditText.setText("Malaysia")
 
@@ -282,8 +325,10 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
 
                         edtAccCity.setText(it.city)
 
-                        calculateCommission(it.agreement)
+                        val commission = calculateCommission(it.rentFee,it.agreement)
 
+
+                        commissionEditText.setText(commission.toString())
 
                         ownerId = it.ownerId
                         loadOwnerName()
@@ -297,28 +342,26 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
         })
     }
 
-    private fun calculateCommission(year:String) {
-        val rentFee = rentFeeEditText.text.toString().toDoubleOrNull() ?: return
+    private fun calculateCommission(rentFee: String, year: String): String {
+        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
         val agreementYears = when (year) {
             "1 year" -> 1
             "2 years" -> 2
             "3 years" -> 3
             "4 years" -> 4
             "5 years" -> 5
-            else -> return
+            else -> return "RM 0.00"
         }
 
-        val totalRent = rentFee * agreementYears * 12
         val commissionPercentage = when (agreementYears) {
             in 1..2 -> 0.20
             in 3..4 -> 0.25
             else -> 0.28
         }
 
-        val commission = totalRent * commissionPercentage
-        commissionEditText.setText("RM ${String.format("%.2f", commission)}")
+        val monthlyCommission = rentFeeValue * commissionPercentage
+        return "RM ${String.format("%.2f", monthlyCommission)}"
     }
-
 
     private fun loadOwnerName() {
         val usersRef = FirebaseDatabase.getInstance().getReference("Users")

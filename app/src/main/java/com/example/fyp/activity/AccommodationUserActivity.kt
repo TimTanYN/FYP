@@ -27,6 +27,7 @@ class AccommodationUserActivity : AppCompatActivity() {
     private lateinit var profileImageView: CircleImageView
     private lateinit var btnContact: Button
     private var userId:String = ""
+    private var accomID:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +40,11 @@ class AccommodationUserActivity : AppCompatActivity() {
         btnContact = findViewById(R.id.btnContact)
 
         userId = intent.getStringExtra("userId").toString()
+        accomID = intent.getStringExtra("ACCOM_ID").toString()
 
         setupToolbar()
         setupSettings()
-
+        loadUserData()
         btnContact.setOnClickListener {
             showContactOptions()
         }
@@ -91,7 +93,7 @@ class AccommodationUserActivity : AppCompatActivity() {
     }
 
     private fun showContactOptions() {
-        val contactType = if (toolbar.title == "Tenant Details") "tenant" else "agent"
+        val contactType = if (toolbar.title.toString() == "Tenant Details") "tenant" else "agent"
         val options = arrayOf("Send email to $contactType", "Call $contactType")
         AlertDialog.Builder(this)
             .setTitle("Contact Options")
@@ -110,23 +112,17 @@ class AccommodationUserActivity : AppCompatActivity() {
     private fun sendEmail(email: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:$email")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            showToast("No email app found")
-        }
+        startActivity(intent)
     }
 
     private fun makePhoneCall(phoneNumber: String) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = Uri.parse("tel:$phoneNumber")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent)
-        } else {
-            showToast("No dialer app found")
-        }
+        startActivity(intent)
     }
 
     private fun showToast(message: String) {
@@ -139,6 +135,7 @@ class AccommodationUserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
             val intent = Intent(this, AccommodationDetailsOwnerActivity::class.java)
+            intent.putExtra("ACCOM_ID", accomID)
             startActivity(intent)
         }
     }

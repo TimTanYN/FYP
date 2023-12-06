@@ -11,14 +11,34 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/light_blue"
-        android:elevation="4dp"
         app:title="Available Jobs"
-        app:titleTextColor="@color/black"
-        app:contentInsetStartWithNavigation="0dp">
+        app:titleTextColor="@color/black">
 
+        <!-- Button inside the Toolbar -->
+        <Button
+            android:id="@+id/jobButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="160dp"
+            android:textColor="@color/white"
+            android:background="@drawable/green_button"
+            android:text="My Jobs" />
     </androidx.appcompat.widget.Toolbar>
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/light_blue"-->
+<!--        android:elevation="4dp"-->
+<!--        app:title="Available Jobs"-->
+<!--        app:titleTextColor="@color/black"-->
+<!--        app:contentInsetStartWithNavigation="0dp">-->
+
+<!--    </androidx.appcompat.widget.Toolbar>-->
 
     <!-- Settings List -->
     <ListView

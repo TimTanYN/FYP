@@ -134,7 +134,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
                         edtAccAddress2.setText(it.accomAddress2)
 
-                        rentFeeEditText.setText("RM $it.rentFee")
+                        val rentFee = it.rentFee.toDoubleOrNull() ?: 0.0
+                        rentFeeEditText.setText("RM ${String.format("%.2f", rentFee)}")
 
                         regionEditText.setText("Malaysia")
 

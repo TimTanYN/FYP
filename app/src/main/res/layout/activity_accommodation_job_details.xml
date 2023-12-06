@@ -48,12 +48,10 @@
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_weight="1"
                 android:layout_below="@+id/tvImageUpload"
                 android:scrollbars="none">
-
                 <LinearLayout
                     android:id="@+id/imageContainer"
                     android:layout_width="wrap_content"
@@ -428,6 +426,7 @@
                 android:background="@drawable/custom_button_orange"
                 android:text="Contact Owner"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
                 android:textColor="@color/white" />
         </RelativeLayout>
     </ScrollView>

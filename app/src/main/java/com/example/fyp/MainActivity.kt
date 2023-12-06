@@ -3,6 +3,7 @@ package com.example.fyp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.fyp.activity.AccommodationJobListActivity
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.AccountAgentActivity
 import com.example.fyp.activity.AccountOwnerActivity
@@ -22,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
    
 
-        val intent = Intent(this, ManageAccommodationActivity::class.java)
+        val intent = Intent(this, SignInActivity::class.java)
 
         startActivity(intent)
     }

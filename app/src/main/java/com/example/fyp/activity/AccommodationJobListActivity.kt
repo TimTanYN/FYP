@@ -1,8 +1,10 @@
 package com.example.fyp.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
@@ -41,11 +43,18 @@ class AccommodationJobListActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(false)
 
+        val jobButton = findViewById<Button>(R.id.jobButton)
+
         accommodationListView = findViewById(R.id.accommodationListView)
         noAccommodationTextView = findViewById(R.id.noAccommodationListView)
 
         getCurrentUserDetails()
         loadAccommodations()
+
+        jobButton.setOnClickListener{
+            val intent = Intent(this, AgentJobActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun getCurrentUserDetails() {
@@ -83,6 +92,8 @@ class AccommodationJobListActivity : AppCompatActivity() {
                         }
                     }
                     filterAndSortAccommodations()
+                    noAccommodationTextView.visibility = View.GONE
+                    accommodationListView.visibility = View.VISIBLE
                 } else {
                     noAccommodationTextView.visibility = View.VISIBLE
                     accommodationListView.visibility = View.GONE
@@ -96,16 +107,31 @@ class AccommodationJobListActivity : AppCompatActivity() {
     }
 
     private fun filterAndSortAccommodations() {
-        val filteredAccommodations =
-            accommodations.filter { it.city == currentUserCity || it.state == currentUserState }
-        val sortedAccommodations =
-            filteredAccommodations.sortedWith(compareByDescending<Accommodations> {
-                calculateCommission(it.rentFee, it.agreement).removePrefix("RM ").toDouble()
-            }.thenBy { it.city == currentUserCity }.thenBy { it.state == currentUserState })
+        // Filter accommodations based on city and state
+        val filteredAccommodations = accommodations.filter {
+            it.city == currentUserCity || it.state == currentUserState
+        }
 
+        // Determine which list to use - filtered or all accommodations
+        val accommodationsToDisplay = if (filteredAccommodations.isNotEmpty()) {
+            filteredAccommodations
+        } else {
+            accommodations
+        }
+
+        // Sort the accommodations
+        val sortedAccommodations = accommodationsToDisplay.sortedWith(
+            compareByDescending<Accommodations> {
+                calculateCommission(it.rentFee, it.agreement).removePrefix("RM ").toDouble()
+            }.thenBy { it.city == currentUserCity }.thenBy { it.state == currentUserState }
+        )
+
+        // Update UI based on the sorted list
         if (sortedAccommodations.isNotEmpty()) {
             adapter = AccommodationJobAdapter(this, sortedAccommodations)
             accommodationListView.adapter = adapter
+            noAccommodationTextView.visibility = View.GONE
+            accommodationListView.visibility = View.VISIBLE
         } else {
             noAccommodationTextView.visibility = View.VISIBLE
             accommodationListView.visibility = View.GONE

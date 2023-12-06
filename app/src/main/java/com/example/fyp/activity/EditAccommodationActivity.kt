@@ -324,27 +324,85 @@ class EditAccommodationActivity : AppCompatActivity() {
         val database = FirebaseDatabase.getInstance().reference
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        val accommodation = Accommodations(
-            accomID = accomID,
-            accomName = edtAccName.text.toString().trim(),
-            accomAddress1 = edtAccAddress1.text.toString().trim(),
-            accomAddress2 = edtAccAddress2.text.toString().trim(),
-            accomDesc = edtAccDesc.text.toString().trim(),
-            rentFee = rentFeeEditText.text.toString().trim(),
-            state = stateSpinner.selectedItem.toString(),
-            city = citySpinner.selectedItem.toString(),
-            agreement = contractSpinner.selectedItem.toString(),
-            ownerId = userId,
-            agentId = "null"
-        )
+        database.child("Accommodations").child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val existingAccommodation = snapshot.getValue(Accommodations::class.java)
+                val existingAgentId = existingAccommodation?.agentId ?: "null"
 
-        database.child("Accommodations").child(accomID).setValue(accommodation)
-            .addOnSuccessListener {
-                storeAccommodationImages(accomID, imageUrls)
+                val accommodation = Accommodations(
+                    accomID = accomID,
+                    accomName = edtAccName.text.toString().trim(),
+                    accomAddress1 = edtAccAddress1.text.toString().trim(),
+                    accomAddress2 = edtAccAddress2.text.toString().trim(),
+                    accomDesc = edtAccDesc.text.toString().trim(),
+                    rentFee = rentFeeEditText.text.toString().trim(),
+                    state = stateSpinner.selectedItem.toString(),
+                    city = citySpinner.selectedItem.toString(),
+                    agreement = contractSpinner.selectedItem.toString(),
+                    ownerId = userId,
+                    agentId = existingAgentId
+                )
+
+                database.child("Accommodations").child(accomID).setValue(accommodation)
+                    .addOnSuccessListener {
+                        storeAccommodationImages(accomID, imageUrls)
+                        if (existingAgentId != "null") {
+                            updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.agreement)
+                        }
+                    }
+                    .addOnFailureListener {
+                        // Handle failure
+                    }
             }
-            .addOnFailureListener {
-                // Handle failure
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle the error
             }
+        })
+    }
+
+    private fun updateWorkerSalary(accomID: String, agentId: String, rentFee: String, agreement: String) {
+        val newSalary = calculateCommission(rentFee, agreement)
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+
+        workersRef.orderByChild("agentId").equalTo(agentId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (child in snapshot.children) {
+                        if (child.child("accomID").getValue(String::class.java) == accomID) {
+                            child.ref.child("salary").setValue(newSalary)
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle the error
+            }
+        })
+    }
+
+    private fun calculateCommission(rentFee: String, year: String): String {
+        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
+        val agreementYears = when (year) {
+            "1 year" -> 1
+            "2 years" -> 2
+            "3 years" -> 3
+            "4 years" -> 4
+            "5 years" -> 5
+            else -> return "RM 0.00"
+        }
+
+        val commissionPercentage = when (agreementYears) {
+            in 1..2 -> 0.20
+            in 3..4 -> 0.25
+            else -> 0.28
+        }
+
+        val monthlyCommission = rentFeeValue * commissionPercentage
+        showToast(monthlyCommission.toString())
+        return "RM ${String.format("%.2f", monthlyCommission)}"
     }
 
     private fun storeAccommodationImages(accomID: String, imageUrls: List<String>) {

@@ -48,12 +48,10 @@
 
             <HorizontalScrollView
                 android:id="@+id/horizontalScrollView"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_weight="1"
                 android:layout_below="@+id/tvImageUpload"
                 android:scrollbars="none">
-
                 <LinearLayout
                     android:id="@+id/imageContainer"
                     android:layout_width="wrap_content"
@@ -248,7 +246,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingStart="4dp"
-                        android:text="Rent Fee Per Month (RM)"
+                        android:text="Rent Fee Per Month"
                         android:textColor="#808080"/>
 
                     <TextView

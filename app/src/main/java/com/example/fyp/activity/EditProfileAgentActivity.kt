@@ -124,7 +124,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
             email = emailEditText.text.toString().trim(),
             fullName = fullNameEditText.text.toString().trim(),
             phoneNumber = countryCodeSpinner.selectedItem.toString() + mobileNumberEditText.text.toString().trim(),
-            userRole = "User",
+            userRole = "Agent",
             imageLink = imageUrl,
             state = stateSpinner.selectedItem.toString(),
             city = citySpinner.selectedItem.toString(),
