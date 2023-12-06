@@ -5,6 +5,7 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import com.example.fyp.R
+import com.example.fyp.activity.AccommodationListActivity
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SignUpActivity
@@ -52,7 +53,9 @@ class BottomNavigationHandler(private val context: Context) {
 
     private fun navigateToFindRoom() {
         // Implement navigation logic
-        // Example: context.startActivity(Intent(context, FindRoomActivity::class.java))
+        val intent = Intent(context, AccommodationListActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     private fun navigateToBook() {
@@ -64,13 +67,13 @@ class BottomNavigationHandler(private val context: Context) {
     }
     private fun navigateToProfile() {
         val intent = Intent(context, AccountActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 
     private fun navigateToSettings() {
         val intent = Intent(context, SettingActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 }

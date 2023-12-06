@@ -89,7 +89,8 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="16dp"
                     android:textSize="17dp"
-                    android:inputType="textCapWords"
+                    android:maxLength="45"
+                    android:inputType="textCapCharacters"
                     android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -107,7 +108,8 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="16dp"
                     android:textSize="17dp"
-                    android:inputType="textCapWords"
+                    android:maxLength="45"
+                    android:inputType="textCapCharacters"
                     android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -263,6 +265,61 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvAgreement"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="Contract Agreement"
+                        android:textColor="#808080" />
+
+                    <TextView
+                        android:id="@+id/tvBlank"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- State -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/contractInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-8dp"
+                        android:layout_weight="1">
+
+                        <Spinner
+                            android:id="@+id/contractSpinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- City -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/blankInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="-8dp"
+                        android:layout_marginStart="8dp">
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -360,7 +417,9 @@
                 android:background="@drawable/green_button"
                 android:text="Save Update"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:layout_marginBottom="15dp"/>
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

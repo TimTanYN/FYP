@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.AccommodationUserActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:title=""
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:contentInsetStartWithNavigation="0dp">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- ScrollView for the rest of the content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="32dp"/>
+
+            <!-- Email Label and EditText -->
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_marginTop="24dp"
+                android:paddingStart="4dp"
+                android:text="Email Address"
+                android:textColor="#808080" />
+
+            <!-- Email EditText -->
+            <EditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvEmail"
+                android:inputType="textEmailAddress"
+                android:paddingStart="6dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/black"
+                android:drawablePadding="6dp"
+                android:drawableStart="@drawable/baseline_email_24" />
+
+            <!-- Full Name Label and EditText -->
+            <TextView
+                android:id="@+id/tvFullName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:layout_below="@id/edtEmail"
+                android:text="Full Name"
+                android:textColor="#808080" />
+
+
+            <!-- TextInputLayout for Full Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/fullNameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/tvFullName">
+
+                <!-- TextInputEditText for Full Name -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/baseline_person_24"
+                    android:drawablePadding="6dp"
+                    android:inputType="textPersonName|textCapWords"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Mobile Phone Label and EditText -->
+            <TextView
+                android:id="@+id/tvMobile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fullNameInputLayout"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:text="Phone Number"
+                android:textColor="#808080" />
+
+
+            <!-- Mobile Number Section -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/mobileNumberInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/tvMobile">
+
+                <!-- TextInputEditText for Full Name -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtMobile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/baseline_phone_android_24"
+                    android:drawablePadding="6dp"
+                    android:inputType="textPersonName|textCapWords"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Update Button -->
+            <Button
+                android:id="@+id/btnContact"
+                android:layout_width="314dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mobileNumberInputLayout"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/custom_button_purple"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

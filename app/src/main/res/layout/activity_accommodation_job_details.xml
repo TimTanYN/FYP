@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.AddAccommodationActivity">
+    tools:context=".activity.AccommodationJobDetailsActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/light_blue"
         android:elevation="4dp"
-        app:title="Add New Accommodation"
+        app:title="Accommodation Details"
         app:titleTextColor="@color/black"
         app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
         app:contentInsetStartWithNavigation="0dp">
@@ -33,8 +33,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
+
+            <!-- Image Upload Section -->
+            <TextView
+                android:id="@+id/tvImageUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accommodation Images"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:textColor="#808080" />
+
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_weight="1"
+                android:layout_below="@+id/tvImageUpload"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/imageContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"/>
+            </HorizontalScrollView>
+
             <TextView
                 android:id="@+id/tvAccName"
+                android:layout_below="@+id/horizontalScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -89,8 +118,8 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="16dp"
                     android:textSize="17dp"
-                    android:maxLength="45"
-                    android:inputType="textCapCharacters"
+                    android:maxLength="43"
+                    android:inputType="textCapWords"
                     android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,8 +137,8 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="16dp"
                     android:textSize="17dp"
-                    android:maxLength="45"
-                    android:inputType="textCapCharacters"
+                    android:maxLength="43"
+                    android:inputType="textCapWords"
                     android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,10 +191,15 @@
                         android:layout_marginTop="-8dp"
                         android:layout_weight="1">
 
-                        <Spinner
-                            android:id="@+id/stateSpinner"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtAccState"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="16dp"
+                            android:textSize="17dp"
+                            android:inputType="text"
+                            android:textColor="@color/black"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -178,13 +212,19 @@
                         android:layout_marginTop="-8dp"
                         android:layout_marginStart="8dp">
 
-                        <Spinner
-                            android:id="@+id/citySpinner"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtAccCity"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="16dp"
+                            android:textSize="17dp"
+                            android:inputType="text"
+                            android:textColor="@color/black"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+
             </LinearLayout>
 
             <!-- Region in a vertical layout -->
@@ -265,6 +305,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
+
                 <!-- Row for TextViews -->
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -277,14 +318,17 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:paddingStart="4dp"
-                        android:text="Contract Agreement"
+                        android:text="Commission"
                         android:textColor="#808080" />
 
                     <TextView
                         android:id="@+id/tvBlank"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="Owner Name"
+                        android:textColor="#808080"/>
                 </LinearLayout>
 
                 <!-- Row for Spinners -->
@@ -293,35 +337,43 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!-- State -->
+                    <!-- Region -->
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/contractInputLayout"
+                        android:id="@+id/commissionInputLayout"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
                         android:layout_marginTop="-8dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1">
 
-                        <Spinner
-                            android:id="@+id/contractSpinner"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/commissionEditText"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textSize="17dp"
+                            android:textColor="@color/black"
+                            android:inputType="text"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-
-                    <!-- City -->
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/blankInputLayout"
+                        android:id="@+id/ownerInputLayout"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginTop="-8dp"
-                        android:layout_marginStart="8dp">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
 
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/ownerEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textSize="17dp"
+                            android:textColor="@color/black"
+                            android:inputType="text"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                 </LinearLayout>
             </LinearLayout>
-
 
             <TextView
                 android:id="@+id/tvAccDesc"
@@ -355,71 +407,28 @@
                     android:textColor="@color/black"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <!-- Image Upload Section -->
-            <TextView
-                android:id="@+id/tvImageUpload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upload Images (Click the image you want remove)"
-                android:layout_below="@id/accDescInputLayout"
-                android:layout_marginTop="16dp"
-                android:paddingStart="4dp"
-                android:textColor="#808080" />
-
-
-            <LinearLayout
-                android:id="@+id/image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@id/tvImageUpload">
-
-                <HorizontalScrollView
-                    android:id="@+id/horizontalScrollView"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_weight="1"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:id="@+id/imageContainer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"/>
-                </HorizontalScrollView>
-
-                <Button
-                    android:id="@+id/btnUploadImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="Upload"
-                    android:background="@drawable/custom_button_blue"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/imageErrorInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/image"
-                android:layout_marginTop="4dp">
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <!-- Update Button -->
             <Button
-                android:id="@+id/btnAdd"
+                android:id="@+id/btnApply"
                 android:layout_width="314dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/imageErrorInputLayout"
+                android:layout_height="match_parent"
+                android:layout_below="@id/accDescInputLayout"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/green_button"
-                android:text="Add Accommodation"
+                android:background="@drawable/custom_button_blue"
+                android:text="Apply Job"
                 android:layout_centerHorizontal="true"
-                android:textColor="@color/white"
-                android:layout_marginBottom="15dp"/>
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnContact"
+                android:layout_width="314dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/btnApply"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_button_orange"
+                android:text="Contact Owner"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

@@ -7,24 +7,30 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.view.MotionEvent
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Scroller
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.database.Accommodations
 import com.example.fyp.database.Users
+import com.example.fyp.database.Workers
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
-class AccommodationDetailsActivity : AppCompatActivity() {
+class AccommodationJobDetailsActivity : AppCompatActivity() {
 
     private lateinit var edtAccName: EditText
     private lateinit var edtAccAddress1: EditText
@@ -33,15 +39,19 @@ class AccommodationDetailsActivity : AppCompatActivity() {
     private lateinit var edtAccCity: EditText
     private lateinit var rentFeeEditText: EditText
     private lateinit var regionEditText: EditText
-    private lateinit var contractEditText: EditText
+    private lateinit var commissionEditText: EditText
     private lateinit var edtAccDesc: EditText
-    private lateinit var agentEditText: EditText
+    private lateinit var ownerEditText: EditText
     private lateinit var imageContainer: LinearLayout
     private lateinit var accomID: String
-    private lateinit var btnMake: Button
+    private lateinit var btnApply: Button
     private lateinit var btnContact: Button
     private val imageUris = mutableListOf<Uri>()
-    private var agentId:String = ""
+    private lateinit var ownerEmail: String
+    private lateinit var ownerPhoneNumber: String
+    private var ownerId:String = ""
+    private var isApplied: Boolean = false
+    private var workDate: String = ""
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
@@ -49,7 +59,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_accommodation_details)
+        setContentView(R.layout.activity_accommodation_job_details)
 
         edtAccName = findViewById(R.id.edtAccName)
         edtAccAddress1 = findViewById(R.id.edtAccAddress1)
@@ -58,11 +68,11 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         edtAccCity = findViewById(R.id.edtAccCity)
         rentFeeEditText = findViewById(R.id.rentFeeEditText)
         regionEditText = findViewById(R.id.regionEditText)
-        contractEditText = findViewById(R.id.contractEditText)
+        commissionEditText = findViewById(R.id.commissionEditText)
         edtAccDesc = findViewById(R.id.edtAccDesc)
-        agentEditText = findViewById(R.id.agentEditText)
+        ownerEditText = findViewById(R.id.ownerEditText)
         imageContainer = findViewById(R.id.imageContainer)
-        btnMake = findViewById(R.id.btnMake)
+        btnApply = findViewById(R.id.btnApply)
         btnContact = findViewById(R.id.btnContact)
 
         accomID = intent.getStringExtra("ACCOM_ID").toString()
@@ -71,14 +81,141 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         loadImagesForAccommodation(accomID)
         loadAccommodationData(accomID)
 
-        btnMake.setOnClickListener {
-            val intent = Intent(this, AccommodationUserActivity::class.java)
-            intent.putExtra("userId", agentId)
-            startActivity(intent)
+        btnApply.setOnClickListener {
+            if (isApplied) {
+                checkWithdrawalPossibility()
+            } else {
+                showApplyConfirmationDialog()
+            }
         }
-
         btnContact.setOnClickListener {
+            showContactOptions()
+        }
+    }
 
+    private fun showApplyConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Apply for Job")
+            .setMessage("Are you sure you want to apply for this job?  Please take note you can only withdraw after 6 months")
+            .setPositiveButton("Yes") { _, _ ->
+                applyForJob()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+
+    private fun applyForJob() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+        val accommodationsRef = FirebaseDatabase.getInstance().getReference("Accommodations")
+
+        val currentDate = getCurrentDate()
+        val worker = Workers(accomID, currentUserId, currentDate, commissionEditText.text.toString())
+
+        workersRef.push().setValue(worker).addOnSuccessListener {
+            accommodationsRef.child(accomID).child("agentId").setValue(currentUserId)
+            btnApply.text = "Applied"
+            isApplied = true
+            workDate = currentDate
+            showToast("Successfully applied for job")
+        }.addOnFailureListener {
+            showToast("Failed to apply for job")
+        }
+    }
+
+    private fun withdrawFromJob() {
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+        val accommodationsRef = FirebaseDatabase.getInstance().getReference("Accommodations")
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        // Find and delete the worker record
+        workersRef.orderByChild("agentId").equalTo(currentUserId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (child in snapshot.children) {
+                        if (child.child("accomID").getValue(String::class.java) == accomID) {
+                            child.ref.removeValue().addOnSuccessListener {
+                                accommodationsRef.child(accomID).child("agentId").setValue("null")
+                                btnApply.text = "Apply Job"
+                                isApplied = false
+                                showToast("Successfully withdrawn from job")
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                showToast("Failed to withdraw from job")
+            }
+        })
+    }
+
+    private fun checkWithdrawalPossibility() {
+        if (hasSixMonthsPassed(workDate)) {
+            AlertDialog.Builder(this)
+                .setTitle("Withdraw Job")
+                .setMessage("Do you want to withdraw from this job?")
+                .setPositiveButton("Yes") { _, _ ->
+                    withdrawFromJob()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        } else {
+            showToast("You can only withdraw after 6 months")
+        }
+    }
+
+    private fun getCurrentDate(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        return dateFormat.format(Date())
+    }
+
+    private fun hasSixMonthsPassed(fromDate: String): Boolean {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val startDate = dateFormat.parse(fromDate)
+        val currentDate = Date()
+        val diff = currentDate.time - (startDate?.time ?: 0)
+        val days = TimeUnit.MILLISECONDS.toDays(diff)
+        return days >= 180
+    }
+
+    private fun showContactOptions() {
+        val options = arrayOf("Send email to owner", "Call owner")
+        AlertDialog.Builder(this)
+            .setTitle("Contact Owner")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> sendEmail(ownerEmail)
+                    1 -> makePhoneCall(ownerPhoneNumber)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun sendEmail(email: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$email")
+        }
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            showToast("No email app found")
+        }
+    }
+
+    private fun makePhoneCall(phoneNumber: String) {
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+        }
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            showToast("No dialer app found")
         }
     }
 
@@ -87,7 +224,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccommodationListActivity::class.java)
+            val intent = Intent(this, AccommodationJobListActivity::class.java)
             startActivity(intent)
         }
     }
@@ -100,8 +237,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         edtAccState.isEnabled = false
         edtAccCity.isEnabled = false
         rentFeeEditText.isEnabled = false
-        agentEditText.isEnabled = false
-        contractEditText.isEnabled = false
+        ownerEditText.isEnabled = false
+        commissionEditText.isEnabled = false
         regionEditText.isEnabled = false
         edtAccDesc.isEnabled = false
         edtAccDesc.isVerticalScrollBarEnabled = true
@@ -122,7 +259,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
     private fun loadAccommodationData(accomID: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Accommodations")
-        databaseReference.child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
+        databaseReference.child(accomID).addListenerForSingleValueEvent(object :
+            ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val accommodation = snapshot.getValue(Accommodations::class.java)
@@ -134,7 +272,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
                         edtAccAddress2.setText(it.accomAddress2)
 
-                        rentFeeEditText.setText("RM $it.rentFee")
+                        rentFeeEditText.setText(it.rentFee)
 
                         regionEditText.setText("Malaysia")
 
@@ -144,10 +282,11 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
                         edtAccCity.setText(it.city)
 
-                        contractEditText.setText(it.agreement)
+                        calculateCommission(it.agreement)
 
-                        agentId = it.agentId
-                        loadAgentName()
+
+                        ownerId = it.ownerId
+                        loadOwnerName()
                     }
                 }
             }
@@ -158,14 +297,39 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         })
     }
 
-    private fun loadAgentName() {
+    private fun calculateCommission(year:String) {
+        val rentFee = rentFeeEditText.text.toString().toDoubleOrNull() ?: return
+        val agreementYears = when (year) {
+            "1 year" -> 1
+            "2 years" -> 2
+            "3 years" -> 3
+            "4 years" -> 4
+            "5 years" -> 5
+            else -> return
+        }
+
+        val totalRent = rentFee * agreementYears * 12
+        val commissionPercentage = when (agreementYears) {
+            in 1..2 -> 0.20
+            in 3..4 -> 0.25
+            else -> 0.28
+        }
+
+        val commission = totalRent * commissionPercentage
+        commissionEditText.setText("RM ${String.format("%.2f", commission)}")
+    }
+
+
+    private fun loadOwnerName() {
         val usersRef = FirebaseDatabase.getInstance().getReference("Users")
-        usersRef.child(agentId).addListenerForSingleValueEvent(object : ValueEventListener {
+        usersRef.child(ownerId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     val user = snapshot.getValue(Users::class.java)
                     user?.let {
-                        agentEditText.setText(it.fullName)
+                        ownerEditText.setText(it.fullName)
+                        ownerEmail = it.email
+                        ownerPhoneNumber = it.phoneNumber
                     }
                 }
             }
@@ -216,7 +380,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AccommodationDetailsActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == AccommodationJobDetailsActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
             val processImage = { uri: Uri ->
                 imageUris.add(uri) // Add URI to the list
                 val imageView = ImageView(this).apply {

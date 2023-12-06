@@ -5,26 +5,31 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Scroller
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.database.Accommodations
 import com.example.fyp.database.Users
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class AccommodationDetailsActivity : AppCompatActivity() {
+class AccommodationDetailsOwnerActivity : AppCompatActivity() {
 
     private lateinit var edtAccName: EditText
     private lateinit var edtAccAddress1: EditText
@@ -38,9 +43,10 @@ class AccommodationDetailsActivity : AppCompatActivity() {
     private lateinit var agentEditText: EditText
     private lateinit var imageContainer: LinearLayout
     private lateinit var accomID: String
-    private lateinit var btnMake: Button
-    private lateinit var btnContact: Button
+    private lateinit var btnTenant: Button
+    private lateinit var btnAgent: Button
     private val imageUris = mutableListOf<Uri>()
+    private var tenantId:String = ""
     private var agentId:String = ""
 
     companion object {
@@ -49,7 +55,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_accommodation_details)
+        setContentView(R.layout.activity_accommodation_details_owner)
 
         edtAccName = findViewById(R.id.edtAccName)
         edtAccAddress1 = findViewById(R.id.edtAccAddress1)
@@ -62,8 +68,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         edtAccDesc = findViewById(R.id.edtAccDesc)
         agentEditText = findViewById(R.id.agentEditText)
         imageContainer = findViewById(R.id.imageContainer)
-        btnMake = findViewById(R.id.btnMake)
-        btnContact = findViewById(R.id.btnContact)
+        btnTenant = findViewById(R.id.btnTenant)
+        btnAgent = findViewById(R.id.btnAgent)
 
         accomID = intent.getStringExtra("ACCOM_ID").toString()
         setupSettings()
@@ -71,23 +77,26 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         loadImagesForAccommodation(accomID)
         loadAccommodationData(accomID)
 
-        btnMake.setOnClickListener {
+        btnAgent.setOnClickListener {
             val intent = Intent(this, AccommodationUserActivity::class.java)
             intent.putExtra("userId", agentId)
             startActivity(intent)
         }
 
-        btnContact.setOnClickListener {
-
+        btnTenant.setOnClickListener {
+            val intent = Intent(this, AccommodationUserActivity::class.java)
+            intent.putExtra("userId", tenantId)
+            startActivity(intent)
         }
     }
+
 
     private fun setupToolbar() {
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            val intent = Intent(this, AccommodationListActivity::class.java)
+            val intent = Intent(this, ManageAccommodationActivity::class.java)
             startActivity(intent)
         }
     }
@@ -117,7 +126,6 @@ class AccommodationDetailsActivity : AppCompatActivity() {
             }
             false
         }
-
     }
 
     private fun loadAccommodationData(accomID: String) {
@@ -134,6 +142,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
                         edtAccAddress2.setText(it.accomAddress2)
 
+//                        rentFeeEditText.setText(it.rentFee)
+
                         rentFeeEditText.setText("RM $it.rentFee")
 
                         regionEditText.setText("Malaysia")
@@ -147,7 +157,17 @@ class AccommodationDetailsActivity : AppCompatActivity() {
                         contractEditText.setText(it.agreement)
 
                         agentId = it.agentId
-                        loadAgentName()
+                        // Check if agentId is null or "null" and set text accordingly
+                        val agentText = if (agentId == "null") {
+                            "No applied by agent"
+                        }else{
+                            loadAgentName()
+                            btnAgent.visibility = View.VISIBLE
+                        }
+
+                        agentEditText.setText(agentText.toString())
+
+
                     }
                 }
             }
@@ -165,13 +185,15 @@ class AccommodationDetailsActivity : AppCompatActivity() {
                 if (snapshot.exists()) {
                     val user = snapshot.getValue(Users::class.java)
                     user?.let {
-                        agentEditText.setText(it.fullName)
+                        agentEditText.setText(it.fullName) // Replace with your TextView ID for agent
                     }
+                } else {
+                    agentEditText.setText("No applied by agent")
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                showToast("Failed to load data")
+                showToast("Failed to load agent data")
             }
         })
     }
@@ -216,7 +238,7 @@ class AccommodationDetailsActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AccommodationDetailsActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == AccommodationDetailsOwnerActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
             val processImage = { uri: Uri ->
                 imageUris.add(uri) // Add URI to the list
                 val imageView = ImageView(this).apply {

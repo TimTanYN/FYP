@@ -59,7 +59,7 @@ class BottomNavigationHandlerOwner(private val context: Context) {
     private fun navigateToManageRoom() {
         // Implement navigation logic
         val intent = Intent(context, ManageAccommodationActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
     private fun navigateToRating() {
@@ -70,7 +70,7 @@ class BottomNavigationHandlerOwner(private val context: Context) {
     }
     private fun navigateToProfile() {
         val intent = Intent(context, AccountOwnerActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK // Add this if you're calling from a non-Activity context
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 

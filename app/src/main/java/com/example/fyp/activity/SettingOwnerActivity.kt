@@ -41,6 +41,7 @@ class SettingOwnerActivity : AppCompatActivity() {
             SettingsItem("Terms & Conditions", hasSwitch = false),
             SettingsItem("Contact Us", hasSwitch = false),
             SettingsItem("About App", hasSwitch = false),
+            SettingsItem("My Financial", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
             SettingsItem("Rate Us", hasSwitch = false),
             SettingsItem("Logout", hasSwitch = false),
@@ -66,6 +67,9 @@ class SettingOwnerActivity : AppCompatActivity() {
                     // Navigate to "Terms & Conditions" screen
                 }
                 "About App" -> {
+                    // Navigate to "About App" screen
+                }
+                "My Financial" -> {
                     // Navigate to "About App" screen
                 }
                 "Change Password" -> {

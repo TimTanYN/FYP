@@ -127,13 +127,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/tvCardList"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Card Number"
+                android:layout_marginStart="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="25dp"
+                android:visibility="gone"
+                />
             <ListView
                 android:id="@+id/cardList"
+                android:layout_below="@+id/tvCardList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/btnAddNewCard"
                 android:layout_marginBottom="15dp"
-                android:visibility="invisible"
+                android:visibility="gone"
                 />
 
             <TextView
