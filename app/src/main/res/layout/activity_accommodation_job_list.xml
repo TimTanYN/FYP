@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.ManageAccommodationActivity">
+    tools:context=".activity.AccommodationJobListActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
@@ -13,22 +13,34 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/light_blue"
-        app:title="Manage Accommodation"
+        app:title="Available Jobs"
         app:titleTextColor="@color/black">
 
         <!-- Button inside the Toolbar -->
         <Button
-            android:id="@+id/addButton"
+            android:id="@+id/jobButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="160dp"
             android:textColor="@color/white"
             android:background="@drawable/green_button"
-            android:text="Add" />
+            android:text="My Jobs" />
     </androidx.appcompat.widget.Toolbar>
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="@color/light_blue"-->
+<!--        android:elevation="4dp"-->
+<!--        app:title="Available Jobs"-->
+<!--        app:titleTextColor="@color/black"-->
+<!--        app:contentInsetStartWithNavigation="0dp">-->
 
+<!--    </androidx.appcompat.widget.Toolbar>-->
+
+    <!-- Settings List -->
     <ListView
         android:id="@+id/accommodationListView"
         android:layout_width="match_parent"
@@ -40,6 +52,7 @@
         android:listSelector="@android:color/transparent"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
+        android:scrollbars="none"
         android:visibility="gone">
     </ListView>
 
@@ -50,10 +63,10 @@
         android:gravity="center"
         android:textStyle="italic"
         android:textSize="20dp"
-        android:text="You didn't post any room details                             Feel free to have your first room post now !!"
+        android:text="There are not available jobs"
         android:layout_above="@id/bottom_navigation"
-        android:visibility="gone"
-        android:layout_below="@id/toolbar"/>
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -63,5 +76,5 @@
         android:background="@color/light_blue"
         app:itemIconTint="@drawable/selector_nav_item_color"
         app:itemTextColor="@drawable/selector_nav_item_color"
-        app:menu="@menu/bottom_nav_menu_owner" />
+        app:menu="@menu/bottom_nav_menu_agent" />
 </RelativeLayout>

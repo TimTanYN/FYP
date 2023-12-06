@@ -22,15 +22,21 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import com.bumptech.glide.Glide
 import com.example.fyp.R
+import com.example.fyp.database.AccommodationImages
+import com.example.fyp.database.Accommodations
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import java.util.concurrent.atomic.AtomicInteger
 
 class EditAccommodationActivity : AppCompatActivity() {
 
@@ -41,6 +47,7 @@ class EditAccommodationActivity : AppCompatActivity() {
     private lateinit var citySpinner: Spinner
     private lateinit var rentFeeEditText: EditText
     private lateinit var regionEditText: EditText
+    private lateinit var contractSpinner: Spinner
     private lateinit var edtAccDesc: EditText
     private lateinit var accNameInputLayout: TextInputLayout
     private lateinit var accAddressLine1InputLayout: TextInputLayout
@@ -48,9 +55,14 @@ class EditAccommodationActivity : AppCompatActivity() {
     private lateinit var rentFeeInputLayout: TextInputLayout
     private lateinit var stateInputLayout: TextInputLayout
     private lateinit var cityInputLayout: TextInputLayout
+    private lateinit var contractInputLayout: TextInputLayout
     private lateinit var accDescInputLayout: TextInputLayout
     private lateinit var imageErrorInputLayout: TextInputLayout
     private lateinit var imageContainer: LinearLayout
+    private lateinit var accomID: String
+    private val imageUris = mutableListOf<Uri>()
+    private val removedImageUrls = mutableListOf<String>()
+    private var city:String = ""
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
@@ -66,6 +78,7 @@ class EditAccommodationActivity : AppCompatActivity() {
         citySpinner = findViewById(R.id.citySpinner)
         rentFeeEditText = findViewById(R.id.rentFeeEditText)
         regionEditText = findViewById(R.id.regionEditText)
+        contractSpinner = findViewById(R.id.contractSpinner)
         edtAccDesc = findViewById(R.id.edtAccDesc)
         accNameInputLayout = findViewById(R.id.accNameInputLayout)
         accAddressLine1InputLayout = findViewById(R.id.accAddressLine1InputLayout)
@@ -73,6 +86,7 @@ class EditAccommodationActivity : AppCompatActivity() {
         rentFeeInputLayout = findViewById(R.id.rentFeeInputLayout)
         stateInputLayout = findViewById(R.id.stateInputLayout)
         cityInputLayout = findViewById(R.id.cityInputLayout)
+        contractInputLayout = findViewById(R.id.contractInputLayout)
         accDescInputLayout = findViewById(R.id.accDescInputLayout)
         imageErrorInputLayout = findViewById(R.id.imageErrorInputLayout)
         imageContainer = findViewById(R.id.imageContainer)
@@ -81,11 +95,16 @@ class EditAccommodationActivity : AppCompatActivity() {
 
         setupSettings()
         setupToolbar()
-        setupInputField(edtAccName, edtAccAddress1, edtAccAddress2, rentFeeEditText, edtAccDesc)
         setupSpinners()
         setupFee()
+        setupContractSpinner()
 
-        loadImagesForAccommodation("your_accomID")
+        accomID = intent.getStringExtra("ACCOM_ID").toString()
+
+        loadImagesForAccommodation(accomID)
+        loadAccommodationData(accomID)
+
+        setupInputField(edtAccName, edtAccAddress1, edtAccAddress2, rentFeeEditText, edtAccDesc)
 
         btnUpload.setOnClickListener {
             // Open image picker to select multiple images
@@ -96,11 +115,345 @@ class EditAccommodationActivity : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            if (validateInputs()){
-
+            hideKeyboard(it)
+            if (validateInputs()) {
+                uploadImages(accomID, imageUris) { imageUrls ->
+                    storeAccommodationData(accomID, imageUrls)
+                    deleteRemovedImages(accomID)
+                    showToast("Accommodation record updated")
+                    val intent = Intent(this, ManageAccommodationActivity::class.java)
+                    startActivity(intent)
+                }
             }
         }
 
+    }
+
+    private fun deleteRemovedImages(accomID: String) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val databaseRef = FirebaseDatabase.getInstance().getReference("AccommodationImages")
+
+        removedImageUrls.forEach { imageUrl ->
+            // Delete from Firebase Storage
+            val fileRef = storageRef.storage.getReferenceFromUrl(imageUrl)
+            fileRef.delete().addOnSuccessListener {
+                // Delete reference from Firebase Realtime Database
+                databaseRef.orderByChild("accomID").equalTo(accomID)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                for (childSnapshot in snapshot.children) {
+                                    val accommodationImage = childSnapshot.getValue(AccommodationImages::class.java)
+                                    if (accommodationImage?.images == imageUrl) {
+                                        childSnapshot.ref.removeValue()
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                        }
+                    })
+            }.addOnFailureListener {
+            }
+        }
+    }
+
+    private fun loadAccommodationData(accomID: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Accommodations")
+        databaseReference.child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val accommodation = snapshot.getValue(Accommodations::class.java)
+                    accommodation?.let {
+                        // Remove hint before setting text
+                        accNameInputLayout.hint = ""
+                        edtAccName.setText(it.accomName)
+
+                        accAddressLine1InputLayout.hint = ""
+                        edtAccAddress1.setText(it.accomAddress1)
+
+                        accAddressLine2InputLayout.hint = ""
+                        edtAccAddress2.setText(it.accomAddress2)
+
+                        rentFeeInputLayout.hint = ""
+                        rentFeeEditText.setText(it.rentFee)
+
+                        accDescInputLayout.hint = ""
+                        edtAccDesc.setText(it.accomDesc)
+
+                        // Set state and update city spinner accordingly
+                        selectSpinnerItemByValue(stateSpinner, it.state)
+                        city = it.city
+                        updateCitySpinner(it.state)
+
+                        // Set city after updating city spinner
+                        selectSpinnerItemByValue(citySpinner, it.city)
+
+                        // Set contract agreement
+                        selectSpinnerItemByValue(contractSpinner, it.agreement)
+
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                showToast("Failed to load accommodation data")
+            }
+        })
+    }
+
+    private fun selectSpinnerItemByValue(spinner: Spinner, value: String) {
+        val adapter = spinner.adapter
+        for (position in 0 until adapter.count) {
+            if (adapter.getItem(position).toString() == value) {
+                spinner.setSelection(position)
+                return
+            }
+        }
+    }
+
+    private fun loadImagesForAccommodation(accomID: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("AccommodationImages")
+        databaseReference.orderByChild("accomID").equalTo(accomID)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (accommodationImageSnapshot in snapshot.children) {
+                            val imageUrl = accommodationImageSnapshot.child("images").getValue(String::class.java)
+                            imageUrl?.let { displayImage(Uri.parse(it)) }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle errors
+                }
+            })
+    }
+
+    private fun displayImage(uri: Uri) {
+        val imageView = ImageView(this).apply {
+            layoutParams = LinearLayout.LayoutParams(400, 400) // Set your desired size
+            scaleType = ImageView.ScaleType.FIT_XY
+            Glide.with(this@EditAccommodationActivity)
+                .load(uri)
+                .into(this)
+            setOnClickListener { showRemoveImageDialog(this, uri) }
+        }
+        imageContainer.addView(imageView)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EditAccommodationActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
+            val processImage = { uri: Uri ->
+                imageUris.add(uri) // Add URI to the list
+                val imageView = ImageView(this).apply {
+                    layoutParams = LinearLayout.LayoutParams(400, 400) // Set your desired size
+                    scaleType = ImageView.ScaleType.FIT_XY
+                    setImageURI(uri)
+                    setOnClickListener { showRemoveImageDialog(this, uri) }
+                }
+                imageContainer.addView(imageView)
+            }
+
+            data?.clipData?.let { clipData ->
+                // Multiple images selected
+                for (i in 0 until clipData.itemCount) {
+                    val imageUri = clipData.getItemAt(i).uri
+                    processImage(imageUri)
+                }
+            } ?: data?.data?.let { imageUri ->
+                // Single image selected
+                processImage(imageUri)
+            }
+        }
+    }
+
+    private fun showRemoveImageDialog(imageView: ImageView, uri: Uri) {
+        AlertDialog.Builder(this)
+            .setTitle("Remove Image")
+            .setMessage("Do you want to remove this image?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                val imageContainer = findViewById<LinearLayout>(R.id.imageContainer)
+                imageContainer.removeView(imageView)
+                imageUris.remove(uri) // Remove URI from the list
+                removedImageUrls.add(uri.toString()) // Add to removed images list
+                dialog.dismiss()
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun uploadImages(accomID: String, images: List<Uri>, callback: (List<String>) -> Unit) {
+        val storageRef = FirebaseStorage.getInstance().reference
+        val imageUrls = mutableListOf<String>()
+        val uploadedCount = AtomicInteger(0)
+
+        if (images.isEmpty()) {
+            // No new images to upload, call the callback with an empty list
+            callback(imageUrls)
+            return
+        }
+
+        images.forEach { uri ->
+            val fileRef = storageRef.child("accommodation_images/$accomID/${uri.lastPathSegment}")
+            fileRef.putFile(uri).continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
+                }
+                fileRef.downloadUrl
+            }.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUri = task.result
+                    imageUrls.add(downloadUri.toString())
+                    if (uploadedCount.incrementAndGet() == images.size) {
+                        callback(imageUrls)
+                    }
+                } else {
+                    showToast("Failed to upload image")
+                }
+            }
+        }
+    }
+
+    private fun storeAccommodationData(accomID: String, imageUrls: List<String>) {
+        val database = FirebaseDatabase.getInstance().reference
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        database.child("Accommodations").child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val existingAccommodation = snapshot.getValue(Accommodations::class.java)
+                val existingAgentId = existingAccommodation?.agentId ?: "null"
+
+                val accommodation = Accommodations(
+                    accomID = accomID,
+                    accomName = edtAccName.text.toString().trim(),
+                    accomAddress1 = edtAccAddress1.text.toString().trim(),
+                    accomAddress2 = edtAccAddress2.text.toString().trim(),
+                    accomDesc = edtAccDesc.text.toString().trim(),
+                    rentFee = rentFeeEditText.text.toString().trim(),
+                    state = stateSpinner.selectedItem.toString(),
+                    city = citySpinner.selectedItem.toString(),
+                    agreement = contractSpinner.selectedItem.toString(),
+                    ownerId = userId,
+                    agentId = existingAgentId
+                )
+
+                database.child("Accommodations").child(accomID).setValue(accommodation)
+                    .addOnSuccessListener {
+                        storeAccommodationImages(accomID, imageUrls)
+                        if (existingAgentId != "null") {
+                            updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.agreement)
+                        }
+                    }
+                    .addOnFailureListener {
+                        // Handle failure
+                    }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle the error
+            }
+        })
+    }
+
+    private fun updateWorkerSalary(accomID: String, agentId: String, rentFee: String, agreement: String) {
+        val newSalary = calculateCommission(rentFee, agreement)
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+
+        workersRef.orderByChild("agentId").equalTo(agentId).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    for (child in snapshot.children) {
+                        if (child.child("accomID").getValue(String::class.java) == accomID) {
+                            child.ref.child("salary").setValue(newSalary)
+                            break
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle the error
+            }
+        })
+    }
+
+    private fun calculateCommission(rentFee: String, year: String): String {
+        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
+        val agreementYears = when (year) {
+            "1 year" -> 1
+            "2 years" -> 2
+            "3 years" -> 3
+            "4 years" -> 4
+            "5 years" -> 5
+            else -> return "RM 0.00"
+        }
+
+        val commissionPercentage = when (agreementYears) {
+            in 1..2 -> 0.20
+            in 3..4 -> 0.25
+            else -> 0.28
+        }
+
+        val monthlyCommission = rentFeeValue * commissionPercentage
+        showToast(monthlyCommission.toString())
+        return "RM ${String.format("%.2f", monthlyCommission)}"
+    }
+
+    private fun storeAccommodationImages(accomID: String, imageUrls: List<String>) {
+        val database = FirebaseDatabase.getInstance().reference
+        val accomImagesRef = database.child("AccommodationImages")
+
+        imageUrls.forEach { imageUrl ->
+            // Create a new AccommodationImages object for each image
+            val accommodationImage = AccommodationImages(accomID, imageUrl)
+
+            // Generate a unique child for each AccommodationImages object
+            val uniqueImageRef = accomImagesRef.push()
+            uniqueImageRef.setValue(accommodationImage)
+                .addOnSuccessListener {
+
+                }
+                .addOnFailureListener {
+                }
+        }
+    }
+
+    private fun setupContractSpinner() {
+        val spinner: Spinner = findViewById(R.id.contractSpinner)
+        val contractDurations = listOf("1 year", "2 years", "3 years", "4 years", "5 years")
+        val contractDurationsForDropdown = listOf("Please select the contract agreement") + contractDurations
+
+        val contractAdapter = object : ArrayAdapter<String>(
+            this, // Context
+            android.R.layout.simple_spinner_item, // Layout for the normal spinner view
+            contractDurations // Data
+        ) {
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                // Provide the layout for the dropdown view
+                val view = super.getDropDownView(position, convertView, parent)
+                val textView = view as TextView
+                textView.text = contractDurations[position]
+                return view
+            }
+
+            override fun isEnabled(position: Int): Boolean {
+                return position != 0 // Disable the first item (prompt)
+            }
+        }
+
+        contractAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = contractAdapter
+        spinner.setSelection(0) // Set default selection to the prompt
     }
 
     private fun setupSettings(){
@@ -203,44 +556,27 @@ class EditAccommodationActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateCitySpinner(state: String) {
-        val cities = if (state == "Please choose the state") {
-            listOf("Please choose the state")
+    private fun updateCitySpinner(state: String, selectedCity: String? = null) {
+        val cities = if (state in stateCitiesMap.keys) {
+            listOf("Please choose the city") + stateCitiesMap[state]!!
         } else {
-            listOf("Please choose the city") + (stateCitiesMap[state] ?: emptyList())
+            listOf("Please choose the state")
         }
+
 
         val cityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cities)
         cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         citySpinner.adapter = cityAdapter
-    }
 
-    // Handle the result of the image picker
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EditAccommodationActivity.IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
-            val imageContainer = findViewById<LinearLayout>(R.id.imageContainer)
-            val processImage = { uri: Uri ->
-                val imageView = ImageView(this).apply {
-                    layoutParams = LinearLayout.LayoutParams(400, 400) // Set your desired size
-                    scaleType = ImageView.ScaleType.FIT_XY
-                    setImageURI(uri)
-                    setOnClickListener { showRemoveImageDialog(this, imageContainer) }
-                }
-                imageContainer.addView(imageView)
-            }
+        var cityIndex = 0
+        // Set city if not null and exists in the list
+        if (city.toString() != "null"){
+            cityIndex = cities.indexOfFirst { it.equals(city, ignoreCase = true) }.takeIf { it >= 0 } ?: 0
+        }else{
+            cityIndex = cities.indexOfFirst { it.equals(selectedCity, ignoreCase = true) }.takeIf { it >= 0 } ?: 0
 
-            data?.clipData?.let { clipData ->
-                // Multiple images selected
-                for (i in 0 until clipData.itemCount) {
-                    val imageUri = clipData.getItemAt(i).uri
-                    processImage(imageUri)
-                }
-            } ?: data?.data?.let { imageUri ->
-                // Single image selected
-                processImage(imageUri)
-            }
         }
+        citySpinner.setSelection(cityIndex, false) // Set selection without triggering listener
     }
 
     private fun setupInputField(edtAccName : EditText, edtAccAddress1 : EditText, edtAccAddress2 : EditText, rentFeeEditText : EditText, edtAccDesc: EditText) {
@@ -305,6 +641,9 @@ class EditAccommodationActivity : AppCompatActivity() {
         } else if (!isValidAddressFormat(edtAccAddress1)) {
             accAddressLine1InputLayout.error = "Invalid accommodation address format"
             isValid = false
+        }else if (edtAccAddress1.length > 43) {
+            accAddressLine1InputLayout.error = "Input out of range"
+            isValid = false
         }else {
             accAddressLine1InputLayout.isErrorEnabled = false
         }
@@ -312,7 +651,7 @@ class EditAccommodationActivity : AppCompatActivity() {
         val edtAccAddress2 = edtAccAddress2.text.toString().trim()
         if (edtAccAddress2.equals(edtAccAddress1) && !edtAccAddress2.isEmpty()){
             accAddressLine2InputLayout.error = "Both accommodation address blank cannot be same"
-        } else if (!edtAccAddress2.all { it.isLetter() || it.isWhitespace() || it.isDigit() || it == ',' || it == '.' || it == '/' }) {
+        } else if (!isValidAddressFormat(edtAccAddress2) && !edtAccAddress2.isEmpty()) {
             accAddressLine2InputLayout.error = "Invalid accommodation address format"
             isValid = false
         }else {
@@ -351,8 +690,8 @@ class EditAccommodationActivity : AppCompatActivity() {
             isValid = false
         }else {
             val rentFeeValue = rentFeeEditText.toDoubleOrNull() ?: 0.0
-            if (rentFeeValue > 250) {
-                rentFeeInputLayout.error = "Rent fee cannot exceed 250"
+            if (rentFeeValue < 250) {
+                rentFeeInputLayout.error = "Rent fee cannot less than 250"
                 isValid = false
             } else {
                 rentFeeInputLayout.isErrorEnabled = false
@@ -380,22 +719,25 @@ class EditAccommodationActivity : AppCompatActivity() {
         return isValid
     }
 
+
     // Function to check if the address format is valid
     private fun isValidAddressFormat(address: String): Boolean {
         var hasLetter = false
         var hasDigit = false
-        var hasValidSymbol = false
+        var hasOnlyAllowedSymbols = true
 
         address.forEach { char ->
             when {
                 char.isLetter() -> hasLetter = true
                 char.isDigit() -> hasDigit = true
-                char == ',' || char == '.' || char == '/' -> hasValidSymbol = true
+                char.isWhitespace() -> {} // Allow spaces
+                !char.isLetterOrDigit() && char !in listOf(',', '.', '/', ' ') -> hasOnlyAllowedSymbols = false
             }
         }
 
-        return hasLetter && (hasDigit || hasValidSymbol)
+        return (hasLetter || hasDigit) && hasOnlyAllowedSymbols
     }
+
 
     private val stateCitiesMap = mapOf(
         "Johor" to listOf(
@@ -443,6 +785,7 @@ class EditAccommodationActivity : AppCompatActivity() {
 
     )
 
+
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
@@ -452,54 +795,4 @@ class EditAccommodationActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun loadImagesForAccommodation(accomID: String) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("AccommodationImages")
-        databaseReference.child(accomID).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    val images = snapshot.child("images").getValue(String::class.java)
-                    images?.split(",")?.forEach { filename ->
-                        downloadAndDisplayImage(filename)
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle errors
-            }
-        })
-    }
-
-    private fun downloadAndDisplayImage(filename: String) {
-        val storageReference = FirebaseStorage.getInstance().getReference(filename)
-        storageReference.downloadUrl.addOnSuccessListener { uri ->
-            displayImage(uri)
-        }.addOnFailureListener {
-            // Handle errors
-        }
-    }
-
-    private fun displayImage(uri: Uri) {
-        val imageView = ImageView(this).apply {
-            layoutParams = LinearLayout.LayoutParams(400, 400) // Set your desired size
-            scaleType = ImageView.ScaleType.FIT_XY
-            setImageURI(uri)
-            setOnClickListener { showRemoveImageDialog(this, imageContainer) }
-        }
-        imageContainer.addView(imageView)
-    }
-
-    private fun showRemoveImageDialog(imageView: ImageView, container: ViewGroup) {
-        AlertDialog.Builder(this)
-            .setTitle("Remove Image")
-            .setMessage("Do you want to remove this image?")
-            .setPositiveButton("Yes") { dialog, _ ->
-                container.removeView(imageView)
-                dialog.dismiss()
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
 }

@@ -28,6 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 
 class AccountActivity : AppCompatActivity() {
     private lateinit var database: DatabaseReference
+    private lateinit var add: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +40,7 @@ class AccountActivity : AppCompatActivity() {
         navigationHandler.setupBottomNavigation(bottomNavigationView)
 
         val edit: CircleImageView = findViewById(R.id.editProfile)
-        val add: Button = findViewById(R.id.btnAddNewCard)
+        add = findViewById(R.id.btnAddNewCard)
 
         // Initialize Firebase Auth and Database Reference
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -64,6 +65,7 @@ class AccountActivity : AppCompatActivity() {
 
     private fun checkForCards(userId: String) {
         val firestore = FirebaseFirestore.getInstance()
+        val tvCardList = findViewById<TextView>(R.id.tvCardList)
         val cardListView = findViewById<ListView>(R.id.cardList)
         val noCardTextView = findViewById<TextView>(R.id.nocardList)
 
@@ -72,14 +74,19 @@ class AccountActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    tvCardList.visibility = View.VISIBLE
                     cardListView.visibility = View.VISIBLE
                     noCardTextView.visibility = View.GONE
+                    add.visibility = View.GONE
                     val cardsList = documents.toObjects(Cards::class.java)
+
                     val adapter = CardAdapter(this, cardsList)
                     cardListView.adapter = adapter
                 } else {
+                    tvCardList.visibility = View.GONE
                     cardListView.visibility = View.GONE
                     noCardTextView.visibility = View.VISIBLE
+                    add.visibility = View.VISIBLE
                 }
             }
             .addOnFailureListener {

@@ -1,9 +1,434 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.AccommodationDetailsActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:title="Accommodation Details"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:contentInsetStartWithNavigation="0dp">
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- ScrollView for the rest of the content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+            <!-- Image Upload Section -->
+            <TextView
+                android:id="@+id/tvImageUpload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accommodation Images"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:textColor="#808080" />
+
+
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_below="@+id/tvImageUpload"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:id="@+id/imageContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"/>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/tvAccName"
+                android:layout_below="@+id/horizontalScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingStart="4dp"
+                android:text="Accommodation name"
+                android:textColor="#808080" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/accNameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/tvAccName">
+
+                <!-- TextInputEditText for Full Name -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAccName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:textSize="17dp"
+                    android:inputType="textCapSentences"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Full Name Label and EditText -->
+            <TextView
+                android:id="@+id/tvAccAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingStart="4dp"
+                android:layout_below="@id/accNameInputLayout"
+                android:text="Accommodation Address"
+                android:textColor="#808080" />
+
+            <!-- TextInputLayout for Full Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/accAddressLine1InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/tvAccAddress">
+
+                <!-- TextInputEditText for Full Name -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAccAddress1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="17dp"
+                    android:maxLength="43"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/accAddressLine2InputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/accAddressLine1InputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAccAddress2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="17dp"
+                    android:maxLength="43"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- State and City in a combined vertical layout -->
+            <LinearLayout
+                android:id="@+id/combinedStateCityLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/accAddressLine2InputLayout"
+                android:layout_marginTop="16dp">
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvState"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="State"
+                        android:textColor="#808080" />
+
+                    <TextView
+                        android:id="@+id/tvCity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="4dp"
+                        android:text="City"
+                        android:textColor="#808080" />
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- State -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/stateInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="-8dp"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtAccState"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="16dp"
+                            android:textSize="17dp"
+                            android:inputType="text"
+                            android:textColor="@color/black"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <!-- City -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/cityInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginTop="-8dp"
+                        android:layout_marginStart="8dp">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edtAccCity"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="16dp"
+                            android:textSize="17dp"
+                            android:inputType="text"
+                            android:textColor="@color/black"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Region in a vertical layout -->
+            <LinearLayout
+                android:id="@+id/combinedFeeRegionLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/combinedStateCityLayout"
+                android:layout_marginTop="16dp">
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvRentFee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="Rent Fee Per Month"
+                        android:textColor="#808080"/>
+
+                    <TextView
+                        android:id="@+id/tvRegion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:paddingStart="4dp"
+                        android:text="Region"
+                        android:textColor="#808080" />
+                </LinearLayout>
+
+                <!-- Row for EditTexts -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Region -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/rentFeeInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/rentFeeEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textSize="17dp"
+                            android:textColor="@color/black"
+                            android:inputType="phone"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Region -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/regionInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/regionEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textColor="@color/black"
+                            android:textSize="17dp"
+                            android:inputType="text"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvAgreement"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="Contract Agreement"
+                        android:textColor="#808080" />
+
+                    <TextView
+                        android:id="@+id/tvBlank"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:text="Agent Name"
+                        android:textColor="#808080"/>
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Region -->
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/contractInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/contractEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textSize="17dp"
+                            android:textColor="@color/black"
+                            android:inputType="text"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/agentInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="-8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/agentEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:textSize="17dp"
+                            android:textColor="@color/black"
+                            android:inputType="text"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvAccDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:paddingStart="4dp"
+                android:text="Accommodation Description"
+                android:textColor="#808080"
+                android:layout_below="@id/combinedFeeRegionLayout"/>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/accDescInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_below="@id/tvAccDesc">
+
+                <!-- TextInputEditText for Full Name -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtAccDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="16dp"
+                    android:maxLines="5"
+                    android:textSize="17dp"
+                    android:scrollbars="vertical"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:textColor="@color/black"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <!-- Update Button -->
+            <Button
+                android:id="@+id/btnMake"
+                android:layout_width="314dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/accDescInputLayout"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_button_blue"
+                android:text="Make reservation"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnContact"
+                android:layout_width="314dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/btnMake"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_button_orange"
+                android:text="Contact Agent"
+                android:layout_marginBottom="15dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

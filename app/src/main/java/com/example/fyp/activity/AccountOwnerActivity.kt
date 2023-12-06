@@ -67,6 +67,7 @@ class AccountOwnerActivity : AppCompatActivity() {
 
     private fun checkForCards(userId: String) {
         val firestore = FirebaseFirestore.getInstance()
+        val tvCardList = findViewById<TextView>(R.id.tvCardList)
         val cardListView = findViewById<ListView>(R.id.cardList)
         val noCardTextView = findViewById<TextView>(R.id.nocardList)
 
@@ -75,6 +76,7 @@ class AccountOwnerActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    tvCardList.visibility = View.VISIBLE
                     cardListView.visibility = View.VISIBLE
                     noCardTextView.visibility = View.GONE
                     add.visibility = View.GONE
@@ -85,6 +87,7 @@ class AccountOwnerActivity : AppCompatActivity() {
                     add.visibility = View.VISIBLE
                     cardListView.visibility = View.GONE
                     noCardTextView.visibility = View.VISIBLE
+                    tvCardList.visibility = View.GONE
                 }
             }
             .addOnFailureListener {

@@ -124,7 +124,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
             email = emailEditText.text.toString().trim(),
             fullName = fullNameEditText.text.toString().trim(),
             phoneNumber = countryCodeSpinner.selectedItem.toString() + mobileNumberEditText.text.toString().trim(),
-            userRole = "User",
+            userRole = "Agent",
             imageLink = imageUrl,
             state = stateSpinner.selectedItem.toString(),
             city = citySpinner.selectedItem.toString(),
@@ -218,7 +218,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
     }
 
     private fun uploadProfileImage(userId: String, callback: (String) -> Unit) {
-        val storageRef = FirebaseStorage.getInstance().reference.child("$userId.jpg")
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/$userId/$userId.jpg")
         selectedImageUri?.let { uri ->
             storageRef.putFile(uri).continueWithTask { task ->
                 if (!task.isSuccessful) {
@@ -276,7 +276,7 @@ class EditProfileAgentActivity : AppCompatActivity() {
         val cities = if (state in stateCitiesMap.keys) {
             listOf("Please choose your preferred city") + stateCitiesMap[state]!!
         } else {
-            listOf("Please choose your preferred city")
+            listOf("Please choose your preferred state")
         }
 
 

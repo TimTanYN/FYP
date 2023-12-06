@@ -112,8 +112,8 @@ class AddCardAgentActivity : AppCompatActivity() {
         if (cardNumInput.isEmpty()) {
             textInputLayout.error = "Card number cannot be empty"
             isValid = false
-        } else if (cardNumInput.first() !in listOf('4', '5')) {
-            textInputLayout.error = "You can only enter Visa or Debit card"
+        } else if (cardNumInput.first() !in listOf('5')) {
+            textInputLayout.error = "You can only enter Debit card"
             isValid = false
         }
         else if (cardNumInput.length != 19) {
