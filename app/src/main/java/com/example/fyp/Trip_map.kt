@@ -312,18 +312,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                     val formattedTime = String.format("%02d:%02d", hours, minutes)
                                     println("Formatted Time: $formattedTime")
                                     val eta = timeFormat.format(currentTime.time)
-//                                    for (waypoint in waypoints) {
-//                                        findRestaurantsNearby(waypoint.latitude, waypoint.longitude) { fetchedRestaurants ->
-//                                            allFetchedRestaurants.addAll(fetchedRestaurants)
-//                                            waypointsProcessed++
-//                                            println(waypointsProcessed)
-//                                            if (waypointsProcessed == waypoints.size) {
-//                                                // All waypoints have been processed, update ViewModel
-//                                                println("hi")
-//                                                models.setRestaurants(allFetchedRestaurants)
-//                                            }
-//                                        }
-//                                    }
+
                                     findRestaurantsNearby(waypointStart.latitude, waypointStart.longitude,"AIzaSyC5yymY6tx1MPCx3Kg-9yHmuqAW-zkdyJ4") { fetchedRestaurants ->
                                         // This code block will be executed after restaurants are fetched
                                         activity?.runOnUiThread {

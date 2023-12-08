@@ -132,6 +132,8 @@
         <activity android:name=".FeedbackEnd" />
         <activity android:name=".FeedbackResponse" />
         <activity android:name=".PhotoAndVideo" />
+        <activity android:name=".FeedbackReport" />
+        <activity android:name=".FeedbackChart" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

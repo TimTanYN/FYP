@@ -12,14 +12,13 @@ import com.example.fyp.Trip_map
 class MapTabsAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity){
 
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> PublicTransport()
-            1 -> Trip_map()
+            0 -> Trip_map()
+            1 -> PublicTransport()
             2 -> RestaurantFragment()
-            3 -> PublicTransport()
             else -> throw IllegalArgumentException("Invalid position $position")
         }
     }

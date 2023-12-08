@@ -23,8 +23,7 @@ class FeedbackResponse:AppCompatActivity() {
         setContentView(R.layout.feedback_response)
 
         val feedbackEnd = intent.getSerializableExtra("feedback") as FeedbackEnd
-        println(feedbackEnd.id)
-        feedback = db.collection("Feedback").document("userId").collection("feedback").document(feedbackEnd.id)
+
         val comment = findViewById<TextView>(R.id.comment)
         val pic = findViewById<ImageView>(R.id.profilePicture)
         val rating = findViewById<RatingBar>(R.id.rating)
@@ -36,7 +35,7 @@ class FeedbackResponse:AppCompatActivity() {
 
         val responseButton = findViewById<Button>(R.id.responseButton)
         responseButton.setOnClickListener(){
-            response()
+            response(feedbackEnd.id)
         }
 
         val delete = findViewById<Button>(R.id.delete)
@@ -53,13 +52,14 @@ class FeedbackResponse:AppCompatActivity() {
     }
     val db = FirebaseFirestore.getInstance()
 
-    private fun response(){
+    private fun response(id:String){
 
         val responseText = findViewById<EditText>(R.id.response).text.toString()
+        feedback = db.collection("Feedback").document(id)
         feedback.update("response", responseText)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")
-                val intent = Intent(this, FeedbackEnd::class.java)
+                val intent = Intent(this, com.example.fyp.FeedbackEnd::class.java)
                 startActivity(intent)
             }
             .addOnFailureListener { e ->

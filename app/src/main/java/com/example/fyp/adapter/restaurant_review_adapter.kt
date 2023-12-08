@@ -39,7 +39,7 @@ class restaurant_review_adapter (private val reviewList: List<Review>) : Recycle
 
         // Set an image for profilePictureImageView if available
         // For example, using a placeholder image:
-        holder.profilePictureImageView.setImageResource(R.drawable.bus)
+        holder.profilePictureImageView.setImageResource(R.drawable.profile)
     }
 
     override fun getItemCount() = reviewList.size

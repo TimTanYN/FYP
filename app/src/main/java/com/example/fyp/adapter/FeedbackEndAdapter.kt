@@ -31,7 +31,7 @@ class FeedbackEndAdapter(var feedbackList: MutableList<FeedbackEnd>, private val
         holder.profileName.text = feedback.name
         holder.rating.rating = feedback.rating.toFloat()
         holder.comment.text = feedback.comment
-        holder.profilePicture.setImageResource(R.drawable.address)
+        holder.profilePicture.setImageResource(R.drawable.profile)
 
         holder.itemView.setOnClickListener {
             clickListener.onFeedbackEndClick(feedback)

@@ -1,16 +1,21 @@
 package com.example.fyp
 
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -98,7 +103,8 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contract)
 
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
 
         val recyclerView: RecyclerView = findViewById(R.id.Contract)
@@ -248,36 +254,38 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         fetchEntireCollection(contracts.name,contracts.id)
     }
 
-    override fun onEditButtonClick(contractCard: ContractCard, position: Int) {
 
-    }
+
+
 
     override fun onSendButtonClick(contractCard: ContractCard, position: Int) {
-        val docRef = db.collection("Sent Contract").document("uniqueUserId")
         val dialogView = LayoutInflater.from(this).inflate(R.layout.contract_dialog_box, null)
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setView(dialogView)
+        val names = dialogView.findViewById<TextView>(R.id.names)
+        val remarks = dialogView.findViewById<TextView>(R.id.remark)
 
-        val editText = dialogView.findViewById<EditText>(R.id.editTextInput)
-        val sendButton = dialogView.findViewById<Button>(R.id.buttonSend)
+        val docRef = db.collection("Contract Template").document("uniqueUserId").collection("con1").document(contractCard.id)
+
+        docRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                   val name = documentSnapshot.getString("name") ?: "-"
+                   val remark = documentSnapshot.getString("remark") ?: "-"
+                    names.text = "Name : $name"
+                    remarks.text = "Remark : $remark"
+                } else {
+                    // No such document
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors here
+                Log.d("Firestore", "get failed with ", exception)
+            }
+
 
         val alertDialog = dialogBuilder.create()
-
-        sendButton.setOnClickListener {
-            val inputText = editText.text.toString()
-            val contract = hashMapOf(
-                "contract" to contractCard.id,
-                "owner" to "userID"
-            )
-            docRef.set(contract)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Document successfully written!")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("Firestore", "Error writing document", e)
-                }
-            alertDialog.dismiss()
-        }
 
         alertDialog.show()
     }
@@ -348,6 +356,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
 
 
 
+    @SuppressLint("SuspiciousIndentation")
     fun main() {
         val context = this // Assuming 'this' is a Context instance.
         val inputPdf = "rental-agreement-room.pdf" // The template PDF with placeholders
@@ -476,13 +485,22 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         }
     }
 
-    fun updateArrowButtons() {
-        val recyclerView: RecyclerView = findViewById(R.id.Contract)
-        val leftArrowButton: ImageButton = findViewById(R.id.leftArrowButton)
-        val rightArrowButton: ImageButton = findViewById(R.id.rightArrowButton)
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        leftArrowButton.isEnabled = layoutManager.findFirstCompletelyVisibleItemPosition() > 0
-        rightArrowButton.isEnabled = layoutManager.findLastCompletelyVisibleItemPosition() < (recyclerView.adapter?.itemCount?.minus(1) ?: 0)
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.contract, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.contract -> {
+                val intent = Intent(this, ContractTemplate::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 }

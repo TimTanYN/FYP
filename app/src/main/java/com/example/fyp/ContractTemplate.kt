@@ -4,12 +4,15 @@ import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.provider.MediaStore.Audio.Radio
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -80,7 +83,8 @@ class ContractTemplate:AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contract_template)
 
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
         houseAddressEditText = findViewById(R.id.houseAddress)
         ownerNameEditText = findViewById(R.id.ownerName)
         rentalAmountEditText = findViewById(R.id.rentalAmount)
@@ -141,10 +145,7 @@ class ContractTemplate:AppCompatActivity() {
         petsYes = findViewById(R.id.petsYes)
         petsNo = findViewById(R.id.petsNo)
 
-        val button = findViewById<Button>(R.id.submitContractTemplate)
-        button.setOnClickListener(){
-            getData()
-        }
+
 
     }
 
@@ -223,6 +224,8 @@ class ContractTemplate:AppCompatActivity() {
         val principalTenant = if(isPrincipalTenantChecked) "Yes" else "No"
         val owner = if(isOwnerChecked) "Yes" else "No"
 
+        val name = findViewById<EditText>(R.id.contractNameText)
+        val remark = findViewById<EditText>(R.id.remarkText)
         val data: MutableMap<String, Any> = HashMap()
         data["houseAddress"] = houseAddress
         data["ownerName"] = ownerName
@@ -267,6 +270,8 @@ class ContractTemplate:AppCompatActivity() {
         data["majority"] = majority
         data["principalTenant"] = principalTenant
         data["owner"] = owner
+        data["name"] = name
+        data["remark"] = remark
 
         val db = FirebaseFirestore.getInstance()
         val contractTemplate = db.collection("Contract Template").document("uniqueUserId").collection("con1").document()
@@ -282,5 +287,18 @@ class ContractTemplate:AppCompatActivity() {
             }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.submit, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.submit -> {
+                getData()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }

@@ -17,7 +17,7 @@ class ContractCardAdapter(private val productList: List<ContractCard>, private v
         val Name: TextView = view.findViewById(R.id.contractName)
         val Description: TextView = view.findViewById(R.id.contractDescription)
         val Image: ImageView = view.findViewById(R.id.contractImage)
-        val edit : Button = view.findViewById(R.id.edit)
+
         val send : Button = view.findViewById(R.id.send)
     }
 
@@ -36,9 +36,7 @@ class ContractCardAdapter(private val productList: List<ContractCard>, private v
             clickListener.onContractClick(contract)
         }
 
-        holder.edit.setOnClickListener {
-            clickListener.onEditButtonClick(contract, position)
-        }
+
 
         holder.send.setOnClickListener {
             clickListener.onSendButtonClick(contract, position)
@@ -49,7 +47,7 @@ class ContractCardAdapter(private val productList: List<ContractCard>, private v
 
     interface OnContractClickListener {
         fun onContractClick(contractCard: ContractCard)
-        fun onEditButtonClick(contractCard: ContractCard, position: Int)
+
         fun onSendButtonClick(contractCard: ContractCard, position: Int)
     }
 }

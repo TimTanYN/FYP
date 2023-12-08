@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import com.example.fyp.FeedbackMain
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
 import com.example.fyp.adapter.SettingsAdapter
@@ -42,6 +43,7 @@ class SettingActivity : AppCompatActivity() {
             SettingsItem("About App", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
             SettingsItem("Rate Us", hasSwitch = false),
+            SettingsItem("Contract", hasSwitch = false),
             SettingsItem("Logout", hasSwitch = false),
 
         )
@@ -70,8 +72,12 @@ class SettingActivity : AppCompatActivity() {
                 "Change Password" -> {
 
                 }
-                "Rate Us" -> {
+                "Contract" -> {
 
+                }
+                "Rate Us" -> {
+                    val intent = Intent(this, FeedbackMain::class.java)
+                    startActivity(intent)
                 }
                 "Logout" -> {
                     showSignOutDialog()

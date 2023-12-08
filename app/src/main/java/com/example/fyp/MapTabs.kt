@@ -27,10 +27,9 @@ class MapTabs:AppCompatActivity() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "View"
-                1 -> "Create"
-                2 -> "Update"
-                3 -> "Delete"
+                0 -> "Map"
+                1 -> "Transport"
+                2 -> "Food"
                 else -> throw IllegalArgumentException("Invalid position $position")
             }
         }.attach()

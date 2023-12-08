@@ -15,14 +15,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickListener{
 
     private val db = FirebaseFirestore.getInstance()
-    private val documentReference = db.collection("Feedback").document("userId").collection("feedback")
+    private val documentReference = db.collection("Feedback")
     var feedbackItem: FeedbackEnd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.feedback_end)
+        val feedbackItems = mutableListOf<FeedbackEnd>()
         val recyclerView: RecyclerView = findViewById(R.id.feedbackEnd)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         documentReference.get()
             .addOnSuccessListener { querySnapshot ->
@@ -30,7 +31,7 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
                     val items = querySnapshot.documents.mapNotNull { document ->
                         val name = document.getString("name") ?: "Unknown"
                         val rating = document.getString("appValue")?.toDouble() ?: 0.0 // Default rating if null
-                        val imageResId = R.drawable.address
+                        val imageResId = R.drawable.profile
                         val comment = document.getString("comment") ?: "Unknown"
                         val id = document.id
                         val photoUrl = document.getString("imageUrl") ?: ""
