@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -106,6 +107,87 @@ class ContractTemplate:AppCompatActivity() {
         otherDepositAmount = findViewById(R.id.otherDepositAmount)
         otherDepositDate = findViewById(R.id.otherDepositDate)
         otherDepositDateRange = findViewById(R.id.otherDepositDateRange)
+
+        if (houseAddressEditText.text.toString().trim().isEmpty()) {
+            houseAddressEditText.error = "This field cannot be empty"
+        }
+
+        if (ownerNameEditText.text.toString().trim().isEmpty()) {
+            ownerNameEditText.error = "This field cannot be empty"
+        }
+
+        if (rentalAmountEditText.text.toString().trim().isEmpty()) {
+            rentalAmountEditText.error = "This field cannot be empty"
+        }
+
+        if (rentalPaymentDateEditText.text.toString().trim().isEmpty()) {
+            rentalPaymentDateEditText.error = "This field cannot be empty"
+        }
+
+        if (paymentReceiverEditText.text.toString().trim().isEmpty()) {
+            paymentReceiverEditText.error = "This field cannot be empty"
+        }
+
+        if (gasPaymentPercentageEditText.text.toString().trim().isEmpty()) {
+            gasPaymentPercentageEditText.error = "This field cannot be empty"
+        }
+
+        if (gasPaymentAmountEditText.text.toString().trim().isEmpty()) {
+            gasPaymentAmountEditText.error = "This field cannot be empty"
+        }
+
+        if (waterPaymentPercentageEditText.text.toString().trim().isEmpty()) {
+            waterPaymentPercentageEditText.error = "This field cannot be empty"
+        }
+
+        if (waterPaymentAmountEditText.text.toString().trim().isEmpty()) {
+            waterPaymentAmountEditText.error = "This field cannot be empty"
+        }
+
+        if (phonePaymentPercentageEditText.text.toString().trim().isEmpty()) {
+            phonePaymentPercentageEditText.error = "This field cannot be empty"
+        }
+
+        if (phonePaymentAmountEditText.text.toString().trim().isEmpty()) {
+            phonePaymentAmountEditText.error = "This field cannot be empty"
+        }
+
+        if (otherPaymentNameEditText.text.toString().trim().isEmpty()) {
+            otherPaymentNameEditText.error = "This field cannot be empty"
+        }
+
+        if (otherPaymentPercentageEditText.text.toString().trim().isEmpty()) {
+            otherPaymentPercentageEditText.error = "This field cannot be empty"
+        }
+
+        if (otherPaymentAmountEditText.text.toString().trim().isEmpty()) {
+            otherPaymentAmountEditText.error = "This field cannot be empty"
+        }
+
+        if (lastMonthRentDate.text.toString().trim().isEmpty()) {
+            lastMonthRentDate.error = "This field cannot be empty"
+        }
+
+        if (lastMonthRentAmount.text.toString().trim().isEmpty()) {
+            lastMonthRentAmount.error = "This field cannot be empty"
+        }
+        if (securityDepositAmount.text.toString().trim().isEmpty()) {
+            securityDepositAmount.error = "This field cannot be empty"
+        }
+        if (securityDepositDate.text.toString().trim().isEmpty()) {
+            securityDepositDate.error = "This field cannot be empty"
+        }
+        if (otherDepositAmount.text.toString().trim().isEmpty()) {
+            otherDepositAmount.error = "This field cannot be empty"
+        }
+        if (otherDepositDate.text.toString().trim().isEmpty()) {
+            otherDepositDate.error = "This field cannot be empty"
+        }
+        if (otherDepositDateRange.text.toString().trim().isEmpty()) {
+            otherDepositDateRange.error = "This field cannot be empty"
+        }
+
+
 
         // Initialize variables for checkboxes
         gasCheckBox = findViewById(R.id.gas)
@@ -224,8 +306,8 @@ class ContractTemplate:AppCompatActivity() {
         val principalTenant = if(isPrincipalTenantChecked) "Yes" else "No"
         val owner = if(isOwnerChecked) "Yes" else "No"
 
-        val name = findViewById<EditText>(R.id.contractNameText)
-        val remark = findViewById<EditText>(R.id.remarkText)
+        val name = findViewById<EditText>(R.id.contractNameText).text.toString()
+        val remark = findViewById<EditText>(R.id.remarkText).text.toString()
         val data: MutableMap<String, Any> = HashMap()
         data["houseAddress"] = houseAddress
         data["ownerName"] = ownerName
@@ -272,9 +354,9 @@ class ContractTemplate:AppCompatActivity() {
         data["owner"] = owner
         data["name"] = name
         data["remark"] = remark
-
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
         val db = FirebaseFirestore.getInstance()
-        val contractTemplate = db.collection("Contract Template").document("uniqueUserId").collection("con1").document()
+        val contractTemplate = db.collection("Contract Template").document(userId.toString()).collection("con1").document()
 
         contractTemplate.set(data)
             .addOnSuccessListener {

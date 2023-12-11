@@ -4,12 +4,14 @@ import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.fyp.adapter.FeedbackEnd
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,7 +23,9 @@ class FeedbackResponse:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.feedback_response)
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val feedbackEnd = intent.getSerializableExtra("feedback") as FeedbackEnd
 
         val comment = findViewById<TextView>(R.id.comment)
@@ -38,10 +42,7 @@ class FeedbackResponse:AppCompatActivity() {
             response(feedbackEnd.id)
         }
 
-        val delete = findViewById<Button>(R.id.delete)
-        delete.setOnClickListener(){
-            delete()
-        }
+
 
         val detail = findViewById<Button>(R.id.detailButton)
         detail.setOnClickListener(){
@@ -78,5 +79,15 @@ class FeedbackResponse:AppCompatActivity() {
 
         val intent = Intent(this, FeedbackEnd::class.java)
         startActivity(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
     }

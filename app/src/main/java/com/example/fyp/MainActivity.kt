@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 //        setContentView(R.layout.activity_main)
    
 
-        val intent = Intent(this, FeedbackChart::class.java)
+        val intent = Intent(this, SignInActivity::class.java)
 
         startActivity(intent)
     }

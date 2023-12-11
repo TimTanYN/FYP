@@ -32,7 +32,6 @@ class FeedbackMain:AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
-        println(userId)
         val db = FirebaseFirestore.getInstance()
         val collectionReference = db.collection("Feedback")
         collectionReference.get()

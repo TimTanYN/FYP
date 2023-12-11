@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fyp.R
+import java.io.Serializable
 
-class PublicTransportAdapter (private var transportList: List<PublicTransport>) : RecyclerView.Adapter<PublicTransportAdapter.ProductViewHolder>() {
+class PublicTransportAdapter(private var transportList: List<PublicTransport>, private val clickListener: OnTransportClickListener) : RecyclerView.Adapter<PublicTransportAdapter.ProductViewHolder>() {
     class ProductViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val transport: TextView = view.findViewById(R.id.transport)
         val ETA: TextView = view.findViewById(R.id.ETA)
@@ -38,6 +39,10 @@ class PublicTransportAdapter (private var transportList: List<PublicTransport>) 
             }
 
         }
+
+        holder.itemView.setOnClickListener {
+            clickListener.onTransportClick(PublicTransport)
+        }
     }
 
 
@@ -47,6 +52,10 @@ class PublicTransportAdapter (private var transportList: List<PublicTransport>) 
         transportList = newTransports
         notifyDataSetChanged()
     }
+
+    interface OnTransportClickListener {
+        fun onTransportClick(PublicTransport: PublicTransport)
+    }
 }
 
 data class PublicTransport(
@@ -54,5 +63,10 @@ data class PublicTransport(
     val ETA: String,
     val transportName: String,
     val estimatedTime: String,
-    val minute:String
-)
+    val minute:String,
+    val departure:String,
+    val arrival:String,
+    val departureTime:String,
+    val numberOfStops:String,
+    val polyline:String
+): Serializable

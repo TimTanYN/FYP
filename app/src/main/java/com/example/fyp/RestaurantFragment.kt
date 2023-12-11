@@ -80,7 +80,6 @@ class RestaurantFragment : Fragment(), RestaurantAdapter.OnRestaurantClickListen
             putExtra("RESTAURANT_DETAILS", restaurant)
             // Add other data as needed
         }
-//        val intent = Intent(requireContext(), Contract::class.java)
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
     }

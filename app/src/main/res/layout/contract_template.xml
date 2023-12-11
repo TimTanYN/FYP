@@ -65,7 +65,7 @@ android:orientation="vertical">
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/rounded_edittext"
-                    android:hint="Address"
+                    android:hint="Name"
                     android:inputType="text"
                     android:padding="10dp" />
 

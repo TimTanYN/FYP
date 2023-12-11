@@ -98,20 +98,63 @@ class FeedbackChart:AppCompatActivity() {
     fun setupPieChart() {
         val pieChart = findViewById<PieChart>(R.id.pieChart)
 
+        var one = 0f
+        var two = 0f
+        var three = 0f
+        var four = 0f
+        var five = 0f
+        var total = 0f  // Change total to a float for consistency
 
-        val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(40.0f, "Category 1"))
-        entries.add(PieEntry(30.0f, "Category 2"))
-        entries.add(PieEntry(20.0f, "Category 3"))
-        entries.add(PieEntry(10.0f, "Category 4"))
+        val db = FirebaseFirestore.getInstance()
+        val collectionReference = db.collection("Feedback")
+        collectionReference.get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    querySnapshot.documents.forEach { document ->
+                        // For each document, increment total once
+                        total++
 
-        val dataSet = PieDataSet(entries, "Categories")
-        dataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
+                        val appValue = document.getString("appValue")?.toDouble() ?: 0.0
+                        val serviceValue = document.getString("serviceValue")?.toDouble() ?: 0.0
+                        val performanceValue = document.getString("performanceValue")?.toDouble() ?: 0.0
 
-        val data = PieData(dataSet)
-        pieChart.data = data
-        pieChart.invalidate() // Refresh the chart
-    }
+                        // Increment counters based on rating values
+                        arrayOf(appValue, serviceValue, performanceValue).forEach { rating ->
+                            when (rating) {
+                                1.0 -> one++
+                                2.0 -> two++
+                                3.0 -> three++
+                                4.0 -> four++
+                                5.0 -> five++
+                                else -> println("Unknown number")
+                            }
+                        }
+                    }
 
+                    // Calculate percentages
+                    val onePercent = (one / total) * 100
+                    val twoPercent = (two / total) * 100
+                    val threePercent = (three / total) * 100
+                    val fourPercent = (four / total) * 100
+                    val fivePercent = (five / total) * 100
 
-}
+                    // Update PieChart Entries
+                    val entries = ArrayList<PieEntry>()
+                    if(onePercent > 0) entries.add(PieEntry(onePercent, "Rating 1"))
+                    if(twoPercent > 0) entries.add(PieEntry(twoPercent, "Rating 2"))
+                    if(threePercent > 0) entries.add(PieEntry(threePercent, "Rating 3"))
+                    if(fourPercent > 0) entries.add(PieEntry(fourPercent, "Rating 4"))
+                    if(fivePercent > 0) entries.add(PieEntry(fivePercent, "Rating 5"))
+
+                    val dataSet = PieDataSet(entries, "Ratings")
+                    dataSet.setColors(*ColorTemplate.COLORFUL_COLORS)
+
+                    val data = PieData(dataSet)
+                    pieChart.data = data
+                    pieChart.invalidate() // Refresh the chart
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error fetching documents: ", exception)
+            }
+    }}

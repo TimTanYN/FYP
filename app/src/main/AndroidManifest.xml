@@ -122,18 +122,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Trip" />
         <activity android:name=".MapTabs" />
-        <activity android:name=".Contract" />
-        <activity android:name=".ContractTemplate" />
+        <activity android:name=".Contract" >
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.AccountOwnerActivity" /></activity>
+        <activity android:name=".ContractTemplate" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".Contract" /></activity>
         <activity android:name=".RestaurantDetails" />
         <activity android:name=".Feedback" />
         <activity android:name=".FeedbackMain" />
-        <activity android:name=".FeedbackEnd" />
-        <activity android:name=".FeedbackResponse" />
+        <activity android:name=".FeedbackEnd" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.AccountOwnerActivity" /></activity>
+        <activity android:name=".FeedbackResponse" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".FeedbackEnd" /></activity>
         <activity android:name=".PhotoAndVideo" />
-        <activity android:name=".FeedbackReport" />
         <activity android:name=".FeedbackChart" />
+        <activity android:name=".PublicTransportDetails" >
+            <meta-data
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".MapTabs" /></activity>
+        <activity android:name=".Polyline" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -302,6 +302,19 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                     val vehicleName = vehicle.getString("name")
                                     val shortName = line.optString("short_name")
 
+                                    // Departure Stop
+                                    val departureStop = transitDetails.getJSONObject("departure_stop").getString("name")
+
+                                    // Arrival Stop
+                                    val arrivalStop = transitDetails.getJSONObject("arrival_stop").getString("name")
+
+                                    // Departure Time
+                                    val departureTime = transitDetails.getJSONObject("departure_time").getString("text")
+
+                                    // Number of Stops
+                                    val numberOfStops = transitDetails.getInt("num_stops")
+
+                                    val polyline = route.getJSONObject("overview_polyline").getString("points")
 
                                     val currentTime = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kuala_Lumpur"))
                                     val initialTime = SimpleDateFormat("h:mm a", Locale.getDefault()).format(currentTime.time)
@@ -320,7 +333,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                                             models.setRestaurants(fetchedRestaurants)
                                         }
                                     }
-                                    transitList.add("$vehicleType,$shortName,  $hours, $eta, $minutes")
+                                    transitList.add("$vehicleType,$shortName,  $hours, $eta, $minutes,$departureStop,$arrivalStop,$departureTime,$numberOfStops,$polyline")
 
                                 }
                             }
@@ -341,7 +354,7 @@ class Trip_map : Fragment(), OnMapReadyCallback {
     private fun sendDataToOtherFragment() {
         val publicTransportList: List<PublicTransport> = transitList.mapNotNull { str ->
             val parts = str.split(',').map { it.trim() } // Trim parts to remove any leading/trailing whitespace
-            if (parts.size == 5) { // Ensure exactly 4 parts are present
+            if (parts.size == 10) { // Ensure exactly 4 parts are present
                 try {
 
                     // Assuming parts[3] is a time or something that could be formatted differently,
@@ -351,7 +364,12 @@ class Trip_map : Fragment(), OnMapReadyCallback {
                         ETA = parts[3],
                         transportName = parts[1],
                         estimatedTime = parts[2],
-                        minute = parts[4]
+                        minute = parts[4],
+                        departure = parts[5],
+                        arrival = parts[6],
+                        departureTime= parts[7],
+                        numberOfStops= parts[8],
+                        polyline = parts[9]
                     )
                 } catch (e: Exception) {
                     // Log the exception or handle the error as necessary

@@ -3,7 +3,9 @@ package com.example.fyp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fyp.adapter.Feedback
@@ -19,8 +21,11 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
     var feedbackItem: FeedbackEnd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.feedback_end)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         val feedbackItems = mutableListOf<FeedbackEnd>()
         val recyclerView: RecyclerView = findViewById(R.id.feedbackEnd)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -61,7 +66,7 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
         val documentId = feedbackEnd.id
         val recyclerView: RecyclerView = findViewById(R.id.feedbackEnd)
 
-        db.collection("yourCollection").document(documentId).delete()
+        db.collection("Feedback").document(documentId).delete()
             .addOnSuccessListener {
                 // Remove the item from your data list and notify the adapter
                 val items = (recyclerView.adapter as FeedbackEndAdapter).feedbackList
@@ -80,4 +85,13 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
         startActivity(intent)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
