@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import com.example.fyp.FeedbackChart
+import com.example.fyp.FeedbackEnd
 import com.example.fyp.R
 import com.example.fyp.adapter.BottomNavigationHandler
 import com.example.fyp.adapter.BottomNavigationHandlerOwner
@@ -43,6 +45,7 @@ class SettingOwnerActivity : AppCompatActivity() {
             SettingsItem("About App", hasSwitch = false),
             SettingsItem("My Financial", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
+            SettingsItem("Feedback Report", hasSwitch = false),
             SettingsItem("Rate Us", hasSwitch = false),
             SettingsItem("Logout", hasSwitch = false),
 
@@ -75,8 +78,13 @@ class SettingOwnerActivity : AppCompatActivity() {
                 "Change Password" -> {
 
                 }
+                "Feedback Report" -> {
+                    val intent = Intent(this, FeedbackChart::class.java)
+                    startActivity(intent)
+                }
                 "Rate Us" -> {
-
+                    val intent = Intent(this, FeedbackEnd::class.java)
+                    startActivity(intent)
                 }
                 "Logout" -> {
                     showSignOutDialog()

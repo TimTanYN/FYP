@@ -27,7 +27,7 @@ class FeedbackMain:AppCompatActivity() {
         setContentView(R.layout.feedback_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val recyclerView: RecyclerView = findViewById(R.id.feedback)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 

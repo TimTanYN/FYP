@@ -2,7 +2,9 @@ package com.example.fyp
 
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.example.fyp.adapter.Feedback
 import com.example.fyp.adapter.FeedbackAdapter
 import com.github.mikephil.charting.charts.BarChart
@@ -22,6 +24,9 @@ class FeedbackChart:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.feedback_chart)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setupBarChart()
         setupPieChart()
     }
@@ -157,4 +162,12 @@ class FeedbackChart:AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error fetching documents: ", exception)
             }
-    }}
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+}

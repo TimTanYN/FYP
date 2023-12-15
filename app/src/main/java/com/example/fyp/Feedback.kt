@@ -19,6 +19,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -33,6 +37,7 @@ class Feedback:AppCompatActivity() {
     var selectedImageUri: Uri? = null
     var selectedVideoUri: Uri? = null
     val userId = FirebaseAuth.getInstance().currentUser?.uid
+    var fullName : String? = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,8 +58,30 @@ class Feedback:AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CODE_VIDEO_PICK)
         }
 
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("Users/$userId/fullName")
+        myRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    fullName = dataSnapshot.getValue(String::class.java)
+                    Log.d("Firebase", "Full name: $fullName")
+                    // Update your UI here with the retrieved full name
+                } else {
+                    Log.d("Firebase", "No data available at this path")
+                }
+            }
 
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+                Log.w("Firebase", "Error reading data", databaseError.toException())
+            }
+        })
 
+        val commentText = findViewById<EditText>(R.id.commentText)
+
+        if (commentText.text.toString().trim().isEmpty()) {
+            commentText.error = "This field cannot be empty"
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -81,6 +108,7 @@ class Feedback:AppCompatActivity() {
         val app = findViewById<RatingBar>(R.id.userFriendlyRating)
         val commentText = findViewById<EditText>(R.id.commentText)
 
+
         serviceValue = service.rating.toDouble()
         performanceValue = performance.rating.toDouble()
         appValue = app.rating.toDouble()
@@ -88,7 +116,6 @@ class Feedback:AppCompatActivity() {
     }
 
     fun uploadMediaAndData() {
-        // Reference to Firebase Storage
         val storageRef = FirebaseStorage.getInstance().reference
         val db = FirebaseFirestore.getInstance()
         val id = UUID.randomUUID().toString()
@@ -102,7 +129,8 @@ class Feedback:AppCompatActivity() {
             "comment" to comment,
             "id" to id,
             "response" to "",
-            "userId" to userId.toString()
+            "userId" to userId.toString(),
+            "name" to fullName.toString()
         )
 
         // Upload Image

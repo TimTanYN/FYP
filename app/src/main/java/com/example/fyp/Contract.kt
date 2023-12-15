@@ -217,7 +217,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                 val items = documents.mapNotNull { document ->
                     val text = document.getString("name")
                     val content = "Contract"
-                    val imageResId = R.drawable.ic_launcher_background
+                    val imageResId = R.drawable.contract
                     val id = document.id
                     if (text != null) {
                         ContractCard(text,content,imageResId,id)

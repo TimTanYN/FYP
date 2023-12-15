@@ -132,8 +132,14 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".Contract" /></activity>
         <activity android:name=".RestaurantDetails" />
-        <activity android:name=".Feedback" />
-        <activity android:name=".FeedbackMain" />
+        <activity android:name=".Feedback" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".FeedbackMain" /></activity>
+        <activity android:name=".FeedbackMain" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.SettingActivity" /></activity>
         <activity android:name=".FeedbackEnd" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
@@ -142,8 +148,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".FeedbackEnd" /></activity>
-        <activity android:name=".PhotoAndVideo" />
-        <activity android:name=".FeedbackChart" />
+        <activity android:name=".PhotoAndVideo" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".FeedbackEnd" /></activity>
+        <activity android:name=".FeedbackChart" >
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.SettingOwnerActivity" /></activity>
+
         <activity android:name=".PublicTransportDetails" >
             <meta-data
         android:name="android.support.PARENT_ACTIVITY"
