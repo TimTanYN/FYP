@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
 import com.example.fyp.database.Cards
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DeleteCardActivity : AppCompatActivity() {
@@ -98,11 +99,33 @@ class DeleteCardActivity : AppCompatActivity() {
                     firestore.collection("Cards").document(document.id).delete()
                 }
                 showToast("Card deleted")
-                val intent = Intent(this, AccountActivity::class.java)
-                startActivity(intent)
+                checkPaymentsAndNavigate()
             }
             .addOnFailureListener {
                 showToast("Error deleting card")
+            }
+    }
+
+    private fun checkPaymentsAndNavigate() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("Payments")
+            .whereEqualTo("tenantId", currentUserId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // User has payments, navigate to AddCardOwnerActivity
+                    showToast("Please add a new card")
+                    val intent = Intent(this@DeleteCardActivity, AddCardActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    // User does not have payments, navigate to AccountOwnerActivity
+                    val intent = Intent(this@DeleteCardActivity, AccountActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener {
+                showToast("Error checking payments")
             }
     }
 

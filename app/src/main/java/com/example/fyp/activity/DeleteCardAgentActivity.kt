@@ -10,6 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
 import com.example.fyp.database.Cards
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DeleteCardAgentActivity : AppCompatActivity() {
@@ -98,12 +103,34 @@ class DeleteCardAgentActivity : AppCompatActivity() {
                     firestore.collection("Cards").document(document.id).delete()
                 }
                 showToast("Card deleted")
-                val intent = Intent(this, AccountAgentActivity::class.java)
-                startActivity(intent)
+                checkWorkersAndNavigate()
             }
             .addOnFailureListener {
                 showToast("Error deleting card")
             }
+    }
+
+    private fun checkWorkersAndNavigate() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
+        workersRef.orderByChild("agentId").equalTo(currentUserId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        showToast("Please add on new card")
+                        // Navigate to AddCardOwnerActivity if there are accommodations
+                        val intent = Intent(this@DeleteCardAgentActivity, AddCardAgentActivity::class.java)
+                        startActivity(intent)
+                    }
+                    else{
+                        val intent = Intent(this@DeleteCardAgentActivity, AccountAgentActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
     }
 
     private fun showToast(message: String) {

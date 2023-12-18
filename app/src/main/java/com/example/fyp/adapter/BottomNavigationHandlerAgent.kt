@@ -8,6 +8,8 @@ import com.example.fyp.R
 import com.example.fyp.activity.AccommodationJobListActivity
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.AccountAgentActivity
+import com.example.fyp.activity.BookingListAgentActivity
+import com.example.fyp.activity.CommissionListActivity
 import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SettingAgentActivity
 import com.example.fyp.activity.SignUpActivity
@@ -61,11 +63,15 @@ class BottomNavigationHandlerAgent(private val context: Context) {
     }
 
     private fun navigateToBook() {
-        // Implement navigation logic
+        val intent = Intent(context, BookingListAgentActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     private fun navigateToSalary() {
-        // Implement navigation logic
+        val intent = Intent(context, CommissionListActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
     private fun navigateToProfile() {
         val intent = Intent(context, AccountAgentActivity::class.java)

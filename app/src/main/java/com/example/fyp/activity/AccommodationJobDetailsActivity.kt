@@ -25,6 +25,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -85,25 +86,49 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
         btnApply.setOnClickListener {
 //            if (isApplied) {
 //                checkWithdrawalPossibility()
+//                if (hasSixMonthsPassed(workDate)) {
+//                    showWithdrawConfirmationDialog()
+//                }
 //            } else {
 //                showApplyConfirmationDialog()
 //            }
-            if (isApplied) {
-                checkWithdrawalPossibility()
-                if (hasSixMonthsPassed(workDate)) {
-                    showWithdrawConfirmationDialog()
-                }
-//                else {
-//                    showToast("You can only withdraw after 6 months")
-//                }
-            } else {
-                showApplyConfirmationDialog()
-            }
+            checkCardExistenceAndApply()
+
         }
         btnContact.setOnClickListener {
             showContactOptions()
         }
     }
+
+    private fun checkCardExistenceAndApply() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("Cards")
+            .whereEqualTo("userId", currentUserId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Card exists, proceed to apply for job
+                    if (isApplied) {
+                        checkWithdrawalPossibility()
+                        if (hasSixMonthsPassed(workDate)) {
+                            showWithdrawConfirmationDialog()
+                        }
+                    } else {
+                        showApplyConfirmationDialog()
+                    }
+                } else {
+                    // No card found, navigate to Add Card Activity
+                    showToast("Please add a card")
+                    val intent = Intent(this, AddCardAgentActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener {
+                showToast("Failed to check card existence")
+            }
+    }
+
 
     private fun showWithdrawConfirmationDialog() {
         AlertDialog.Builder(this)
@@ -325,8 +350,7 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
 
                         edtAccCity.setText(it.city)
 
-                        val commission = calculateCommission(it.rentFee,it.agreement)
-
+                        val commission = calculateCommission(it.rentFee,it.rate)
 
                         commissionEditText.setText(commission.toString())
 
@@ -342,24 +366,8 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
         })
     }
 
-    private fun calculateCommission(rentFee: String, year: String): String {
-        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
-        val agreementYears = when (year) {
-            "1 year" -> 1
-            "2 years" -> 2
-            "3 years" -> 3
-            "4 years" -> 4
-            "5 years" -> 5
-            else -> return "RM 0.00"
-        }
-
-        val commissionPercentage = when (agreementYears) {
-            in 1..2 -> 0.20
-            in 3..4 -> 0.25
-            else -> 0.28
-        }
-
-        val monthlyCommission = rentFeeValue * commissionPercentage
+    private fun calculateCommission(rentFee: String, rate: String): String {
+        val monthlyCommission = rentFee.toDouble() * rate.toDouble()
         return "RM ${String.format("%.2f", monthlyCommission)}"
     }
 

@@ -7,8 +7,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
+import com.example.fyp.adapter.AccommodationAdapter
 import com.example.fyp.adapter.AccommodationJobAdapter
 import com.example.fyp.adapter.BottomNavigationHandlerAgent
 import com.example.fyp.adapter.BottomNavigationHandlerOwner
@@ -82,18 +84,15 @@ class AccommodationJobListActivity : AppCompatActivity() {
         val accommodationsRef = FirebaseDatabase.getInstance().getReference("Accommodations")
         accommodationsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                accommodations.clear()
                 if (snapshot.exists()) {
-                    accommodations.clear()
                     for (accommodationSnapshot in snapshot.children) {
-                        val accommodation =
-                            accommodationSnapshot.getValue(Accommodations::class.java)
+                        val accommodation = accommodationSnapshot.getValue(Accommodations::class.java)
                         if (accommodation != null && accommodation.agentId == "null") {
                             accommodations.add(accommodation)
                         }
                     }
                     filterAndSortAccommodations()
-                    noAccommodationTextView.visibility = View.GONE
-                    accommodationListView.visibility = View.VISIBLE
                 } else {
                     noAccommodationTextView.visibility = View.VISIBLE
                     accommodationListView.visibility = View.GONE
@@ -106,57 +105,31 @@ class AccommodationJobListActivity : AppCompatActivity() {
         })
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun filterAndSortAccommodations() {
-        // Filter accommodations based on city and state
         val filteredAccommodations = accommodations.filter {
             it.city == currentUserCity || it.state == currentUserState
         }
 
-        // Determine which list to use - filtered or all accommodations
-        val accommodationsToDisplay = if (filteredAccommodations.isNotEmpty()) {
-            filteredAccommodations
-        } else {
-            accommodations
-        }
+        val accommodationsToDisplay = if (filteredAccommodations.isNotEmpty()) filteredAccommodations else accommodations
 
-        // Sort the accommodations
         val sortedAccommodations = accommodationsToDisplay.sortedWith(
             compareByDescending<Accommodations> {
-                calculateCommission(it.rentFee, it.agreement).removePrefix("RM ").toDouble()
-            }.thenBy { it.city == currentUserCity }.thenBy { it.state == currentUserState }
+                calculateCommission(it.rentFee, it.rate).removePrefix("RM ").toDouble()
+            }.thenBy { it.city == currentUserCity }.thenBy { it.state == currentUserState  }
         )
 
-        // Update UI based on the sorted list
-        if (sortedAccommodations.isNotEmpty()) {
-            adapter = AccommodationJobAdapter(this, sortedAccommodations)
-            accommodationListView.adapter = adapter
-            noAccommodationTextView.visibility = View.GONE
-            accommodationListView.visibility = View.VISIBLE
-        } else {
-            noAccommodationTextView.visibility = View.VISIBLE
-            accommodationListView.visibility = View.GONE
-        }
+        adapter = AccommodationJobAdapter(this, sortedAccommodations)
+        accommodationListView.adapter = adapter
+        noAccommodationTextView.visibility = if (sortedAccommodations.isEmpty()) View.VISIBLE else View.GONE
+        accommodationListView.visibility = if (sortedAccommodations.isNotEmpty()) View.VISIBLE else View.GONE
     }
 
-    private fun calculateCommission(rentFee: String, year: String): String {
-        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
-        val agreementYears = when (year) {
-            "1 year" -> 1
-            "2 years" -> 2
-            "3 years" -> 3
-            "4 years" -> 4
-            "5 years" -> 5
-            else -> return "RM 0.00"
-        }
-
-        val totalRent = rentFeeValue * agreementYears * 12
-        val commissionPercentage = when (agreementYears) {
-            in 1..2 -> 0.20
-            in 3..4 -> 0.25
-            else -> 0.28
-        }
-
-        val commission = totalRent * commissionPercentage
-        return "RM ${String.format("%.2f", commission)}"
+    private fun calculateCommission(rentFee: String, rate: String): String {
+        val monthlyCommission = rentFee.toDouble() * rate.toDouble()
+        return "RM ${String.format("%.2f", monthlyCommission)}"
     }
 }

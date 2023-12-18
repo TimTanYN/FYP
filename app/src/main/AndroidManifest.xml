@@ -18,6 +18,48 @@
         android:theme="@style/Theme.FYP"
         tools:targetApi="31">
         <activity
+            android:name=".activity.FinancialDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CommissionDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.FinancialListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingHistoryDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingHistoryListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ApproveAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CommissionListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingDetailsAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.BookingListAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ChangePasswordAgentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ChangePasswordOwnerActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AgentJobActivity"
             android:exported="false" />
         <activity

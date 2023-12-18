@@ -9,6 +9,7 @@ data class Users(
     val imageLink: String = "",
     val state: String = "",
     val city: String = "",
-    val newUser: String = ""
+    val newUser: String = "",
+    val valid:String = ""
 )
 

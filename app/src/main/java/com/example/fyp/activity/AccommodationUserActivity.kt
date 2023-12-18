@@ -28,6 +28,8 @@ class AccommodationUserActivity : AppCompatActivity() {
     private lateinit var btnContact: Button
     private var userId:String = ""
     private var accomID:String = ""
+    private var tenant:String = ""
+    private var agent:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +41,19 @@ class AccommodationUserActivity : AppCompatActivity() {
         profileImageView = findViewById(R.id.profile_image)
         btnContact = findViewById(R.id.btnContact)
 
+        toolbar = findViewById(R.id.toolbar)
+
         userId = intent.getStringExtra("userId").toString()
         accomID = intent.getStringExtra("ACCOM_ID").toString()
+        agent = intent.getStringExtra("agent").toString()
+        tenant = intent.getStringExtra("tenant").toString()
 
-        setupToolbar()
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar) // Set the toolbar as the support action bar
+        setupToolbarAndContactButton() // Call this after setting the toolbar
+        setupToolbar() // Setup the navigation click listener
+
+
         setupSettings()
         loadUserData()
         btnContact.setOnClickListener {
@@ -62,7 +73,6 @@ class AccommodationUserActivity : AppCompatActivity() {
                         edtName.setText(it.fullName)
                         edtMobile.setText(it.phoneNumber)
                         loadProfileImage(it.imageLink)
-                        setupToolbarAndContactButton(it.userRole)
                     }
                 }
             }
@@ -79,16 +89,13 @@ class AccommodationUserActivity : AppCompatActivity() {
             .into(profileImageView)
     }
 
-    private fun setupToolbarAndContactButton(userRole: String) {
-        when (userRole) {
-            "User" -> {
-                toolbar.title = "Tenant Details"
-                btnContact.text = "Contact Tenant"
-            }
-            "Agent" -> {
-                toolbar.title = "Agent Details"
-                btnContact.text = "Contact Agent"
-            }
+    private fun setupToolbarAndContactButton() {
+        if (tenant == "yes") {
+            supportActionBar?.title = "Tenant Details" // Set the title on the support action bar
+            btnContact.text = "Contact Tenant"
+        } else if (agent == "yes") {
+            supportActionBar?.title = "Agent Details" // Set the title on the support action bar
+            btnContact.text = "Contact Agent"
         }
     }
 
@@ -133,6 +140,7 @@ class AccommodationUserActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         toolbar.setNavigationOnClickListener {
             val intent = Intent(this, AccommodationDetailsOwnerActivity::class.java)
             intent.putExtra("ACCOM_ID", accomID)

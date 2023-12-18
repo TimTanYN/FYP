@@ -67,8 +67,10 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
-
-                    showToast("Sign In Success")
+                    if (email.equals("roommatesystem2023@gmail.com")){
+                        val intent = Intent(this, DashActivity::class.java)
+                        startActivity(intent)
+                    }
 
                     // Get the current user's ID
                     val userId = auth.currentUser?.uid
@@ -86,27 +88,56 @@ class SignInActivity : AppCompatActivity() {
     private fun fetchNewUserAttribute(userId: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
+//        databaseReference.child(userId).get().addOnSuccessListener { dataSnapshot ->
+//            if (dataSnapshot.exists()) {
+//                val newUser = dataSnapshot.child("newUser").getValue(String::class.java)
+//                val userRole = dataSnapshot.child("userRole").getValue(String::class.java)
+//
+//                if (newUser == "yes") {
+//                    when (userRole) {
+//                        "User" -> startActivity(Intent(this, EditProfileActivity::class.java))
+//                        "Agent" -> startActivity(Intent(this, EditProfileAgentActivity::class.java))
+//                        "Owner" -> startActivity(Intent(this, EditProfileOwnerActivity::class.java))
+//                    }
+//                } else {
+//                    when (userRole) {
+//                        "User" -> startActivity(Intent(this, AccountActivity::class.java))
+//                        "Agent" -> startActivity(Intent(this, AccountAgentActivity::class.java))
+//                        "Owner" -> startActivity(Intent(this, AccountOwnerActivity::class.java))
+//                    }
+//                }
+//            }
+//        }.addOnFailureListener {
+//            showToast("Failed to fetch user data")
+//        }
         databaseReference.child(userId).get().addOnSuccessListener { dataSnapshot ->
             if (dataSnapshot.exists()) {
+                val valid = dataSnapshot.child("valid").getValue(String::class.java)
                 val newUser = dataSnapshot.child("newUser").getValue(String::class.java)
                 val userRole = dataSnapshot.child("userRole").getValue(String::class.java)
 
-                if (newUser == "yes") {
-                    when (userRole) {
-                        "User" -> startActivity(Intent(this, EditProfileActivity::class.java))
-                        "Agent" -> startActivity(Intent(this, EditProfileAgentActivity::class.java))
-                        "Owner" -> startActivity(Intent(this, EditProfileOwnerActivity::class.java))
+                if (valid == "yes") {
+                    showToast("Sign In Success")
+                    if (newUser == "yes") {
+                        when (userRole) {
+                            "User" -> startActivity(Intent(this, EditProfileActivity::class.java))
+                            "Agent" -> startActivity(Intent(this, EditProfileAgentActivity::class.java))
+                            "Owner" -> startActivity(Intent(this, EditProfileOwnerActivity::class.java))
+                        }
+                    } else {
+                        when (userRole) {
+                            "User" -> startActivity(Intent(this, AccountActivity::class.java))
+                            "Agent" -> startActivity(Intent(this, AccountAgentActivity::class.java))
+                            "Owner" -> startActivity(Intent(this, AccountOwnerActivity::class.java))
+                        }
                     }
                 } else {
-                    when (userRole) {
-                        "User" -> startActivity(Intent(this, AccountActivity::class.java))
-                        "Agent" -> startActivity(Intent(this, AccountAgentActivity::class.java))
-                        "Owner" -> startActivity(Intent(this, AccountOwnerActivity::class.java))
-                    }
+                    showToast("Invalid account")
+                    FirebaseAuth.getInstance().signOut() // Sign out the user
                 }
             }
         }.addOnFailureListener {
-            showToast("Failed to fetch user data")
+
         }
     }
 

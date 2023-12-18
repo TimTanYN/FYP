@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Scroller
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.fyp.R
@@ -41,6 +42,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
     private lateinit var btnMake: Button
     private lateinit var btnContact: Button
     private val imageUris = mutableListOf<Uri>()
+    private lateinit var agentEmail: String
+    private lateinit var agentPhoneNumber: String
     private var agentId:String = ""
 
     companion object {
@@ -72,13 +75,14 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         loadAccommodationData(accomID)
 
         btnMake.setOnClickListener {
-            val intent = Intent(this, AccommodationUserActivity::class.java)
-            intent.putExtra("userId", agentId)
+            val intent = Intent(this, BookingActivity::class.java)
+            intent.putExtra("agentId", agentId)
+            intent.putExtra("ACCOM_ID", accomID)
             startActivity(intent)
         }
 
         btnContact.setOnClickListener {
-
+            showContactOptions()
         }
     }
 
@@ -92,6 +96,37 @@ class AccommodationDetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun showContactOptions() {
+        val options = arrayOf("Send email to agent", "Call agent")
+        AlertDialog.Builder(this)
+            .setTitle("Contact Agent")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> sendEmail(agentEmail)
+                    1 -> makePhoneCall(agentPhoneNumber)
+                }
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun sendEmail(email: String) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:$email")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
+    }
+
+    private fun makePhoneCall(phoneNumber: String) {
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$phoneNumber")
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
+    }
     private fun setupSettings(){
 
         edtAccName.isEnabled = false
@@ -167,6 +202,8 @@ class AccommodationDetailsActivity : AppCompatActivity() {
                     val user = snapshot.getValue(Users::class.java)
                     user?.let {
                         agentEditText.setText(it.fullName)
+                        agentEmail = it.email
+                        agentPhoneNumber = it.phoneNumber
                     }
                 }
             }

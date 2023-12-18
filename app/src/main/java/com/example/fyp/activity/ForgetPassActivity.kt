@@ -14,8 +14,19 @@ import android.widget.Toast
 import com.example.fyp.R
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.Properties
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 class ForgetPassActivity : AppCompatActivity() {
 
@@ -87,36 +98,122 @@ class ForgetPassActivity : AppCompatActivity() {
         }
     }
 
+
     private fun sendPasswordResetEmail() {
         val email = emailEditText.text.toString().trim()
+        val newPassword = generateRandomPassword(12) // Generate a 12-character password
 
-        // Attempt to sign in with a dummy password
-        auth.signInWithEmailAndPassword(email, "dummyPassword")
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // This case is use to check the email is exist in the firebase authentication
-                } else {
-                    if (task.exception is FirebaseAuthInvalidUserException) {
-                        // Email not registered
-                        showToast("Invalid email")
-                    } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        // Email is registered, send reset email
-                        auth.sendPasswordResetEmail(email)
-                            .addOnCompleteListener { resetTask ->
-                                if (resetTask.isSuccessful) {
-                                    showToast("Please check your email")
-                                    openEmailClient() // Open the email client
-
-                                } else {
-                                    showToast("Please try again")
-                                }
+        // Check if the email exists in the Realtime Database under "Users"
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        databaseReference.orderByChild("email").equalTo(email)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Email exists in the "Users" node, reset password and send email
+                        for (userSnapshot in snapshot.children) {
+                            val userId = userSnapshot.key
+                            if (userId != null) {
+                                auth.fetchSignInMethodsForEmail(email)
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            val signInMethods = task.result?.signInMethods
+                                            showToast(signInMethods.toString())
+                                            if (signInMethods != null && signInMethods.isNotEmpty()) {
+                                                // Email is registered, reset password
+                                                auth.currentUser?.updatePassword(newPassword)
+                                                    ?.addOnCompleteListener { resetTask ->
+                                                        if (resetTask.isSuccessful) {
+                                                            val username = getUsernameForCurrentUser()
+                                                            if (username != null) {
+                                                                // Store the new password in the Firebase Realtime Database
+                                                                databaseReference.child(userId)
+                                                                    .child("password")
+                                                                    .setValue(newPassword)
+                                                                sendEmailWithNewPassword(email, newPassword, username)
+                                                            } else {
+                                                                showToast("Failed to retrieve username")
+                                                            }
+                                                        } else {
+                                                            showToast("Failed to reset password")
+                                                        }
+                                                    }
+                                            } else {
+                                                // Email not registered
+                                                showToast("Invalid email")
+                                            }
+                                        } else {
+                                            // Other errors
+                                            showToast("Please try again")
+                                        }
+                                    }
                             }
+                        }
                     } else {
-                        // Other errors
-                        showToast("Please try again")
+                        // Email not found in the Realtime Database
+                        showToast("Invalid email")
                     }
                 }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle database read error
+                }
+            })
+    }
+
+
+    private fun generateRandomPassword(length: Int): String {
+        val allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789!@#$%^&*()"
+        return (1..length)
+            .map { allowedChars.random() }
+            .joinToString("")
+    }
+
+    private fun sendEmailWithNewPassword(email: String, newPassword: String, username:String) {
+        val senderEmail = "roommatesystem2023@gmail.com"
+        val senderPassword = "yomx pdzv pllj vogr" // Be cautious with hardcoding credentials
+
+        val properties = Properties().apply {
+            put("mail.smtp.host", "smtp.gmail.com")
+            put("mail.smtp.port", "587")
+            put("mail.smtp.auth", "true")
+            put("mail.smtp.starttls.enable", "true")
+        }
+
+        val session = Session.getInstance(properties, object : Authenticator() {
+            override fun getPasswordAuthentication(): PasswordAuthentication {
+                return PasswordAuthentication(senderEmail, senderPassword)
             }
+        })
+
+        try {
+            val message = MimeMessage(session).apply {
+                setFrom(InternetAddress(senderEmail))
+                addRecipient(Message.RecipientType.TO, InternetAddress(email))
+                subject = "RoomMate Password Reset"
+                val emailContent = """
+                <html>
+                    <body>
+                        <p>Dear $username,</p>
+                        <p>Your new password for RoomMate is: <b>$newPassword</b></p>
+                        <p>Please change your password after logging in.</p>
+                        <p>Thank you,<br/><b>RoomMate Management</b></p>
+                    </body>
+                </html>
+            """.trimIndent()
+                setContent(emailContent, "text/html; charset=utf-8")
+            }
+
+            Thread {
+                Transport.send(message)
+            }.start()
+        } catch (e: MessagingException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun getUsernameForCurrentUser(): String? {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        return currentUser?.displayName
     }
 
     private fun openEmailClient() {

@@ -10,6 +10,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
 import com.example.fyp.database.Cards
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 
 class DeleteCardOwnerActivity : AppCompatActivity() {
@@ -98,12 +103,35 @@ class DeleteCardOwnerActivity : AppCompatActivity() {
                     firestore.collection("Cards").document(document.id).delete()
                 }
                 showToast("Card deleted")
-                val intent = Intent(this, AccountOwnerActivity::class.java)
-                startActivity(intent)
+                // After deleting the card, check for accommodations
+                checkAccommodationsAndNavigate()
             }
             .addOnFailureListener {
                 showToast("Error deleting card")
             }
+    }
+
+    private fun checkAccommodationsAndNavigate() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val accommodationsRef = FirebaseDatabase.getInstance().getReference("Accommodations")
+        accommodationsRef.orderByChild("ownerId").equalTo(currentUserId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        showToast("Please add on new card")
+                        // Navigate to AddCardOwnerActivity if there are accommodations
+                        val intent = Intent(this@DeleteCardOwnerActivity, AddCardOwnerActivity::class.java)
+                        startActivity(intent)
+                    }
+                    else{
+                        val intent = Intent(this@DeleteCardOwnerActivity, AccountOwnerActivity::class.java)
+                        startActivity(intent)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
     }
 
     private fun showToast(message: String) {

@@ -20,6 +20,10 @@ import com.example.fyp.R
 import com.example.fyp.database.Cards
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
@@ -45,7 +49,7 @@ class AddCardOwnerActivity : AppCompatActivity() {
         textInputLayout3 = findViewById(R.id.textInputLayout3)
         val btnAdd= findViewById<Button>(R.id.saveCardBtn)
 
-        setupToolbar()
+        checkUserAccommodations()
         setupInputField(cardNumInput, expiryDateInput, secureCodeInput)
         setupCardNumberInput()
         setupExpiryDateInput()
@@ -56,6 +60,37 @@ class AddCardOwnerActivity : AppCompatActivity() {
             if(validateInputs()){
                 saveCardDetailsToFirestore()
             }
+        }
+    }
+
+    private fun checkUserAccommodations() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val accommodationsRef = FirebaseDatabase.getInstance().getReference("Accommodations")
+        accommodationsRef.orderByChild("ownerId").equalTo(currentUserId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // User has accommodations, restrict certain functionalities
+                        restrictFunctionality()
+                    } else {
+                        // User does not have accommodations, proceed with normal flow
+                        setupToolbar()
+
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+    }
+
+    private fun restrictFunctionality() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            showToast("Please add a card to manage accommodations")
         }
     }
 
@@ -100,7 +135,6 @@ class AddCardOwnerActivity : AppCompatActivity() {
                 }
             }
             .addOnFailureListener { e ->
-                showToast("Error checking for existing card: ${e.message}")
             }
     }
 

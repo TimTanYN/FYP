@@ -69,7 +69,8 @@ class SettingAgentActivity : AppCompatActivity() {
                     // Navigate to "About App" screen
                 }
                 "Change Password" -> {
-
+                    val intent = Intent(this, ChangePasswordAgentActivity::class.java)
+                    startActivity(intent)
                 }
                 "Rate Us" -> {
 
