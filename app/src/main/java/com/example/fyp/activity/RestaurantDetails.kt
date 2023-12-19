@@ -1,9 +1,11 @@
 package com.example.fyp.activity
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,7 +18,9 @@ class RestaurantDetails : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.restaurant_details)
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val restaurant = intent.getSerializableExtra("RESTAURANT_DETAILS") as? Restaurant
 
         val restaurantImage = findViewById<ImageView>(R.id.restaurantImage)
@@ -54,5 +58,15 @@ class RestaurantDetails : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.restaurantComment)
         recyclerView.layoutManager = LinearLayoutManager(this) // Assuming 'this' is a Context
         recyclerView.adapter = restaurant_review_adapter(list)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

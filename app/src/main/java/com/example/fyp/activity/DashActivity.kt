@@ -28,11 +28,13 @@ class DashActivity : AppCompatActivity() {
         }
 
         cardViewSendContract.setOnClickListener {
-
+            val intent = Intent(this, FeedbackChart::class.java)
+            startActivity(intent)
         }
 
         cardViewSeeReview.setOnClickListener {
-
+            val intent = Intent(this, FeedbackEnd::class.java)
+            startActivity(intent)
         }
 
         cardViewLogout.setOnClickListener {

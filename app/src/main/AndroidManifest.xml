@@ -173,7 +173,10 @@
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.Contract" /></activity>
-        <activity android:name=".activity.RestaurantDetails" />
+        <activity android:name=".activity.RestaurantDetails" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.MapTabs" /></activity>
         <activity android:name=".activity.Feedback" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"

@@ -43,7 +43,6 @@ class SettingActivity : AppCompatActivity() {
             SettingsItem("Booking History", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
             SettingsItem("Rate Us", hasSwitch = false),
-            SettingsItem("Contract", hasSwitch = false),
             SettingsItem("Logout", hasSwitch = false),
 
         )
@@ -76,9 +75,6 @@ class SettingActivity : AppCompatActivity() {
                 "Change Password" -> {
                     val intent = Intent(this, ChangePasswordActivity::class.java)
                     startActivity(intent)
-                }
-                "Contract" -> {
-
                 }
                 "Rate Us" -> {
                     val intent = Intent(this, FeedbackMain::class.java)
