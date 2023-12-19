@@ -125,7 +125,7 @@ class EditAccommodationActivity : AppCompatActivity() {
                     storeAccommodationData(accomID, imageUrls)
                     deleteRemovedImages(accomID)
                     showToast("Accommodation record updated")
-                    val intent = Intent(this, ManageAccommodationActivity::class.java)
+                    val intent = Intent(this@EditAccommodationActivity, ManageAccommodationActivity::class.java)
                     startActivity(intent)
                 }
             }

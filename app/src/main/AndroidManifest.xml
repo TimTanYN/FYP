@@ -19,144 +19,191 @@
         tools:targetApi="31">
         <activity
             android:name=".activity.FinancialDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.CommissionDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.FinancialListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingHistoryDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingHistoryListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ApproveAccountActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.CommissionListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingDetailsAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingListAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ChangePasswordActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ChangePasswordAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ChangePasswordOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AgentJobActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationUserActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationDetailsOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationJobDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationJobListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.PaymentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.EditAccommodationActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ManageAccommodationActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.DeleteCardActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.DeleteCardAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.DeleteCardOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AddAccommodationActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AddCardActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AddCardAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AddCardOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccommodationListActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.EditProfileActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.EditProfileAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.EditProfileOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccountActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccountAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.AccountOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.PrivacyActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.SettingAgentActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.SettingOwnerActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.ForgetPassActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.BookingActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.DashActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.SignInActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.SignUpActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -164,22 +211,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MapTabs" >  <meta-data
+       <activity android:name=".activity.MapTabs" android:screenOrientation="portrait" />
+        <activity android:name=".activity.Contract" android:screenOrientation="portrait" >
+      <activity android:name=".activity.MapTabs" >  <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.EditProfileActivity" /></activity>
         <activity android:name=".activity.Contract" >
+
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.AccountOwnerActivity" /></activity>
-        <activity android:name=".activity.ContractTemplate" >
+        <activity android:name=".activity.ContractTemplate" android:screenOrientation="portrait" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.Contract" /></activity>
-        <activity android:name=".activity.RestaurantDetails" >
+        <activity android:name=".activity.RestaurantDetails" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MapTabs" /></activity>
-        <activity android:name=".activity.Feedback" >
+        <activity android:name=".activity.Feedback" android:screenOrientation="portrait">
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.FeedbackMain" /></activity>
@@ -190,12 +240,17 @@
         <activity android:name=".activity.FeedbackEnd" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
+
+            android:value=".activity.AccountOwnerActivity" /></activity>
+        <activity android:name=".activity.FeedbackResponse" android:screenOrientation="portrait">
+
             android:value=".activity.EditProfileOwnerActivity" /></activity>
         <activity android:name=".activity.FeedbackResponse" >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.FeedbackEnd" /></activity>
-        <activity android:name=".activity.PhotoAndVideo" >
+        <activity android:name=".activity.PhotoAndVideo" android:screenOrientation="portrait" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.FeedbackEnd" /></activity>
@@ -204,7 +259,7 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.SettingOwnerActivity" /></activity>
 
-        <activity android:name=".activity.PublicTransportDetails" >
+        <activity android:name=".activity.PublicTransportDetails" android:screenOrientation="portrait">
             <meta-data
         android:name="android.support.PARENT_ACTIVITY"
         android:value=".activity.MapTabs" /></activity>

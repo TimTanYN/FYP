@@ -119,8 +119,8 @@ class AccommodationJobDetailsActivity : AppCompatActivity() {
                     }
                 } else {
                     // No card found, navigate to Add Card Activity
-                    showToast("Please add a card")
                     val intent = Intent(this, AddCardAgentActivity::class.java)
+                    showToast("Please add a card")
                     startActivity(intent)
                 }
             }
