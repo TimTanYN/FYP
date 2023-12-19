@@ -66,3 +66,4 @@ data class FeedbackEnd(
     val photoUrl : String,
     val videoUrl : String
 ): Serializable
+
