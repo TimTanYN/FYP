@@ -211,8 +211,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MapTabs" android:screenOrientation="portrait" />
+       <activity android:name=".activity.MapTabs" android:screenOrientation="portrait" />
         <activity android:name=".activity.Contract" android:screenOrientation="portrait" >
+      <activity android:name=".activity.MapTabs" >  <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.EditProfileActivity" /></activity>
+        <activity android:name=".activity.Contract" >
+
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.AccountOwnerActivity" /></activity>
@@ -235,8 +240,13 @@
         <activity android:name=".activity.FeedbackEnd" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
+
             android:value=".activity.AccountOwnerActivity" /></activity>
         <activity android:name=".activity.FeedbackResponse" android:screenOrientation="portrait">
+
+            android:value=".activity.EditProfileOwnerActivity" /></activity>
+        <activity android:name=".activity.FeedbackResponse" >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.FeedbackEnd" /></activity>

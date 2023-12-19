@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
@@ -17,7 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class ContractTemplate:AppCompatActivity() {
 
-    private lateinit var houseAddressEditText: EditText
+
     private lateinit var ownerNameEditText: EditText
     private lateinit var rentalAmountEditText: EditText
     private lateinit var rentalPaymentDateEditText: EditText
@@ -84,7 +85,7 @@ class ContractTemplate:AppCompatActivity() {
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
-        houseAddressEditText = findViewById(R.id.houseAddress)
+
         ownerNameEditText = findViewById(R.id.ownerName)
         rentalAmountEditText = findViewById(R.id.rentalAmount)
         rentalPaymentDateEditText = findViewById(R.id.rentalPaymentDate)
@@ -106,9 +107,7 @@ class ContractTemplate:AppCompatActivity() {
         otherDepositDate = findViewById(R.id.otherDepositDate)
         otherDepositDateRange = findViewById(R.id.otherDepositDateRange)
 
-        if (houseAddressEditText.text.toString().trim().isEmpty()) {
-            houseAddressEditText.error = "This field cannot be empty"
-        }
+
 
         if (ownerNameEditText.text.toString().trim().isEmpty()) {
             ownerNameEditText.error = "This field cannot be empty"
@@ -231,7 +230,7 @@ class ContractTemplate:AppCompatActivity() {
 
     private fun getData(){
 
-        val houseAddress = houseAddressEditText.text.toString()
+
         val ownerName = ownerNameEditText.text.toString()
         val rentalAmount = rentalAmountEditText.text.toString().toDoubleOrNull()
         val rentalPaymentDate = rentalPaymentDateEditText.text.toString()
@@ -307,7 +306,6 @@ class ContractTemplate:AppCompatActivity() {
         val name = findViewById<EditText>(R.id.contractNameText).text.toString()
         val remark = findViewById<EditText>(R.id.remarkText).text.toString()
         val data: MutableMap<String, Any> = HashMap()
-        data["houseAddress"] = houseAddress
         data["ownerName"] = ownerName
         data["rentalAmount"] = rentalAmount.toString()
         data["rentalPaymentDate"] = rentalPaymentDate
@@ -360,6 +358,7 @@ class ContractTemplate:AppCompatActivity() {
             .addOnSuccessListener {
                 // Handle successful write
                 Log.d(TAG, "DocumentSnapshot successfully written!")
+                Toast.makeText(this, "Saved to Database", Toast.LENGTH_LONG).show()
             }
             .addOnFailureListener { e ->
                 // Handle any write errors

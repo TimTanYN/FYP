@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
@@ -61,6 +62,7 @@ class FeedbackResponse:AppCompatActivity() {
         feedback.update("response", responseText)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")
+                Toast.makeText(this, "Saved to Database", Toast.LENGTH_LONG).show()
                 val intent = Intent(this, com.example.fyp.activity.FeedbackEnd::class.java)
                 startActivity(intent)
             }
