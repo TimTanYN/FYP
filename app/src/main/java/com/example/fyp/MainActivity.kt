@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
    
 
-        val intent = Intent(this, ForgetPassActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
 
         startActivity(intent)
     }
