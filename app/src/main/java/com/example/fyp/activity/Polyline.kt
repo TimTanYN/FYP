@@ -1,8 +1,9 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.fyp.R
 import com.example.fyp.adapter.PublicTransport
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

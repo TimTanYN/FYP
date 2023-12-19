@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 
 import android.annotation.SuppressLint
@@ -16,20 +16,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fyp.R
 import com.example.fyp.adapter.ContractAdapter
 import com.example.fyp.adapter.ContractCard
 import com.example.fyp.adapter.ContractCardAdapter
 import com.example.fyp.adapter.Contracts
-import com.example.fyp.adapter.FeedbackEnd
-import com.example.fyp.adapter.FeedbackEndAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.forms.PdfAcroForm
-import com.itextpdf.forms.fields.PdfFormField
 import com.itextpdf.io.IOException
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfReader

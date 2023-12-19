@@ -2,15 +2,12 @@ package com.example.fyp.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
-import com.example.fyp.MapTabs
+import com.example.fyp.activity.MapTabs
 import com.example.fyp.R
 import com.example.fyp.activity.AccommodationListActivity
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.BookingListActivity
 import com.example.fyp.activity.SettingActivity
-import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BottomNavigationHandler(private val context: Context) {

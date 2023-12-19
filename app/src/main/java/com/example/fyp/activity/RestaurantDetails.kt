@@ -1,14 +1,13 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.fyp.adapter.ContractCard
+import com.example.fyp.R
 import com.example.fyp.adapter.Restaurant
 import com.example.fyp.adapter.restaurant_review_adapter
 

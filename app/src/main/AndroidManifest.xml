@@ -156,7 +156,7 @@
             android:name=".activity.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -164,46 +164,46 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapTabs" />
-        <activity android:name=".Contract" >
+        <activity android:name=".activity.MapTabs" />
+        <activity android:name=".activity.Contract" >
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.AccountOwnerActivity" /></activity>
-        <activity android:name=".ContractTemplate" >
+        <activity android:name=".activity.ContractTemplate" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Contract" /></activity>
-        <activity android:name=".RestaurantDetails" />
-        <activity android:name=".Feedback" >
+            android:value=".activity.Contract" /></activity>
+        <activity android:name=".activity.RestaurantDetails" />
+        <activity android:name=".activity.Feedback" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".FeedbackMain" /></activity>
-        <activity android:name=".FeedbackMain" >
+            android:value=".activity.FeedbackMain" /></activity>
+        <activity android:name=".activity.FeedbackMain" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.SettingActivity" /></activity>
-        <activity android:name=".FeedbackEnd" >
+        <activity android:name=".activity.FeedbackEnd" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.AccountOwnerActivity" /></activity>
-        <activity android:name=".FeedbackResponse" >
+        <activity android:name=".activity.FeedbackResponse" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".FeedbackEnd" /></activity>
-        <activity android:name=".PhotoAndVideo" >
+                android:value=".activity.FeedbackEnd" /></activity>
+        <activity android:name=".activity.PhotoAndVideo" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value=".FeedbackEnd" /></activity>
-        <activity android:name=".FeedbackChart" >
+            android:value=".activity.FeedbackEnd" /></activity>
+        <activity android:name=".activity.FeedbackChart" >
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.SettingOwnerActivity" /></activity>
 
-        <activity android:name=".PublicTransportDetails" >
+        <activity android:name=".activity.PublicTransportDetails" >
             <meta-data
         android:name="android.support.PARENT_ACTIVITY"
-        android:value=".MapTabs" /></activity>
-        <activity android:name=".Polyline" />
+        android:value=".activity.MapTabs" /></activity>
+        <activity android:name=".activity.Polyline" />
 
 
         <meta-data

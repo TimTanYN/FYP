@@ -1,12 +1,11 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.example.fyp.adapter.Feedback
-import com.example.fyp.adapter.FeedbackAdapter
+import com.example.fyp.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis

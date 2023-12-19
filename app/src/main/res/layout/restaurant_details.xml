@@ -7,7 +7,7 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-tools:context=".RestaurantDetails">
+tools:context=".activity.RestaurantDetails">
 
 <androidx.appcompat.widget.Toolbar
     android:id="@+id/toolbar"

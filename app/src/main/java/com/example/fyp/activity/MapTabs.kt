@@ -1,11 +1,11 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
+import com.example.fyp.R
 import com.example.fyp.adapter.MapTabsAdapter
 
 import com.google.android.material.tabs.TabLayout

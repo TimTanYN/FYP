@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,11 +12,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.PublicTransportAdapter
-import com.example.fyp.viewmodel.PublicTransportViewModel
-import com.example.fyp.adapter.PublicTransport
+import com.example.fyp.R
 import com.example.fyp.adapter.Restaurant
 import com.example.fyp.adapter.RestaurantAdapter
+import com.example.fyp.viewmodel.RestaurantViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,14 +24,14 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [PublicTransport.newInstance] factory method to
+ * Use the [RestaurantFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PublicTransport : Fragment(), PublicTransportAdapter.OnTransportClickListener  {
+class RestaurantFragment : Fragment(), RestaurantAdapter.OnRestaurantClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var model: PublicTransportViewModel
+    private lateinit var model: RestaurantViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +39,8 @@ class PublicTransport : Fragment(), PublicTransportAdapter.OnTransportClickListe
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-        model = ViewModelProvider(requireActivity())[PublicTransportViewModel::class.java]
+
+        model = ViewModelProvider(requireActivity())[RestaurantViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -48,35 +48,36 @@ class PublicTransport : Fragment(), PublicTransportAdapter.OnTransportClickListe
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_public_transport, container, false)
+        return inflater.inflate(R.layout.fragment_restaurant, container, false)
     }
 
+    private lateinit var restaurantLists: RecyclerView
+    private lateinit var adapter:  ArrayAdapter<String>
 
 
-    private lateinit var adapter: ArrayAdapter<String>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val transitList = mutableListOf<String>()
-        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        val adapter = PublicTransportAdapter(emptyList(),this) // Start with an empty list
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        restaurantLists = view.findViewById(R.id.restaurant)
+        val adapter = RestaurantAdapter(emptyList(),this) // Start with an empty list
+        restaurantLists.adapter = adapter
+        restaurantLists.layoutManager = LinearLayoutManager(context)
 
-        model.getTransitDetails().observe(viewLifecycleOwner, Observer<List<PublicTransport>> { details ->
+
+
+        model.getRestaurants().observe(viewLifecycleOwner, Observer<List<Restaurant>> { detail ->
             // Log to check if this observer is being called
-            Log.d("TransitDetailLog", "Observer called with details: $details")
-
-            // Update the adapter with the new data
-            adapter.updateTransports(details)
+            println("res")
+            Log.d("RestaurantDetailLog", "Observer called with details: $detail")
+            adapter.updateRestaurants(detail)
         })
-            // Update UI with transit details here
+        // Update UI with transit details here
     }
 
-    override fun onTransportClick(PublicTransport: PublicTransport) {
-        val intent = Intent(requireContext(), PublicTransportDetails::class.java).apply {
-            putExtra("Transport_DETAILS", PublicTransport)
-
+    override fun onRestaurantClick(restaurant: Restaurant) {
+        val intent = Intent(requireContext(), RestaurantDetails::class.java).apply {
+            putExtra("RESTAURANT_DETAILS", restaurant)
+            // Add other data as needed
         }
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
@@ -89,19 +90,16 @@ class PublicTransport : Fragment(), PublicTransportAdapter.OnTransportClickListe
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment PublicTransport.
+         * @return A new instance of fragment Restaurant.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PublicTransport().apply {
+            RestaurantFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
     }
-
-
-
 }

@@ -1,17 +1,15 @@
-package com.example.fyp
+package com.example.fyp.activity
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 
 class PhotoAndVideo:AppCompatActivity() {

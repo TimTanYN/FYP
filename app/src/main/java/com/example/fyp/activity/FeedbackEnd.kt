@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.Feedback
-import com.example.fyp.adapter.FeedbackAdapter
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 import com.example.fyp.adapter.FeedbackEndAdapter
 import com.google.firebase.firestore.FirebaseFirestore

@@ -1,9 +1,7 @@
-package com.example.fyp
+package com.example.fyp.activity
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -11,11 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.ContractCard
-import com.example.fyp.adapter.ContractCardAdapter
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackAdapter
 import com.example.fyp.adapter.Feedback
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -70,7 +66,7 @@ class FeedbackMain:AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_new_feedback -> {
-                val intent = Intent(this, com.example.fyp.Feedback::class.java)
+                val intent = Intent(this, com.example.fyp.activity.Feedback::class.java)
                 startActivity(intent)
                 true
             }

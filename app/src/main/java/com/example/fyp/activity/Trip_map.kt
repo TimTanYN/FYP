@@ -1,8 +1,7 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.fyp.R
 import com.example.fyp.viewmodel.PublicTransportViewModel
 import com.example.fyp.viewmodel.RestaurantViewModel
 import com.google.android.gms.maps.CameraUpdateFactory

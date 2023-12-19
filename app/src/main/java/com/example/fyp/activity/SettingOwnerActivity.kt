@@ -6,10 +6,7 @@ import android.os.Bundle
 import android.widget.ListView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import com.example.fyp.FeedbackChart
-import com.example.fyp.FeedbackEnd
 import com.example.fyp.R
-import com.example.fyp.adapter.BottomNavigationHandler
 import com.example.fyp.adapter.BottomNavigationHandlerOwner
 import com.example.fyp.adapter.SettingsAdapter
 import com.example.fyp.adapter.SettingsItem

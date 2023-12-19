@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.ContentValues
 import android.content.Intent
@@ -12,6 +12,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -60,7 +61,7 @@ class FeedbackResponse:AppCompatActivity() {
         feedback.update("response", responseText)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")
-                val intent = Intent(this, com.example.fyp.FeedbackEnd::class.java)
+                val intent = Intent(this, com.example.fyp.activity.FeedbackEnd::class.java)
                 startActivity(intent)
             }
             .addOnFailureListener { e ->
