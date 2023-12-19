@@ -23,7 +23,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/feedback"
-        android:layout_width="410dp"
+        android:layout_width="0dp"
         android:layout_height="659dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
