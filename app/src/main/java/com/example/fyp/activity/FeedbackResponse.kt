@@ -1,15 +1,18 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,10 +24,11 @@ class FeedbackResponse:AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.feedback_response)
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val feedbackEnd = intent.getSerializableExtra("feedback") as FeedbackEnd
-        println(feedbackEnd.id)
-        feedback = db.collection("Feedback").document("userId").collection("feedback").document(feedbackEnd.id)
+
         val comment = findViewById<TextView>(R.id.comment)
         val pic = findViewById<ImageView>(R.id.profilePicture)
         val rating = findViewById<RatingBar>(R.id.rating)
@@ -36,13 +40,10 @@ class FeedbackResponse:AppCompatActivity() {
 
         val responseButton = findViewById<Button>(R.id.responseButton)
         responseButton.setOnClickListener(){
-            response()
+            response(feedbackEnd.id)
         }
 
-        val delete = findViewById<Button>(R.id.delete)
-        delete.setOnClickListener(){
-            delete()
-        }
+
 
         val detail = findViewById<Button>(R.id.detailButton)
         detail.setOnClickListener(){
@@ -53,13 +54,14 @@ class FeedbackResponse:AppCompatActivity() {
     }
     val db = FirebaseFirestore.getInstance()
 
-    private fun response(){
+    private fun response(id:String){
 
         val responseText = findViewById<EditText>(R.id.response).text.toString()
+        feedback = db.collection("Feedback").document(id)
         feedback.update("response", responseText)
             .addOnSuccessListener {
                 Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")
-                val intent = Intent(this, FeedbackEnd::class.java)
+                val intent = Intent(this, com.example.fyp.activity.FeedbackEnd::class.java)
                 startActivity(intent)
             }
             .addOnFailureListener { e ->
@@ -78,5 +80,15 @@ class FeedbackResponse:AppCompatActivity() {
 
         val intent = Intent(this, FeedbackEnd::class.java)
         startActivity(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
     }

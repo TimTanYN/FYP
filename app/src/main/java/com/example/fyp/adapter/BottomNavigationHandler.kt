@@ -2,14 +2,12 @@ package com.example.fyp.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
+import com.example.fyp.activity.MapTabs
 import com.example.fyp.R
 import com.example.fyp.activity.AccommodationListActivity
 import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.BookingListActivity
 import com.example.fyp.activity.SettingActivity
-import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BottomNavigationHandler(private val context: Context) {
@@ -66,7 +64,9 @@ class BottomNavigationHandler(private val context: Context) {
     }
 
     private fun navigateToLocation() {
-        // Implement navigation logic
+        val intent = Intent(context, MapTabs::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
     private fun navigateToProfile() {
         val intent = Intent(context, AccountActivity::class.java)

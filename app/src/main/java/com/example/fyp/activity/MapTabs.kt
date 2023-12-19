@@ -1,11 +1,11 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.viewpager2.widget.ViewPager2
+import com.example.fyp.R
 import com.example.fyp.adapter.MapTabsAdapter
 
 import com.google.android.material.tabs.TabLayout
@@ -27,10 +27,9 @@ class MapTabs:AppCompatActivity() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "View"
-                1 -> "Create"
-                2 -> "Update"
-                3 -> "Delete"
+                0 -> "Map"
+                1 -> "Transport"
+                2 -> "Food"
                 else -> throw IllegalArgumentException("Invalid position $position")
             }
         }.attach()

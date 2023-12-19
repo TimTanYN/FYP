@@ -1,4 +1,4 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,12 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.PublicTransportAdapter
+import com.example.fyp.R
 import com.example.fyp.adapter.Restaurant
 import com.example.fyp.adapter.RestaurantAdapter
 import com.example.fyp.viewmodel.RestaurantViewModel
@@ -80,7 +79,6 @@ class RestaurantFragment : Fragment(), RestaurantAdapter.OnRestaurantClickListen
             putExtra("RESTAURANT_DETAILS", restaurant)
             // Add other data as needed
         }
-//        val intent = Intent(requireContext(), Contract::class.java)
         startActivity(intent)
         activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
     }

@@ -28,7 +28,7 @@ class FeedbackAdapter(private val feedbackList: List<Feedback>): RecyclerView.Ad
         holder.response.text = feedback.response
         holder.profileName.text = feedback.name
         holder.rating.rating = feedback.rating.toFloat()
-        holder.profilePicture.setImageResource(R.drawable.address)
+        holder.profilePicture.setImageResource(R.drawable.profile)
         println(feedbackList.size)
     }
 

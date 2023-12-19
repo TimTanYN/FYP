@@ -1,5 +1,6 @@
-package com.example.fyp
+package com.example.fyp.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fyp.R
 import com.example.fyp.adapter.PublicTransportAdapter
 import com.example.fyp.viewmodel.PublicTransportViewModel
 import com.example.fyp.adapter.PublicTransport
@@ -25,7 +27,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [PublicTransport.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PublicTransport : Fragment() {
+class PublicTransport : Fragment(), PublicTransportAdapter.OnTransportClickListener  {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -56,7 +58,7 @@ class PublicTransport : Fragment() {
 
         val transitList = mutableListOf<String>()
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
-        val adapter = PublicTransportAdapter(emptyList()) // Start with an empty list
+        val adapter = PublicTransportAdapter(emptyList(),this) // Start with an empty list
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -68,6 +70,15 @@ class PublicTransport : Fragment() {
             adapter.updateTransports(details)
         })
             // Update UI with transit details here
+    }
+
+    override fun onTransportClick(PublicTransport: PublicTransport) {
+        val intent = Intent(requireContext(), PublicTransportDetails::class.java).apply {
+            putExtra("Transport_DETAILS", PublicTransport)
+
+        }
+        startActivity(intent)
+        activity?.overridePendingTransition(R.anim.slide_in_top, R.anim.slide_out_bottom)
     }
 
     companion object {
@@ -89,5 +100,7 @@ class PublicTransport : Fragment() {
                 }
             }
     }
+
+
 
 }

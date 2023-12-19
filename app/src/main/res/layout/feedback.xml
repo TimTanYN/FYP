@@ -2,10 +2,25 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://chemas.android.com/tools"
+    xmlns:tools2="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:title="Feedback"
+        app:titleTextColor="@color/black">
+    </androidx.appcompat.widget.Toolbar>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -57,7 +72,7 @@
                    android:scaleType="centerCrop"
                    app:layout_constraintEnd_toEndOf="parent"
                    app:layout_constraintTop_toTopOf="parent"
-                   app:srcCompat="@drawable/ic_launcher_foreground" />
+                   app:srcCompat="@drawable/video" />
 
                <ImageButton
                    android:id="@+id/image"
@@ -68,7 +83,7 @@
                    app:layout_constraintEnd_toStartOf="@+id/video"
                    app:layout_constraintStart_toStartOf="parent"
                    app:layout_constraintTop_toTopOf="parent"
-                   app:srcCompat="@drawable/ic_launcher_foreground" />
+                   app:srcCompat="@drawable/image" />
            </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
@@ -85,8 +100,8 @@
             android:layout_marginStart="29dp"
             android:layout_marginEnd="29dp"
             android:ems="10"
-            android:hint="Name"
             android:gravity="top|start"
+            android:hint="Comment"
             android:inputType="textMultiLine"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -115,20 +130,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <RatingBar
                 android:id="@+id/userFriendlyRating"
                 android:layout_width="wrap_content"
                 android:layout_height="47dp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="21dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="66dp"
                 android:numStars="5"
                 android:progressTint="@android:color/holo_orange_dark"
                 android:scaleX="0.6"
                 android:scaleY="0.5"
                 android:stepSize="1"
-                app:layout_constraintStart_toEndOf="@+id/userFriendly"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
             <TextView
                 android:id="@+id/service"
@@ -144,14 +159,14 @@
                 android:id="@+id/serviceRating"
                 android:layout_width="wrap_content"
                 android:layout_height="47dp"
-                android:layout_marginStart="15dp"
                 android:layout_marginTop="17dp"
+                android:layout_marginEnd="66dp"
                 android:numStars="5"
                 android:progressTint="@android:color/holo_orange_dark"
                 android:scaleX="0.6"
                 android:scaleY="0.5"
                 android:stepSize="1"
-                app:layout_constraintStart_toEndOf="@+id/service"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/userFriendlyRating" />
 
 
@@ -159,11 +174,7 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+
 
 
 </LinearLayout>

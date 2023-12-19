@@ -1,15 +1,15 @@
-package com.example.fyp
+package com.example.fyp.activity
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
+import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 
 class PhotoAndVideo:AppCompatActivity() {
@@ -18,7 +18,9 @@ class PhotoAndVideo:AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.photo_video)
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val feedbackEnd = intent.getSerializableExtra("feedback") as FeedbackEnd
 
         println(feedbackEnd.photoUrl)
@@ -36,5 +38,12 @@ class PhotoAndVideo:AppCompatActivity() {
             videoView.start()
         }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

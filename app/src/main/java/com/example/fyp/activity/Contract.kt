@@ -1,29 +1,32 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fyp.R
 import com.example.fyp.adapter.ContractAdapter
 import com.example.fyp.adapter.ContractCard
 import com.example.fyp.adapter.ContractCardAdapter
 import com.example.fyp.adapter.Contracts
-import com.example.fyp.adapter.FeedbackEnd
-import com.example.fyp.adapter.FeedbackEndAdapter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.forms.PdfAcroForm
-import com.itextpdf.forms.fields.PdfFormField
 import com.itextpdf.io.IOException
 import com.itextpdf.kernel.pdf.PdfDocument
 import com.itextpdf.kernel.pdf.PdfReader
@@ -98,9 +101,10 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contract)
 
-
-
-
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
         val recyclerView: RecyclerView = findViewById(R.id.Contract)
         val snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(recyclerView)
@@ -108,21 +112,21 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
 
-        db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount").get()
+        db.collection("Contract Template").document(userId.toString()).collection("usedContracts").document("usedContractsAmount").get()
             .addOnSuccessListener { document ->
                 val usedContracts = document.data?.get("usedContracts") as? Map<String, Long>
                 val topContracts = usedContracts?.toList()?.sortedByDescending { it.second }?.take(6)
                 val contractDetailsList = mutableListOf<Contracts>()
 
                 topContracts?.forEach { (contractId, count) ->
-                    val docRef = db.collection("Contract Template").document("uniqueUserId").collection("con1").document(contractId)
+                    val docRef = db.collection("Contract Template").document(userId.toString()).collection("con1").document(contractId)
 
                     docRef.get()
                         .addOnSuccessListener { documentSnapshot ->
                             if (documentSnapshot.exists()) {
                                 val text = documentSnapshot.getString("name") ?: "Unknown"
                                 val id = document.id
-                                contractDetailsList.add(Contracts(text, "Contract",id))
+                                contractDetailsList.add(Contracts(text, "Contract",contractId))
 
                                 if (contractDetailsList.size == topContracts.size) {
                                     // Update RecyclerView in the main thread
@@ -204,13 +208,13 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
 
 
         val db = FirebaseFirestore.getInstance()
-        val yourCollectionReference = db.collection("Contract Template").document("uniqueUserId").collection("con1")
+        val yourCollectionReference = db.collection("Contract Template").document(userId.toString()).collection("con1")
         yourCollectionReference.get()
             .addOnSuccessListener { documents ->
                 val items = documents.mapNotNull { document ->
                     val text = document.getString("name")
                     val content = "Contract"
-                    val imageResId = R.drawable.ic_launcher_background
+                    val imageResId = R.drawable.contract
                     val id = document.id
                     if (text != null) {
                         ContractCard(text,content,imageResId,id)
@@ -218,7 +222,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                         null
                     }
                 }
-                val adapter = ContractCardAdapter(items,this)
+                val adapter = ContractCardAdapter(items as MutableList<ContractCard>,this)
                 contractCard.adapter = adapter
             }
             .addOnFailureListener { exception ->
@@ -228,8 +232,13 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
 
     }
     private val db = FirebaseFirestore.getInstance()
+    val userId = FirebaseAuth.getInstance().currentUser?.uid
+    lateinit var addressTexts : String
+    lateinit var tenant : String
+    lateinit var landlord : String
+
     override fun onContractClick(contractCard: ContractCard) {
-        val userRef =db.collection("Contract Template").document("uniqueUserId").collection("usedContracts").document("usedContractsAmount")
+        val userRef =db.collection("Contract Template").document(userId.toString()).collection("usedContracts").document("usedContractsAmount")
         val contractId = contractCard.id
 
         db.runTransaction { transaction ->
@@ -237,7 +246,40 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             val currentCount = snapshot.getLong("usedContracts.$contractId") ?: 0
             transaction.update(userRef, "usedContracts.$contractId", currentCount + 1)
         }
-        fetchEntireCollection(contractCard.name,contractCard.id)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.contract_details_dialog, null)
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setView(dialogView)
+        val alertDialog = dialogBuilder.create()
+
+        val submit = dialogView.findViewById<Button>(R.id.generate)
+        val tenantName = dialogView.findViewById<EditText>(R.id.tenantText)
+        val landlordName = dialogView.findViewById<EditText>(R.id.landlordText)
+        val addressText = dialogView.findViewById<EditText>(R.id.addressText)
+        submit.setOnClickListener(){
+            addressTexts = addressText.text.toString()
+            tenant = tenantName.text.toString()
+            landlord = landlordName.text.toString()
+            fetchEntireCollection(contractCard.name,contractCard.id)
+        }
+        alertDialog.show()
+
+    }
+
+    override fun onDeleteButtonClick(contractCard: ContractCard, position: Int) {
+        val contractCard = findViewById<RecyclerView>(R.id.contractCard)
+        db.collection("Contract Template").document(userId.toString()).collection("con1").document(
+            contractCard.id.toString()
+        ).delete()
+            .addOnSuccessListener {
+                // Remove the item from your data list and notify the adapter
+                val items = (contractCard.adapter as ContractCardAdapter).productList
+                items.removeAt(position)
+                contractCard.adapter?.notifyItemRemoved(position)
+                Log.d("Firestore", "Document successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error deleting document", e)
+            }
     }
 
     override fun onItemClicked(position: Int) {
@@ -245,46 +287,72 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
     }
 
     override fun onButtonClicked(position: Int,contracts: Contracts) {
-        fetchEntireCollection(contracts.name,contracts.id)
+        val userRef =db.collection("Contract Template").document(userId.toString()).collection("usedContracts").document("usedContractsAmount")
+        val contractId = contracts.id
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+            val currentCount = snapshot.getLong("usedContracts.$contractId") ?: 0
+            transaction.update(userRef, "usedContracts.$contractId", currentCount + 1)
+        }
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.contract_details_dialog, null)
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setView(dialogView)
+        val alertDialog = dialogBuilder.create()
+
+        val submit = dialogView.findViewById<Button>(R.id.generate)
+        val tenantName = dialogView.findViewById<EditText>(R.id.tenantText)
+        val landlordName = dialogView.findViewById<EditText>(R.id.landlordText)
+        val addressText = dialogView.findViewById<EditText>(R.id.addressText)
+        submit.setOnClickListener(){
+            addressTexts = addressText.text.toString()
+            tenant = tenantName.text.toString()
+            landlord = landlordName.text.toString()
+            fetchEntireCollection(contracts.name,contracts.id)
+        }
+        alertDialog.show()
+
     }
 
-    override fun onEditButtonClick(contractCard: ContractCard, position: Int) {
 
-    }
+
+
 
     override fun onSendButtonClick(contractCard: ContractCard, position: Int) {
-        val docRef = db.collection("Sent Contract").document("uniqueUserId")
         val dialogView = LayoutInflater.from(this).inflate(R.layout.contract_dialog_box, null)
         val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setView(dialogView)
+        val names = dialogView.findViewById<TextView>(R.id.names)
+        val remarks = dialogView.findViewById<TextView>(R.id.remark)
 
-        val editText = dialogView.findViewById<EditText>(R.id.editTextInput)
-        val sendButton = dialogView.findViewById<Button>(R.id.buttonSend)
+        val docRef = db.collection("Contract Template").document(userId.toString()).collection("con1").document(contractCard.id)
+
+        docRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                   val name = documentSnapshot.getString("name") ?: "-"
+                   val remark = documentSnapshot.getString("remark") ?: "-"
+                    names.text = "Name : $name"
+                    remarks.text = "Remark : $remark"
+                } else {
+                    // No such document
+                    Log.d("Firestore", "No such document")
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors here
+                Log.d("Firestore", "get failed with ", exception)
+            }
+
 
         val alertDialog = dialogBuilder.create()
-
-        sendButton.setOnClickListener {
-            val inputText = editText.text.toString()
-            val contract = hashMapOf(
-                "contract" to contractCard.id,
-                "owner" to "userID"
-            )
-            docRef.set(contract)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Document successfully written!")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("Firestore", "Error writing document", e)
-                }
-            alertDialog.dismiss()
-        }
 
         alertDialog.show()
     }
     private fun fetchEntireCollection(name:String,id:String) {
         val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("Contract Template").document("uniqueUserId").collection(name).document(id)
-
+        val docRef = db.collection("Contract Template").document(userId.toString()).collection("con1").document(id)
+        println(id)
         docRef.get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
@@ -348,6 +416,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
 
 
 
+    @SuppressLint("SuspiciousIndentation")
     fun main() {
         val context = this // Assuming 'this' is a Context instance.
         val inputPdf = "rental-agreement-room.pdf" // The template PDF with placeholders
@@ -357,7 +426,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             File(context.getExternalFilesDir(null), "rental-agreement-room-filled.pdf").absolutePath
 
         val data = mapOf(
-            "Address" to houseAddress,
+            "Address" to addressTexts,
             "RentalAmount" to rentalAmount,
             "RentalPaymentDate" to rentalPaymentDate,
             "Cleaning" to cleaningValue,
@@ -388,6 +457,10 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             "PhonePercentage" to phonePaymentPercentage,
             "OtherName" to otherPaymentName,
             "OtherPercentage" to otherPaymentPercentage,
+            "TenantName" to tenant,
+            "LandlordName" to landlord,
+            "TenantName2" to tenant,
+            "OwnerName" to landlord
 
 
         )
@@ -476,13 +549,22 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
         }
     }
 
-    fun updateArrowButtons() {
-        val recyclerView: RecyclerView = findViewById(R.id.Contract)
-        val leftArrowButton: ImageButton = findViewById(R.id.leftArrowButton)
-        val rightArrowButton: ImageButton = findViewById(R.id.rightArrowButton)
-        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-        leftArrowButton.isEnabled = layoutManager.findFirstCompletelyVisibleItemPosition() > 0
-        rightArrowButton.isEnabled = layoutManager.findLastCompletelyVisibleItemPosition() < (recyclerView.adapter?.itemCount?.minus(1) ?: 0)
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.contract, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.contract -> {
+                val intent = Intent(this, ContractTemplate::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 }

@@ -1,13 +1,14 @@
-package com.example.fyp
+package com.example.fyp.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fyp.adapter.Feedback
-import com.example.fyp.adapter.FeedbackAdapter
+import com.example.fyp.R
 import com.example.fyp.adapter.FeedbackEnd
 import com.example.fyp.adapter.FeedbackEndAdapter
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,14 +16,18 @@ import com.google.firebase.firestore.FirebaseFirestore
 class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickListener{
 
     private val db = FirebaseFirestore.getInstance()
-    private val documentReference = db.collection("Feedback").document("userId").collection("feedback")
+    private val documentReference = db.collection("Feedback")
     var feedbackItem: FeedbackEnd? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.feedback_end)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val feedbackItems = mutableListOf<FeedbackEnd>()
         val recyclerView: RecyclerView = findViewById(R.id.feedbackEnd)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         documentReference.get()
             .addOnSuccessListener { querySnapshot ->
@@ -30,7 +35,7 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
                     val items = querySnapshot.documents.mapNotNull { document ->
                         val name = document.getString("name") ?: "Unknown"
                         val rating = document.getString("appValue")?.toDouble() ?: 0.0 // Default rating if null
-                        val imageResId = R.drawable.address
+                        val imageResId = R.drawable.profile
                         val comment = document.getString("comment") ?: "Unknown"
                         val id = document.id
                         val photoUrl = document.getString("imageUrl") ?: ""
@@ -60,7 +65,7 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
         val documentId = feedbackEnd.id
         val recyclerView: RecyclerView = findViewById(R.id.feedbackEnd)
 
-        db.collection("yourCollection").document(documentId).delete()
+        db.collection("Feedback").document(documentId).delete()
             .addOnSuccessListener {
                 // Remove the item from your data list and notify the adapter
                 val items = (recyclerView.adapter as FeedbackEndAdapter).feedbackList
@@ -79,4 +84,13 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
         startActivity(intent)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }

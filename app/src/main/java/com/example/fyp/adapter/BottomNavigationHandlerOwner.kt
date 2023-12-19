@@ -1,19 +1,14 @@
 package com.example.fyp.adapter
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
+import com.example.fyp.activity.Contract
+
 import com.example.fyp.R
-import com.example.fyp.activity.AccountActivity
 import com.example.fyp.activity.AccountOwnerActivity
+import com.example.fyp.activity.FeedbackEnd
 import com.example.fyp.activity.ManageAccommodationActivity
-import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SettingOwnerActivity
-import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class BottomNavigationHandlerOwner(private val context: Context) {
@@ -63,10 +58,14 @@ class BottomNavigationHandlerOwner(private val context: Context) {
         context.startActivity(intent)
     }
     private fun navigateToRating() {
-        // Implement navigation logic
+        val intent = Intent(context, FeedbackEnd::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
     private fun navigateToContract() {
-        // Implement navigation logic
+        val intent = Intent(context, Contract::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
     private fun navigateToProfile() {
         val intent = Intent(context, AccountOwnerActivity::class.java)

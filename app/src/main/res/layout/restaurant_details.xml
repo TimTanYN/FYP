@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+tools:context=".activity.RestaurantDetails">
+
+<androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RestaurantDetails">
+    android:layout_height="wrap_content"
+    android:background="@color/light_blue"
+    android:elevation="4dp"
+    app:contentInsetStartWithNavigation="0dp"
+    app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+    app:title="Food"
+    app:titleTextColor="@color/black" />
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,17 +35,19 @@
 
 
         <!-- Restaurant Details Section -->
+
         <ImageView
             android:id="@+id/restaurantImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:layout_marginTop="10dp"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_launcher_background" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,6 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/semi_transparent_black" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="34dp">
@@ -157,15 +179,15 @@
         <!-- User Comments Section -->
         <LinearLayout
             android:id="@+id/commentsSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_width="380dp"
+            android:layout_height="320dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/restaurantComment"
                 android:layout_width="match_parent"
-                android:layout_height="336dp"
+                android:layout_height="match_parent"
 
                 android:clipToPadding="false"
                 android:paddingHorizontal="16dp" />
@@ -173,9 +195,4 @@
 
     </LinearLayout>
 </ScrollView>
-
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent">-->
-
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+</LinearLayout>

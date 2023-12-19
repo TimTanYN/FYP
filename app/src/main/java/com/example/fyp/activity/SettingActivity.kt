@@ -77,7 +77,8 @@ class SettingActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
                 "Rate Us" -> {
-
+                    val intent = Intent(this, FeedbackMain::class.java)
+                    startActivity(intent)
                 }
                 "Logout" -> {
                     showSignOutDialog()
