@@ -67,6 +67,7 @@ class AgentSignUpFragment : Fragment() {
         val countryCodeSpinner: Spinner = view.findViewById(R.id.countryCodeSpinner)
         val signIn: TextView = view.findViewById(R.id.signInText)
 
+        countryCodeSpinner.isEnabled = false
         setupCountryCodeSpinner(countryCodeSpinner)
         setupNameField(fullNameEditText, fullNameInputLayout)
         setupEmailField(emailEditText, emailInputLayout)
@@ -81,22 +82,17 @@ class AgentSignUpFragment : Fragment() {
         repasswordEditTextInputLayout.setErrorTextColor(ColorStateList.valueOf(whiteColor))
 
         createAccountButton.setOnClickListener {
-
             if (validateInputs()) {
                 val email = emailEditText.text.toString().trim()
-                val phoneNumber = mobileNumberEditText.text.toString().trim()
+                val countryCode = (view?.findViewById(R.id.countryCodeSpinner) as? Spinner)?.selectedItem.toString()
+                val phoneNumber = countryCode + mobileNumberEditText.text.toString().trim()
 
                 isEmailRegistered(email) { isEmailRegistered ->
-                    Log.d("EmailCheck", "Callback received: $isEmailRegistered")
-                    if (!isEmailRegistered) {
-                        // Proceed with phone number check
-                        checkPhoneNumber(phoneNumber)
+                    if (isEmailRegistered) {
+                        emailInputLayout.error = "Invalid email"
                     } else {
-                        // Directly update UI here for testing
-//                        activity?.runOnUiThread {
-                        Log.d("EmailCheck", "Setting email error")
-                        emailInputLayout.error = "Email already in use"
-//                        }
+                        // Only check phone number if email is not registered
+                        isPhoneNumberRegistered(phoneNumber)
                     }
                 }
             }
@@ -109,21 +105,6 @@ class AgentSignUpFragment : Fragment() {
         }
     }
 
-    private fun checkPhoneNumber(phoneNumber: String) {
-
-        isPhoneNumberRegistered(phoneNumber) { isPhoneNumberRegistered ->
-            Log.d("PhoneCheck", "Callback received: $isPhoneNumberRegistered")
-            if (!isPhoneNumberRegistered) {
-                // Proceed with account creation
-                createAccount()
-            } else {
-                // Phone number error
-                Log.d("PhoneCheck", "Setting phone error")
-                val error = "Phone number already in use"
-                mobileNumberInputLayout.error = error.padStart(error.length + 5, ' ')
-            }
-        }
-    }
 
     private fun createAccount() {
         val email = emailEditText.text.toString().trim()
@@ -140,47 +121,52 @@ class AgentSignUpFragment : Fragment() {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-                    uploadUserData(userId, email, fullName, phoneNumber, userRole, state, city, newUser)
+                    uploadUserData(userId, email, fullName, phoneNumber, userRole, state, city, newUser, "no")
                 } else {
                     // Handle sign-up failure
                 }
             }
     }
-
-    private fun isEmailRegistered(email: String, onComplete: (Boolean) -> Unit) {
-        FirebaseAuth.getInstance().fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val isRegistered = task.result?.signInMethods?.isNotEmpty() ?: false
-                    Log.d("EmailCheck", "Email: $email, isRegistered: $isRegistered")
-                    onComplete(isRegistered)
-                } else {
-                    Log.e("EmailCheck", "Error checking email: ${task.exception}")
-                    onComplete(false)
-                }
-            }
-    }
-
-    private fun isPhoneNumberRegistered(phoneNumber: String, onComplete: (Boolean) -> Unit) {
+    private fun isEmailRegistered(email: String, callback: (Boolean) -> Unit) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
-        databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber).addListenerForSingleValueEvent(object :
-            ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val isRegistered = dataSnapshot.exists()
-                onComplete(isRegistered)
-            }
+        databaseReference.orderByChild("email").equalTo(email)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    callback(dataSnapshot.exists())
+                }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                onComplete(false)
-            }
-        })
+                override fun onCancelled(databaseError: DatabaseError) {
+                    callback(false)
+                }
+            })
     }
 
+    private fun isPhoneNumberRegistered(phoneNumber: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        val error = "Invalid phone number"
+                        mobileNumberInputLayout.error = error.padStart(error.length + 5, ' ')
+                    } else {
+                        mobileNumberInputLayout.isErrorEnabled = false
+                        // Proceed with account creation if phone number is not registered
+                        createAccount()
+                    }
 
-    private fun uploadUserData(userId: String, email: String, fullName: String, phoneNumber: String, userRole: String, state: String, city: String, newUser:String) {
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    mobileNumberInputLayout.error = "Failed to validate phone number"
+                }
+            })
+    }
+
+    private fun uploadUserData(userId: String, email: String, fullName: String, phoneNumber: String, userRole: String, state: String, city: String, newUser:String, valid:String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
         val defaultImage = "https://firebasestorage.googleapis.com/v0/b/finalyearproject-abb52.appspot.com/o/profile.PNG?alt=media&token=ce30c842-c3c2-46da-a51f-6086aa88762a"
-        val user = Users(userId, email, fullName, phoneNumber, userRole, defaultImage, state, city, newUser)
+        val user = Users(userId, email, fullName, phoneNumber, userRole, defaultImage, state, city, newUser, valid)
         databaseReference.child(userId).setValue(user).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 showToast("Sign Up Success")

@@ -16,6 +16,19 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.util.Properties
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 class ForgetPassActivity : AppCompatActivity() {
 
@@ -38,6 +51,7 @@ class ForgetPassActivity : AppCompatActivity() {
         setupEmailField(emailEditText)
 
         recoveryAccountButton.setOnClickListener {
+            hideKeyboard(it)
             if (validateInputs()) {
                 // Proceed with password recovery
                 sendPasswordResetEmail()
@@ -45,6 +59,7 @@ class ForgetPassActivity : AppCompatActivity() {
         }
 
         signIn.setOnClickListener {
+            hideKeyboard(it)
             val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
         }
@@ -105,7 +120,8 @@ class ForgetPassActivity : AppCompatActivity() {
                             .addOnCompleteListener { resetTask ->
                                 if (resetTask.isSuccessful) {
                                     showToast("Please check your email")
-                                    openEmailClient() // Open the email client
+                                    val intent = Intent(this, SignInActivity::class.java)
+                                    startActivity(intent)
 
                                 } else {
                                     showToast("Please try again")
@@ -119,16 +135,49 @@ class ForgetPassActivity : AppCompatActivity() {
             }
     }
 
-    private fun openEmailClient() {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_APP_EMAIL)
+    private fun sendEmailWithNewPassword(email: String, newPassword: String, username:String) {
+        val senderEmail = "roommatesystem2023@gmail.com"
+        val senderPassword = "yomx pdzv pllj vogr" // Be cautious with hardcoding credentials
+
+        val properties = Properties().apply {
+            put("mail.smtp.host", "smtp.gmail.com")
+            put("mail.smtp.port", "587")
+            put("mail.smtp.auth", "true")
+            put("mail.smtp.starttls.enable", "true")
+        }
+
+        val session = Session.getInstance(properties, object : Authenticator() {
+            override fun getPasswordAuthentication(): PasswordAuthentication {
+                return PasswordAuthentication(senderEmail, senderPassword)
+            }
+        })
+
         try {
-            startActivity(intent)
-        } catch (e: ActivityNotFoundException) {
-            showToast("Email not installed")
+            val message = MimeMessage(session).apply {
+                setFrom(InternetAddress(senderEmail))
+                addRecipient(Message.RecipientType.TO, InternetAddress(email))
+                subject = "RoomMate Password Reset"
+                val emailContent = """
+                <html>
+                    <body>
+                        <p>Dear $username,</p>
+                        <p>Your new password for RoomMate is: <b>$newPassword</b></p>
+                        <p>Please change your password after logging in.</p>
+                        <p>Thank you,<br/><b>RoomMate Management</b></p>
+                    </body>
+                </html>
+            """.trimIndent()
+                setContent(emailContent, "text/html; charset=utf-8")
+            }
+
+            Thread {
+                Transport.send(message)
+                showToast("Please check your email")
+            }.start()
+        } catch (e: MessagingException) {
+            e.printStackTrace()
         }
     }
-
     private fun hideKeyboard(view: View) {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(view.windowToken, 0)
@@ -138,16 +187,4 @@ class ForgetPassActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-//    private fun sendPasswordResetEmail() {
-//        val email = emailEditText.text.toString().trim()
-//
-//        auth.sendPasswordResetEmail(email)
-//            .addOnCompleteListener { task ->
-//                if (task.isSuccessful) {
-////                    Toast.makeText(this, "Password reset email sent.", Toast.LENGTH_SHORT).show()
-//                } else {
-////                    Toast.makeText(this, "Failed to send reset email.", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//    }
 }

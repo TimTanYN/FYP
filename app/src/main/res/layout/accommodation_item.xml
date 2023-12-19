@@ -1,81 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="155dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scrollbars="none">
 
-        <TextView
-            android:id="@+id/accommodationName"
-            android:layout_marginTop="15dp"
+        <LinearLayout
+            android:id="@+id/imageContainer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
 
-        <TextView
-            android:id="@+id/rentFee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/contractAgreement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/agentName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="16sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/accommodationName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_below="@id/horizontalScrollView"
+        android:textSize="28dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/contractAgreement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accommodationName"
+        android:textColor="@color/black"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:id="@+id/rentFee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contractAgreement"
+        android:textSize="18dp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/agentName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rentFee"
+        android:textSize="18dp"
+        android:textColor="@color/black"/>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@id/agentName"
+        android:layout_marginTop="8dp"/>
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/line"
+        android:gravity="right"
+        android:layout_marginTop="8dp">
 
         <Button
             android:id="@+id/viewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="View"
+            android:textSize="10dp"
             android:textColor="@color/white"
-            android:background="@drawable/custom_button_blue"
-            android:text="View" />
+            android:layout_marginBottom="2dp"
+            android:textStyle="bold"
+            android:background="@drawable/custom_button_purple"/>
 
-        <!-- Add your new buttons here -->
         <Button
             android:id="@+id/editButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Edit"
+            android:textSize="10dp"
+            android:layout_marginLeft="16dp"
             android:textColor="@color/white"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/custom_button_purple"
-            android:text="Edit" />
-
+            android:layout_marginBottom="2dp"
+            android:textStyle="bold"
+            android:background="@drawable/custom_button_blue"/>
         <Button
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Delete"
+            android:textSize="10dp"
+            android:layout_marginLeft="16dp"
             android:textColor="@color/white"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/custom_button_orange"
-            android:text="Delete" />
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="2dp"
+            android:textStyle="bold"
+            android:background="@drawable/custom_button_orange"/>
     </LinearLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/buttonContainer"
+        android:background="@color/smalltitle"/>
+</RelativeLayout>
 
-</LinearLayout>
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:orientation="horizontal"-->
+    <!--    android:padding="16dp">-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="155dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/accommodationName"-->
+    <!--            android:layout_marginTop="15dp"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/rentFee"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/contractAgreement"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textSize="16sp" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/agentName"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:textSize="16sp" />-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/viewButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:background="@drawable/custom_button_blue"-->
+    <!--            android:text="View" />-->
+
+    <!--        &lt;!&ndash; Add your new buttons here &ndash;&gt;-->
+    <!--        <Button-->
+    <!--            android:id="@+id/editButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:background="@drawable/custom_button_purple"-->
+    <!--            android:text="Edit" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/deleteButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:background="@drawable/custom_button_orange"-->
+    <!--            android:text="Delete" />-->
+    <!--    </LinearLayout>-->
+
+    <!--</LinearLayout>-->

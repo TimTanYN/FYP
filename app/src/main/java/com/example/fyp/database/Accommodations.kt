@@ -10,6 +10,7 @@ data class Accommodations(
     val state: String = "",
     val city: String = "",
     val agreement: String = "",
+    val rate: String = "",
     val ownerId: String = "",
     val agentId: String = "",
 )

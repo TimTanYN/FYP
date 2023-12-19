@@ -20,6 +20,10 @@ import com.example.fyp.R
 import com.example.fyp.database.Cards
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
@@ -45,7 +49,7 @@ class AddCardActivity : AppCompatActivity() {
         textInputLayout3 = findViewById(R.id.textInputLayout3)
         val btnAdd= findViewById<Button>(R.id.saveCardBtn)
 
-        setupToolbar()
+        checkUserPayments()
         setupInputField(cardNumInput, expiryDateInput, secureCodeInput)
         setupCardNumberInput()
         setupExpiryDateInput()
@@ -56,6 +60,35 @@ class AddCardActivity : AppCompatActivity() {
             if(validateInputs()){
                 saveCardDetailsToFirestore()
             }
+        }
+    }
+
+    private fun checkUserPayments() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("Payments")
+            .whereEqualTo("tenantId", currentUserId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // User has payments, restrict certain functionalities
+                    restrictFunctionality()
+                } else {
+                    // User does not have payments, proceed with normal flow
+                    setupToolbar()
+                }
+            }
+            .addOnFailureListener {
+                // Handle any errors here
+            }
+    }
+
+    private fun restrictFunctionality() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            showToast("Please add a card to pay rent fee")
         }
     }
 

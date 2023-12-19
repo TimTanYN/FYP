@@ -73,10 +73,12 @@ class SettingOwnerActivity : AppCompatActivity() {
                     // Navigate to "About App" screen
                 }
                 "My Financial" -> {
-                    // Navigate to "About App" screen
+                    val intent = Intent(this, FinancialListActivity::class.java)
+                    startActivity(intent)
                 }
                 "Change Password" -> {
-
+                    val intent = Intent(this, ChangePasswordOwnerActivity::class.java)
+                    startActivity(intent)
                 }
                 "Feedback Report" -> {
                     val intent = Intent(this, FeedbackChart::class.java)

@@ -22,12 +22,14 @@ import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.fyp.R
 import com.example.fyp.database.Accommodations
+import com.example.fyp.database.Payments
 import com.example.fyp.database.Users
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 class AccommodationDetailsOwnerActivity : AppCompatActivity() {
 
@@ -76,11 +78,14 @@ class AccommodationDetailsOwnerActivity : AppCompatActivity() {
         setupToolbar()
         loadImagesForAccommodation(accomID)
         loadAccommodationData(accomID)
+        fetchTenantDetails(accomID)
 
         btnAgent.setOnClickListener {
             val intent = Intent(this, AccommodationUserActivity::class.java)
             intent.putExtra("userId", agentId)
             intent.putExtra("ACCOM_ID", accomID)
+            intent.putExtra("tenant", "no")
+            intent.putExtra("agent", "yes")
             startActivity(intent)
         }
 
@@ -88,8 +93,30 @@ class AccommodationDetailsOwnerActivity : AppCompatActivity() {
             val intent = Intent(this, AccommodationUserActivity::class.java)
             intent.putExtra("userId", tenantId)
             intent.putExtra("ACCOM_ID", accomID)
+            intent.putExtra("tenant", "yes")
+            intent.putExtra("agent", "no")
             startActivity(intent)
         }
+    }
+
+    private fun fetchTenantDetails(accomID: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("Payments")
+            .whereEqualTo("accomID", accomID)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    for (document in documents) {
+                        val payment = document.toObject(Payments::class.java)
+                        tenantId = payment.tenantId
+                        btnTenant.visibility = View.VISIBLE
+                    }
+                } else {
+                    btnTenant.visibility = View.GONE
+                }
+            }
+            .addOnFailureListener { e ->
+            }
     }
 
 

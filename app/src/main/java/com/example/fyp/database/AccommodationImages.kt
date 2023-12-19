@@ -4,3 +4,5 @@ data class AccommodationImages(
     val accomID:String = "",
     val images: String = ""
 )
+
+

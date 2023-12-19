@@ -42,9 +42,32 @@ class ManageAccommodationActivity : AppCompatActivity() {
         checkForAccommodations()
 
         addBtn.setOnClickListener{
-            val intent = Intent(this, AddAccommodationActivity::class.java)
-            startActivity(intent)
+            checkUserCardBeforeAdding()
         }
+    }
+
+    private fun checkUserCardBeforeAdding() {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+
+        firestore.collection("Cards")
+            .whereEqualTo("userId", currentUserId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // User has a card, proceed with adding accommodation
+                    val intent = Intent(this, AddAccommodationActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    showToast("Please add a card")
+                    // No card found, navigate to Add Card Owner Activity
+                    val intent = Intent(this, AddCardOwnerActivity::class.java)
+                    startActivity(intent)
+                }
+            }
+            .addOnFailureListener {
+                // Handle error
+            }
     }
 
     private fun checkForAccommodations() {

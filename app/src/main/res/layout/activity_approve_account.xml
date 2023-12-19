@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ApproveAccountActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#0295ff"
+        android:elevation="4dp"
+        app:title="Manage Account"
+        app:titleTextColor="@color/white"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_white_24"
+        app:contentInsetStartWithNavigation="0dp">
+
+        <!-- Button inside the Toolbar -->
+        <Button
+            android:id="@+id/checkButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="60dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="@drawable/green_button"
+            android:text="Check here" />
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/toolbar"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Email Address"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Account Type"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:text="Actions"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Settings List -->
+    <ListView
+        android:id="@+id/accountListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/headerLayout"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:listSelector="@android:color/transparent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:visibility="gone">
+    </ListView>
+
+    <TextView
+        android:id="@+id/noAccountListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textStyle="italic"
+        android:textSize="20dp"
+        android:text="You didn't receive any rent"
+        android:layout_below="@id/toolbar"
+        android:visibility="gone"/>
+</RelativeLayout>

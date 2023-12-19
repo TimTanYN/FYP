@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <!-- Combined LinearLayout for TextViews and Buttons -->
+    <LinearLayout
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <!-- LinearLayout for TextViews -->
+        <LinearLayout
+            android:layout_width="174dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCheckInDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvCommission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvAgreement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvTenantName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- LinearLayout for Buttons -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:background="@drawable/custom_button_purple"
+                android:text="View" />
+
+            <Button
+                android:id="@+id/btnApprove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Approve"
+                android:textColor="@color/white"
+                android:background="@drawable/custom_button_blue"
+                android:layout_marginTop="8dp" />
+
+            <Button
+                android:id="@+id/btnReject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reject"
+                android:textColor="@color/white"
+                android:background="@drawable/custom_button_orange"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/view1"
+        android:background="@color/smalltitle"/>
+</RelativeLayout>

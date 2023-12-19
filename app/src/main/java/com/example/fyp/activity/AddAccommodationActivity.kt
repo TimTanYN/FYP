@@ -58,6 +58,7 @@ class AddAccommodationActivity : AppCompatActivity() {
     private lateinit var accDescInputLayout: TextInputLayout
     private lateinit var imageErrorInputLayout: TextInputLayout
     private val imageUris = mutableListOf<Uri>()
+    private var rate:String = ""
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
@@ -219,6 +220,7 @@ class AddAccommodationActivity : AppCompatActivity() {
             state = stateSpinner.selectedItem.toString(),
             city = citySpinner.selectedItem.toString(),
             agreement = contractSpinner.selectedItem.toString(),
+            rate = rate,
             ownerId = userId,
             agentId = "null"
         )
@@ -273,7 +275,6 @@ class AddAccommodationActivity : AppCompatActivity() {
     private fun setupContractSpinner() {
         val spinner: Spinner = findViewById(R.id.contractSpinner)
         val contractDurations = listOf("1 year", "2 years", "3 years", "4 years", "5 years")
-        val contractDurationsForDropdown = listOf("Please select the contract agreement") + contractDurations
 
         val contractAdapter = object : ArrayAdapter<String>(
             this, // Context
@@ -300,6 +301,21 @@ class AddAccommodationActivity : AppCompatActivity() {
         contractAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = contractAdapter
         spinner.setSelection(0) // Set default selection to the prompt
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                rate = when (position) {
+                    0, 1, 2 -> "1.25" // For 1, 2, 3 years
+                    3 -> "1.50" // For 4 years
+                    4 -> "1.75" // For 5 years
+                    else -> "1.75" // For more than 5 years
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                rate = ""
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -508,8 +524,8 @@ class AddAccommodationActivity : AppCompatActivity() {
             isValid = false
         }else {
             val rentFeeValue = rentFeeEditText.toDoubleOrNull() ?: 0.0
-            if (rentFeeValue < 250) {
-                rentFeeInputLayout.error = "Rent fee cannot less than 250"
+            if (rentFeeValue < 100) {
+                rentFeeInputLayout.error = "Rent fee cannot less than 100"
                 isValid = false
             } else {
                 rentFeeInputLayout.isErrorEnabled = false

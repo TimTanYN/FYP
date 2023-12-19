@@ -1,68 +1,204 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="8dp">
+
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/imageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/accommodationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/horizontalScrollView"
+        android:textSize="28dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/commission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accommodationName"
+        android:textColor="@color/black"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/commissionRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commission"
+        android:textColor="@color/black"
+        android:textSize="20dp"/>
+
+    <TextView
+        android:id="@+id/accommodationState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/commissionRate"
+        android:textSize="20dp"
+        android:textColor="@color/black"/>
+
+    <TextView
+        android:id="@+id/accommodationCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/accommodationState"
+        android:textSize="20dp"
+        android:textColor="@color/black"/>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@id/accommodationCity"
+        android:layout_marginTop="8dp"/>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="155dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:id="@+id/ownerInfoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/line"
+        android:layout_marginTop="8dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ownerImage"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
 
         <TextView
-            android:id="@+id/accommodationName"
-            android:layout_marginTop="15dp"
+            android:id="@+id/ownerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:text="Accommodation Name: afdfaf"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/commission"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="Commission: RM 3443.44"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/accommodationState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:textSize="25dp"
             android:textColor="@color/black"
             android:textStyle="bold"
-            android:text="State: fdadfad"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/accommodationCity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="City: fdadfad"
-            android:textSize="16sp" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_below="@id/ownerInfoContainer"
+        android:gravity="right"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/contactButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact Owner"
+            android:textSize="10dp"
+            android:textColor="@color/white"
+            android:layout_marginBottom="2dp"
+            android:textStyle="bold"
+            android:background="@drawable/custom_button_purple"/>
 
         <Button
             android:id="@+id/viewButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="View"
+            android:textSize="10dp"
+            android:layout_marginLeft="16dp"
             android:textColor="@color/white"
-            android:background="@drawable/custom_button_blue"
-            android:text="View" />
-
-
+            android:textStyle="bold"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/custom_button_blue"/>
     </LinearLayout>
 
-</LinearLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/buttonContainer"
+        android:background="@color/smalltitle"/>
+</RelativeLayout>
+
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:orientation="horizontal"-->
+    <!--    android:padding="16dp">-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="155dp"-->
+    <!--        android:layout_weight="1"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/accommodationName"-->
+    <!--            android:layout_marginTop="15dp"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:text="Accommodation Name: afdfaf"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/commission"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:text="Commission: RM 3443.44"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:textStyle="bold" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/accommodationState"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:text="State: fdadfad"-->
+    <!--            android:textSize="16sp" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/accommodationCity"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textStyle="bold"-->
+    <!--            android:text="City: fdadfad"-->
+    <!--            android:textSize="16sp" />-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/viewButton"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:background="@drawable/custom_button_blue"-->
+    <!--            android:text="View" />-->
+
+
+    <!--    </LinearLayout>-->
+
+    <!--</LinearLayout>-->
+

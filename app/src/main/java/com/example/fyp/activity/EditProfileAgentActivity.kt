@@ -3,7 +3,6 @@ package com.example.fyp.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -20,7 +19,6 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.bumptech.glide.Glide
 import com.example.fyp.R
-import com.example.fyp.adapter.StateCityAdapter
 import com.example.fyp.database.Users
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -85,20 +83,52 @@ class EditProfileAgentActivity : AppCompatActivity() {
         setupStateSpinnerListener()
 
         btnUpdate.setOnClickListener {
-
             hideKeyboard(it)
-            if(validateInputs()){
-
-                //Save the data
-                updateUserData()
-
+            if (validateInputs()) {
+                val phoneNumber = countryCodeSpinner.selectedItem.toString() + mobileNumberEditText.text.toString().trim()
+                isPhoneNumberUnique(phoneNumber) { isUnique ->
+                    if (isUnique) {
+                        updateUserData()
+                    } else {
+                        mobileNumberInputLayout.error = "Invalid phone number"
+                    }
+                }
             }
         }
 
         btnImage.setOnClickListener {
+            hideKeyboard(it)
             openImageChooser()
         }
 
+    }
+
+    private fun isPhoneNumberUnique(phoneNumber: String, callback: (Boolean) -> Unit) {
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        databaseReference.orderByChild("phoneNumber").equalTo(phoneNumber)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Check if the phone number belongs to the current user
+                        var isUnique = true
+                        for (userSnapshot in dataSnapshot.children) {
+                            val user = userSnapshot.getValue(Users::class.java)
+                            if (user?.userId != currentUserId) {
+                                isUnique = false
+                                break
+                            }
+                        }
+                        callback(isUnique)
+                    } else {
+                        callback(true) // Phone number is unique
+                    }
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    callback(false)
+                }
+            })
     }
 
     private fun openImageChooser() {
@@ -128,7 +158,9 @@ class EditProfileAgentActivity : AppCompatActivity() {
             imageLink = imageUrl,
             state = stateSpinner.selectedItem.toString(),
             city = citySpinner.selectedItem.toString(),
-            newUser = "no"
+            newUser = "no",
+            valid = "yes"
+
         )
         userRef.setValue(updatedUser).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -388,6 +420,8 @@ class EditProfileAgentActivity : AppCompatActivity() {
     private fun disableFieldsForProfileEditing() {
         regionEditText.isEnabled = false
         emailEditText.isEnabled = false
+        countryCodeSpinner.isEnabled = false
+
     }
 
     private fun validatePhoneNumber(): Boolean {

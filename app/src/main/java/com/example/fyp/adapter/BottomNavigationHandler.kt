@@ -8,6 +8,7 @@ import com.example.fyp.MapTabs
 import com.example.fyp.R
 import com.example.fyp.activity.AccommodationListActivity
 import com.example.fyp.activity.AccountActivity
+import com.example.fyp.activity.BookingListActivity
 import com.example.fyp.activity.SettingActivity
 import com.example.fyp.activity.SignUpActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -60,7 +61,9 @@ class BottomNavigationHandler(private val context: Context) {
     }
 
     private fun navigateToBook() {
-        // Implement navigation logic
+        val intent = Intent(context, BookingListActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     private fun navigateToLocation() {

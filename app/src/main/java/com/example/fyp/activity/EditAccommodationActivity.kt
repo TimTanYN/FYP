@@ -30,11 +30,13 @@ import com.example.fyp.R
 import com.example.fyp.database.AccommodationImages
 import com.example.fyp.database.Accommodations
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -63,6 +65,8 @@ class EditAccommodationActivity : AppCompatActivity() {
     private val imageUris = mutableListOf<Uri>()
     private val removedImageUrls = mutableListOf<String>()
     private var city:String = ""
+    private var rate:String = ""
+
 
     companion object {
         private const val IMAGE_PICK_CODE = 1000
@@ -339,6 +343,7 @@ class EditAccommodationActivity : AppCompatActivity() {
                     state = stateSpinner.selectedItem.toString(),
                     city = citySpinner.selectedItem.toString(),
                     agreement = contractSpinner.selectedItem.toString(),
+                    rate = rate,
                     ownerId = userId,
                     agentId = existingAgentId
                 )
@@ -346,13 +351,26 @@ class EditAccommodationActivity : AppCompatActivity() {
                 database.child("Accommodations").child(accomID).setValue(accommodation)
                     .addOnSuccessListener {
                         storeAccommodationImages(accomID, imageUrls)
-                        if (existingAgentId != "null") {
-                            updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.agreement)
+//                        if (existingAgentId != "null") {
+//                            updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.rate)
+//                        }
+
+                        checkForExistingPayment(accomID, existingAgentId, accommodation) { shouldUpdateSalary ->
+                            if (shouldUpdateSalary) {
+                                updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.rate)
+                            }
                         }
                     }
                     .addOnFailureListener {
                         // Handle failure
                     }
+
+                // Check if there is a corresponding payment record for this accomID
+//                checkForExistingPayment(accomID, existingAgentId, accommodation) { shouldUpdateSalary ->
+//                    if (shouldUpdateSalary) {
+//                        updateWorkerSalary(accomID, existingAgentId, accommodation.rentFee, accommodation.rate)
+//                    }
+//                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -361,8 +379,27 @@ class EditAccommodationActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateWorkerSalary(accomID: String, agentId: String, rentFee: String, agreement: String) {
-        val newSalary = calculateCommission(rentFee, agreement)
+    private fun checkForExistingPayment(accomID: String, existingAgentId: String, accommodation: Accommodations, callback: (Boolean) -> Unit) {
+        val firestore = Firebase.firestore
+        firestore.collection("Payments")
+            .whereEqualTo("accomID", accomID)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    // No existing payment record, proceed with updating salary
+                    callback(true)
+                } else {
+                    // Existing payment record found, do not update salary
+                    callback(false)
+                }
+            }
+            .addOnFailureListener {
+                // Handle any errors
+            }
+    }
+
+    private fun updateWorkerSalary(accomID: String, agentId: String, rentFee: String, rate: String) {
+        val newSalary = calculateCommission(rentFee, rate)
         val workersRef = FirebaseDatabase.getInstance().getReference("Workers")
 
         workersRef.orderByChild("agentId").equalTo(agentId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -383,25 +420,8 @@ class EditAccommodationActivity : AppCompatActivity() {
         })
     }
 
-    private fun calculateCommission(rentFee: String, year: String): String {
-        val rentFeeValue = rentFee.toDoubleOrNull() ?: return "RM 0.00"
-        val agreementYears = when (year) {
-            "1 year" -> 1
-            "2 years" -> 2
-            "3 years" -> 3
-            "4 years" -> 4
-            "5 years" -> 5
-            else -> return "RM 0.00"
-        }
-
-        val commissionPercentage = when (agreementYears) {
-            in 1..2 -> 0.20
-            in 3..4 -> 0.25
-            else -> 0.28
-        }
-
-        val monthlyCommission = rentFeeValue * commissionPercentage
-        showToast(monthlyCommission.toString())
+    private fun calculateCommission(rentFee: String, rate: String): String {
+        val monthlyCommission = rentFee.toDouble() * rate.toDouble()
         return "RM ${String.format("%.2f", monthlyCommission)}"
     }
 
@@ -427,7 +447,6 @@ class EditAccommodationActivity : AppCompatActivity() {
     private fun setupContractSpinner() {
         val spinner: Spinner = findViewById(R.id.contractSpinner)
         val contractDurations = listOf("1 year", "2 years", "3 years", "4 years", "5 years")
-        val contractDurationsForDropdown = listOf("Please select the contract agreement") + contractDurations
 
         val contractAdapter = object : ArrayAdapter<String>(
             this, // Context
@@ -454,6 +473,21 @@ class EditAccommodationActivity : AppCompatActivity() {
         contractAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = contractAdapter
         spinner.setSelection(0) // Set default selection to the prompt
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                rate = when (position) {
+                    0, 1, 2 -> "1.25" // For 1, 2, 3 years
+                    3 -> "1.50" // For 4 years
+                    4 -> "1.75" // For 5 years
+                    else -> "1.75" // For more than 5 years
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                rate = ""
+            }
+        }
     }
 
     private fun setupSettings(){
@@ -690,8 +724,8 @@ class EditAccommodationActivity : AppCompatActivity() {
             isValid = false
         }else {
             val rentFeeValue = rentFeeEditText.toDoubleOrNull() ?: 0.0
-            if (rentFeeValue < 250) {
-                rentFeeInputLayout.error = "Rent fee cannot less than 250"
+            if (rentFeeValue < 100) {
+                rentFeeInputLayout.error = "Rent fee cannot less than 100"
                 isValid = false
             } else {
                 rentFeeInputLayout.isErrorEnabled = false

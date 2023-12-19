@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.FinancialDetailsActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_blue"
+        android:elevation="4dp"
+        app:title="My Financial Details"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/baseline_arrow_back_ios_24"
+        app:contentInsetStartWithNavigation="0dp" />
+
+    <!-- ScrollView for the rest of the content -->
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvRoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="4dp"
+                android:textStyle="bold"
+                android:textSize="19dp"
+                android:text="Accommodation Reservation Details"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:id="@+id/combinedLayout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvRoom"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp">
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textSize="17dp"
+                        android:textStyle="bold"
+                        android:text="Agent Name"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvAgentName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:textSize="17dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="Agent Email Address"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvAgentEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:textSize="17dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank12"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="Agent Contact Number"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvAgentContact"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:textSize="17dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/combinedLayout1"
+                android:background="@color/smalltitle"/>
+
+            <LinearLayout
+                android:id="@+id/combinedLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp">
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="Tenant Name"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvTenantName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textSize="17dp"
+                        android:textStyle="bold"
+                        android:text="Tenant Email Address"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvTenantEmail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:textSize="17dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textSize="17dp"
+                        android:textStyle="bold"
+                        android:text="Tenant Contact Number"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvTenantContact"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:textSize="17dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/combinedLayout2"
+                android:background="@color/smalltitle"/>
+
+
+            <LinearLayout
+                android:id="@+id/combinedLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view2"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp">
+
+                <!-- Row for TextViews -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textSize="17dp"
+                        android:textStyle="bold"
+                        android:text="Contract Agreement"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvContract"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17dp"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank14"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17dp"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:text="Monthly Rent Fee"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvRentFee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:textSize="17dp"
+                        android:text="Deposit Fee"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvDepositFee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/tvBlank10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:text="Total Paid by Tenant"
+                        android:textSize="17dp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvTotalFee"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp">
+
+                    <TextView
+                        android:id="@+id/tvBlank7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17dp"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:text="Commission Paid"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvCommission"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+
+
+                <!-- Row for Spinners -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvBlank15"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="17dp"
+                        android:paddingStart="4dp"
+                        android:textStyle="bold"
+                        android:text="Commission Rate"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/tvRate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingEnd="10dp"
+                        android:gravity="right"
+                        android:textSize="17dp"
+                        android:textColor="@color/black"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/combinedLayout3"
+                android:background="@color/smalltitle"/>
+
+            <LinearLayout
+                android:id="@+id/total"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@+id/view3"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:id="@+id/tvBlank11"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="4dp"
+                    android:textStyle="bold"
+                    android:text="Total Earn"
+                    android:textSize="17dp"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tvTotalEarn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="10dp"
+                    android:gravity="right"
+                    android:textSize="17dp"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/total"
+                android:background="@color/smalltitle"/>
+
+
+            <Button
+                android:id="@+id/tenantBtn"
+                android:layout_width="200dp"
+                android:layout_height="55dp"
+                android:layout_below="@id/view4"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_button_blue"
+                android:text="Contact Tenant"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/agentBtn"
+                android:layout_width="200dp"
+                android:layout_height="55dp"
+                android:layout_below="@id/tenantBtn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_button_orange"
+                android:text="Contact Agent"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/checkBtn"
+                android:layout_width="200dp"
+                android:layout_height="55dp"
+                android:layout_below="@id/agentBtn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/custom_button_purple"
+                android:text="Check unit"
+                android:layout_marginBottom="24dp"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

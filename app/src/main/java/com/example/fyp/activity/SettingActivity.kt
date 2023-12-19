@@ -41,6 +41,7 @@ class SettingActivity : AppCompatActivity() {
             SettingsItem("Terms & Conditions", hasSwitch = false),
             SettingsItem("Contact Us", hasSwitch = false),
             SettingsItem("About App", hasSwitch = false),
+            SettingsItem("Booking History", hasSwitch = false),
             SettingsItem("Change Password", hasSwitch = false),
             SettingsItem("Rate Us", hasSwitch = false),
             SettingsItem("Contract", hasSwitch = false),
@@ -69,8 +70,13 @@ class SettingActivity : AppCompatActivity() {
                 "About App" -> {
                     // Navigate to "About App" screen
                 }
+                "Booking History" -> {
+                    val intent = Intent(this, BookingHistoryListActivity::class.java)
+                    startActivity(intent)
+                }
                 "Change Password" -> {
-
+                    val intent = Intent(this, ChangePasswordActivity::class.java)
+                    startActivity(intent)
                 }
                 "Contract" -> {
 
