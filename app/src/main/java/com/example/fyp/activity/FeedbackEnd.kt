@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -72,6 +73,7 @@ class FeedbackEnd:AppCompatActivity(), FeedbackEndAdapter.OnFeedbackEndClickList
                 items.removeAt(position)
                 recyclerView.adapter?.notifyItemRemoved(position)
                 Log.d("Firestore", "Document successfully deleted!")
+                Toast.makeText(this, "Deleted", Toast.LENGTH_LONG).show()
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error deleting document", e)

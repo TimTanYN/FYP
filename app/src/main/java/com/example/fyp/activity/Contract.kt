@@ -13,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -25,6 +26,7 @@ import com.example.fyp.adapter.ContractCard
 import com.example.fyp.adapter.ContractCardAdapter
 import com.example.fyp.adapter.Contracts
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.itextpdf.forms.PdfAcroForm
 import com.itextpdf.io.IOException
@@ -266,15 +268,23 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
     }
 
     override fun onDeleteButtonClick(contractCard: ContractCard, position: Int) {
-        val contractCard = findViewById<RecyclerView>(R.id.contractCard)
+        val contractCards = findViewById<RecyclerView>(R.id.contractCard)
+        val recyclerView: RecyclerView = findViewById(R.id.Contract)
+        val userRef =db.collection("Contract Template").document(userId.toString()).collection("usedContracts").document("usedContractsAmount")
         db.collection("Contract Template").document(userId.toString()).collection("con1").document(
-            contractCard.id.toString()
+            contractCard.id
         ).delete()
             .addOnSuccessListener {
                 // Remove the item from your data list and notify the adapter
-                val items = (contractCard.adapter as ContractCardAdapter).productList
+                val items = (contractCards.adapter as ContractCardAdapter).productList
                 items.removeAt(position)
-                contractCard.adapter?.notifyItemRemoved(position)
+                contractCards.adapter?.notifyItemRemoved(position)
+                db.runTransaction { transaction ->
+                    val snapshot = transaction.get(userRef)
+                    if (snapshot.exists()) {
+                        transaction.update(userRef, "usedContracts.${contractCard.id}", FieldValue.delete())
+                    }
+                }
                 Log.d("Firestore", "Document successfully deleted!")
             }
             .addOnFailureListener { e ->
@@ -481,6 +491,11 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 val UtilityPrice = form.getField("UtilityPrice")
                                 UtilityPrice?.setValue("UtilityPrice")
 
+                            }else{
+                                val utilitys = form.getField("utilitys")
+                                utilitys?.setValue("-")
+                                val UtilityPrice = form.getField("UtilityPrice")
+                                UtilityPrice?.setValue("-")
                             }
 
                             if(water == "Yes"){
@@ -488,13 +503,23 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 Waters?.setValue("Water")
                                 val WaterPrices = form.getField("WaterPrices")
                                 WaterPrices?.setValue("WaterPrice")
-                        }
+                        }else{
+                                val Waters = form.getField("Waters")
+                                Waters?.setValue("-")
+                                val WaterPrices = form.getField("WaterPrices")
+                                WaterPrices?.setValue("-")
+                            }
 
                             if(phone == "Yes"){
                                 val Phones = form.getField("Phones")
                                 Phones?.setValue("Phone")
                                 val PhonePrices = form.getField("PhonePrices")
                                 PhonePrices?.setValue("PhonePrice")
+                            }else{
+                                val Phones = form.getField("Phones")
+                                Phones?.setValue("-")
+                                val PhonePrices = form.getField("PhonePrices")
+                                PhonePrices?.setValue("-")
                             }
 
                             if(other == "Yes"){
@@ -502,6 +527,11 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 Others?.setValue("Other")
                                 val OtherPrices = form.getField("OtherPrices")
                                 OtherPrices?.setValue("OtherPrice")
+                            }else{
+                                val Others = form.getField("Others")
+                                Others?.setValue("-")
+                                val OtherPrices = form.getField("OtherPrices")
+                                OtherPrices?.setValue("-")
                             }
 
                             if(principalTenant == "Yes"){
@@ -544,6 +574,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                     }
                 }
             }
+            Toast.makeText(context, "PDF saved to $outputPdfPath", Toast.LENGTH_LONG).show()
         } catch (e: IOException) {
             e.printStackTrace()
         }

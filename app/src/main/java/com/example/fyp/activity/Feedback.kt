@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.RatingBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.fyp.R
@@ -195,7 +196,8 @@ class Feedback:AppCompatActivity() {
         documentReference.set(data)
             .addOnSuccessListener {
                 Log.d("Firestore", "Document successfully written!")
-                incrementFeedbackCount(this)}
+                incrementFeedbackCount(this)
+                Toast.makeText(this, "Saved to Database", Toast.LENGTH_LONG).show()}
             .addOnFailureListener { e -> Log.w("Firestore", "Error writing document", e) }
     }
 }

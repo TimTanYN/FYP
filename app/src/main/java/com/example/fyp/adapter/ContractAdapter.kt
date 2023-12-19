@@ -10,7 +10,7 @@ import com.example.fyp.R
 
 
 
-class ContractAdapter(private val productList: List<Contracts>, private val listener:OnItemClickedListener ) :
+class ContractAdapter(var productList:  MutableList<Contracts>, private val listener:OnItemClickedListener ) :
     RecyclerView.Adapter<ContractAdapter.ProductViewHolder>() {
 
     class ProductViewHolder(val view: View) : RecyclerView.ViewHolder(view) {

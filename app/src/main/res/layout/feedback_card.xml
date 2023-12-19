@@ -16,10 +16,8 @@
             android:id="@+id/profilePicture"
             android:layout_width="31dp"
             android:layout_height="35dp"
-            android:layout_marginStart="33dp"
-            android:layout_marginTop="34dp"
-            android:layout_marginEnd="27dp"
-            app:layout_constraintEnd_toStartOf="@+id/profileName"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/address" />
@@ -28,10 +26,12 @@
             android:id="@+id/profileName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="34dp"
-            android:layout_marginEnd="245dp"
+            android:layout_marginEnd="190dp"
             android:text="TextView"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profilePicture"
             app:layout_constraintTop_toTopOf="parent" />
 
         <RatingBar
