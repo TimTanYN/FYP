@@ -46,7 +46,7 @@ class AccommodationsAdapter(private val context: Context, private val accommodat
 
 
         val nameTextView = listItemView.findViewById<TextView>(R.id.accommodationName)
-        nameTextView.text = "Accommodation Name: ${currentAccommodation.accomName}"
+        nameTextView.text = "${currentAccommodation.accomName}"
 
         val rentFeeTextView = listItemView.findViewById<TextView>(R.id.rentFee)
         rentFeeTextView.text = "Rent Fee per Month: RM ${currentAccommodation.rentFee}"

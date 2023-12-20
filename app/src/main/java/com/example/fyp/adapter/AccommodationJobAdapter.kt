@@ -42,7 +42,7 @@ class AccommodationJobAdapter(private val context: Context, private val accommod
         val stateTextView = listItemView.findViewById<TextView>(R.id.accommodationState)
         val cityTextView = listItemView.findViewById<TextView>(R.id.accommodationCity)
 
-        accommodationName.text = "Accommodation Name: ${currentAccommodation.accomName}"
+        accommodationName.text = "${currentAccommodation.accomName}"
 
         val commission = calculateCommission(currentAccommodation.rentFee, currentAccommodation.rate)
         commissionTextView.text = "Total Commission: $commission"
