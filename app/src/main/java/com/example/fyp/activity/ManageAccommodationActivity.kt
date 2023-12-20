@@ -46,6 +46,11 @@ class ManageAccommodationActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkForAccommodations() // Refresh data when activity resumes
+    }
+
     private fun checkUserCardBeforeAdding() {
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val firestore = FirebaseFirestore.getInstance()
