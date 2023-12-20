@@ -213,37 +213,37 @@
         </activity>
 
 
-        <activity android:name=".activity.MapTabs" >  <meta-data
+      <activity android:name=".activity.MapTabs" >  <meta-data
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".activity.EditProfileActivity"
-            android:screenOrientation="portrait"/></activity>
+          android:screenOrientation="portrait"/></activity>
 
         <activity android:name=".activity.Contract" >
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.AccountOwnerActivity"
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.AccountOwnerActivity"
                 android:screenOrientation="portrait"/></activity>
         <activity android:name=".activity.ContractTemplate" android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.Contract" /></activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.Contract" /></activity>
         <activity android:name=".activity.RestaurantDetails" android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MapTabs" /></activity>
         <activity android:name=".activity.Feedback" android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.FeedbackMain" /></activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.FeedbackMain" /></activity>
         <activity android:name=".activity.FeedbackMain" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.AccountActivity" /></activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.AccountActivity" /></activity>
         <activity android:name=".activity.FeedbackEnd" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
 
-                android:value=".activity.AccountOwnerActivity" /></activity>
+            android:value=".activity.AccountOwnerActivity" /></activity>
 
         <activity android:name=".activity.FeedbackResponse" >
 
@@ -252,18 +252,18 @@
                 android:value=".activity.FeedbackEnd"
                 android:screenOrientation="portrait"/></activity>
         <activity android:name=".activity.PhotoAndVideo" android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.FeedbackEnd" /></activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.FeedbackEnd" /></activity>
         <activity android:name=".activity.FeedbackChart" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.SettingOwnerActivity" /></activity>
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".activity.SettingOwnerActivity" /></activity>
 
         <activity android:name=".activity.PublicTransportDetails" android:screenOrientation="portrait">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MapTabs" /></activity>
+        android:name="android.support.PARENT_ACTIVITY"
+        android:value=".activity.MapTabs" /></activity>
         <activity android:name=".activity.Polyline" />
 
 

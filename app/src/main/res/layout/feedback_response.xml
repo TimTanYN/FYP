@@ -60,6 +60,7 @@ android:layout_height="match_parent">
         android:isIndicator="true"
         android:scaleX="0.6"
         android:scaleY="0.5"
+        android:progressTint="@android:color/holo_orange_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileName" />
 

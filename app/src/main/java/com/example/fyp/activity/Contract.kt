@@ -393,7 +393,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                     phone = documentSnapshot.getString("phone") ?: "Yes"
                     other = documentSnapshot.getString("other") ?: "Yes"
                     household = documentSnapshot.getString("household") ?: "-"
-                    thirdParty = documentSnapshot.getString("thirdParty") ?: "-"
+                    thirdParty = documentSnapshot.getString("thirdparty") ?: "-"
                     majority = documentSnapshot.getString("majority") ?: "-"
                     principalTenant = documentSnapshot.getString("principalTenant") ?: "-"
                     owner = documentSnapshot.getString("owner") ?: "-"
@@ -409,8 +409,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                     personalItemValue = documentSnapshot.getString("personalItemValue") ?: "-"
                     musicValue = documentSnapshot.getString("musicValue") ?: "-"
                     bedroomAssignmentValue = documentSnapshot.getString("bedroomAssignmentValue") ?: "-"
-                    petsValue = documentSnapshot.getString("petsValue") ?: "-" // Correctly access the field
-                    // You now have the data from the "tips" field, do something with it
+                    petsValue = documentSnapshot.getString("petsValue") ?: "-"
 
                     main()
                 } else {
@@ -430,7 +429,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
     fun main() {
         val context = this // Assuming 'this' is a Context instance.
         val inputPdf = "rental-agreement-room.pdf" // The template PDF with placeholders
-
+        Log.d("Firestore",  thirdParty)
         // The path where the filled PDF will be saved
         val outputPdfPath =
             File(context.getExternalFilesDir(null), "rental-agreement-room-filled.pdf").absolutePath
@@ -470,7 +469,8 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
             "TenantName" to tenant,
             "LandlordName" to landlord,
             "TenantName2" to tenant,
-            "OwnerName" to landlord
+            "OwnerName" to landlord,
+            "PaymentReceiver" to paymentReceiver
 
 
         )
@@ -491,11 +491,6 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 val UtilityPrice = form.getField("UtilityPrice")
                                 UtilityPrice?.setValue("UtilityPrice")
 
-                            }else{
-                                val utilitys = form.getField("utilitys")
-                                utilitys?.setValue("-")
-                                val UtilityPrice = form.getField("UtilityPrice")
-                                UtilityPrice?.setValue("-")
                             }
 
                             if(water == "Yes"){
@@ -503,23 +498,13 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 Waters?.setValue("Water")
                                 val WaterPrices = form.getField("WaterPrices")
                                 WaterPrices?.setValue("WaterPrice")
-                        }else{
-                                val Waters = form.getField("Waters")
-                                Waters?.setValue("-")
-                                val WaterPrices = form.getField("WaterPrices")
-                                WaterPrices?.setValue("-")
-                            }
+                        }
 
                             if(phone == "Yes"){
                                 val Phones = form.getField("Phones")
                                 Phones?.setValue("Phone")
                                 val PhonePrices = form.getField("PhonePrices")
                                 PhonePrices?.setValue("PhonePrice")
-                            }else{
-                                val Phones = form.getField("Phones")
-                                Phones?.setValue("-")
-                                val PhonePrices = form.getField("PhonePrices")
-                                PhonePrices?.setValue("-")
                             }
 
                             if(other == "Yes"){
@@ -527,11 +512,7 @@ class Contract :AppCompatActivity(), ContractAdapter.OnItemClickedListener, Cont
                                 Others?.setValue("Other")
                                 val OtherPrices = form.getField("OtherPrices")
                                 OtherPrices?.setValue("OtherPrice")
-                            }else{
-                                val Others = form.getField("Others")
-                                Others?.setValue("-")
-                                val OtherPrices = form.getField("OtherPrices")
-                                OtherPrices?.setValue("-")
+
                             }
 
                             if(principalTenant == "Yes"){
