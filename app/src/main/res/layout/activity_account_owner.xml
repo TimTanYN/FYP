@@ -151,7 +151,7 @@
 
             <TextView
                 android:id="@+id/nocardList"
-                android:layout_width="wrap_content"
+                android:layout_width="295dp"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/btnAddNewCard"
                 android:layout_centerInParent="true"
@@ -159,8 +159,8 @@
                 android:gravity="center"
                 android:text="You didn't add on any card"
                 android:textSize="25dp"
-                android:visibility="gone"
-                android:textStyle="italic" />
+                android:textStyle="italic"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btnAddNewCard"
