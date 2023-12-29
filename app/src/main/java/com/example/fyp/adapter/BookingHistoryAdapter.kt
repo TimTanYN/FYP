@@ -82,8 +82,7 @@ class BookingHistoryAdapter(private val context: Context, private val bookings: 
         }else if (currentBooking.status == "Paid"){
             btnCancel.visibility = View.GONE
             btnPay.visibility = View.GONE
-            tvStatus.text = "${currentBooking.status} by agent"
-
+            tvStatus.text = "${currentBooking.status}"
         }
 
         // Set onClickListeners for buttons

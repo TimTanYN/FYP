@@ -202,8 +202,10 @@ class EditProfileAgentActivity : AppCompatActivity() {
 
                     if (it.newUser == "yes") {
                         disableFieldsForNewAccount()
+                        restrictToolbar()
                     } else {
                         disableFieldsForProfileEditing()
+                        setupToolbar()
                     }
 
                 }
@@ -215,6 +217,14 @@ class EditProfileAgentActivity : AppCompatActivity() {
         })
     }
 
+    private fun restrictToolbar() {
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            showToast("Please select the state and city")
+        }
+    }
 
     private fun updateUserData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
