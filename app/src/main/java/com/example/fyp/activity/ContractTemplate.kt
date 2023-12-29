@@ -250,7 +250,10 @@ class ContractTemplate:AppCompatActivity() {
         val musicGroup = findViewById<RadioGroup>(R.id.musicGroup)
         val bedroomAssignmentGroup = findViewById<RadioGroup>(R.id.bedroomAssignmentGroup)
         val petsGroup = findViewById<RadioGroup>(R.id.petsGroup)
-        if (radioGroup.checkedRadioButtonId == -1||commonAreaGroup.checkedRadioButtonId == -1||kitchenGroup.checkedRadioButtonId == -1||overnightGuestGroup.checkedRadioButtonId == -1||kitchenAppliancesGroup.checkedRadioButtonId == -1||smokingGroup.checkedRadioButtonId == -1||alcoholGroup.checkedRadioButtonId == -1||telephoneGroup.checkedRadioButtonId == -1||studyGroup.checkedRadioButtonId == -1||personalItemGroup.checkedRadioButtonId == -1||musicGroup.checkedRadioButtonId == -1||petsGroup.checkedRadioButtonId == -1||bedroomAssignmentGroup.checkedRadioButtonId == -1) {
+        if (radioGroup.checkedRadioButtonId == -1||commonAreaGroup.checkedRadioButtonId == -1||kitchenGroup.checkedRadioButtonId == -1||overnightGuestGroup.checkedRadioButtonId == -1||
+            kitchenAppliancesGroup.checkedRadioButtonId == -1||smokingGroup.checkedRadioButtonId == -1||alcoholGroup.checkedRadioButtonId == -1||telephoneGroup.checkedRadioButtonId == -1||
+            studyGroup.checkedRadioButtonId == -1||personalItemGroup.checkedRadioButtonId == -1||musicGroup.checkedRadioButtonId == -1||petsGroup.checkedRadioButtonId == -1||
+            bedroomAssignmentGroup.checkedRadioButtonId == -1) {
             Toast.makeText(this, "Please select an option", Toast.LENGTH_LONG).show()
         }else{
             val ownerName = ownerNameEditText.text.toString()
